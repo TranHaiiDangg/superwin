@@ -1,0 +1,149 @@
+
+            /* Container-menu*/
+            .container-menu {
+                width: 1280px;
+                margin: 0 auto;
+                display: flex;
+                gap: 60px;
+                padding: 15px 0 10px 0  ;
+                background-color: #fff;
+                justify-content: center;
+            }
+    
+            .menu-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                width: 120px;
+                text-decoration: none;
+                color: inherit;
+                white-space: nowrap;
+                transition: transform 0.3s ease;
+            }
+    
+            .menu-item:hover {
+                text-decoration: none;
+                color: inherit;
+                transform: scale(1.1);
+            }
+    
+            .menu-item:hover .icon-container {
+                transform: scale(1.1);
+            }
+    
+            .icon-container {
+                background: none;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 8px;
+                padding: 0;
+                box-shadow: none;
+                transition: none;
+            }
+    
+            .menu-img {
+                width: auto;
+                height: 50px;
+                object-fit: contain;
+                border-radius: 50%;
+                display: block;
+            }
+    
+            /* Icon colors */
+            .menu-item:nth-child(1) .menu-icon {
+                color: #ff6b6b;
+            }
+    
+            .menu-item:nth-child(2) .menu-icon {
+                color: #4ecdc4;
+            }
+    
+            .menu-item:nth-child(3) .menu-icon {
+                color: #45b7d1;
+            }
+    
+            .menu-item:nth-child(4) .menu-icon {
+                color: #96ceb4;
+            }
+    
+            .menu-item:nth-child(5) .menu-icon {
+                color: #ff9f1c;
+            }
+    
+            .menu-item:nth-child(6) .menu-icon {
+                color: #e76f51;
+            }
+    
+            /* Hover effects */
+            .menu-item:hover .icon-container {
+                background: none;
+            }
+    
+            .menu-item:hover .menu-icon {
+                transform: scale(1.1);
+            }
+    
+            .menu-item p {
+                font-size: 13px;
+                color: #333;
+                margin: 0;
+            }
+    
+            /* Responsive - Tablet (768px - 1024px) */
+            @media (max-width: 1024px) and (min-width: 768px) {
+                .container-menu {
+                    width: 100%;
+                    max-width: 100%;
+                    gap: 15px;
+                    padding: 20px 16px;
+                    justify-content: center;
+                    flex-wrap: nowrap;
+                }
+                
+                .menu-item {
+                    width: 100px;
+                    min-width: 100px;
+                    flex: 0 0 auto;
+                }
+                
+                .icon-container {
+                    width: 50px;
+                    height: 50px;
+                }   
+                
+                .menu-icon {
+                    font-size: 20px;
+                }
+                
+                .menu-item p {
+                    font-size: 11px;
+                    line-height: 1.2;
+                }
+            }
+    
+            /* Responsive - Mobile (ẩn menu trên mobile) */
+            @media (max-width: 767px) {
+                .container-menu {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    width: 370px;
+                    gap: 0;
+                    padding: 0;
+                    row-gap: 10px;
+                }
+                .container-menu .menu-item {
+                    width: 33.3333%;
+                    flex: 0 0 33.3333%;
+                    box-sizing: border-box;
+                    margin-bottom: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+            

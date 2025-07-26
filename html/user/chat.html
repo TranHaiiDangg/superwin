@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Trực Tuyến</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/chat/chat.css">
+  <link rel="stylesheet" href="/css/chat/main.css">
+</head>
+<body>
+  <div class="mobile-chat-page" id="mobileChatPage">
+    <div class="mobile-header">
+      <div class="mobile-header-left">
+        <button class="mobile-back" id="mobileBack"><i class="fas fa-arrow-left"></i></button>
+        <div>
+          <h5>Hỗ trợ trực tuyến</h5>
+          <p>Đang hoạt động</p>
+        </div>
+      </div>
+      <div>
+        <button class="mobile-back" onclick="showMobileMenu()"><i class="fas fa-ellipsis-v"></i></button>
+      </div>
+    </div>
+
+    <div class="mobile-messages" id="mobileMessages"></div>
+
+    <div class="quick-replies" id="mobileQuickReplies">
+      <div class="quick-reply" onclick="sendQuickReply('mobile', 'Xin chào!')">Xin chào!</div>
+      <div class="quick-reply" onclick="sendQuickReply('mobile', 'Tôi cần hỗ trợ')">Tôi cần hỗ trợ</div>
+      <div class="quick-reply" onclick="sendQuickReply('mobile', 'Cảm ơn bạn')">Cảm ơn bạn</div>
+      <div class="quick-reply" onclick="sendQuickReply('mobile', 'Kết thúc chat')">Kết thúc chat</div>
+    </div>
+
+    <div class="mobile-input">
+      <input type="text" id="mobileInput" placeholder="Nhập tin nhắn..." onkeypress="handleMobileKeyPress(event)">
+      <button class="mobile-send" onclick="sendMobileMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/chat/chat.js"></script>
+  <script src="/js/chat/main.js"></script>
+</body>
+</html>

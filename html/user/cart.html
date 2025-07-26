@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/trang_chu/header.css">
+    <link rel="stylesheet" href="/css/trang_chu/footer.css">
+    
+    <style>
+            
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* ===== MOBILE-FIRST BASE STYLES ===== */
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+        color: #212529;
+        background-color: #ffffff;
+        overflow-x: hidden;
+        font-size: 0.93rem;
+        padding-top: 60px; /* Mobile default */
+    }
+    </style>
+
+    <style>
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .cart-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #0066cc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066cc;
+        }
+
+        /* Bảng sản phẩm */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .products-table td {
+            padding: 20px 10px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-details h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-model {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #0066cc;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #0052a3;
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        /* Bảng thanh toán */
+        .payment-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+
+        .payment-row.total {
+            border-bottom: none;
+            border-top: 2px solid #0066cc;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .security-info {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .security-info i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        /* Modal xác nhận xóa */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            min-width: 350px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #0066cc;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            background: #0052a3;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .products-table {
+                font-size: 14px;
+            }
+            
+            .products-table th,
+            .products-table td {
+                padding: 10px 5px;
+            }
+            
+            .product-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .product-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Main Navigation -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container d-flex align-items-center justify-content-between flex-nowrap">
+        <!-- Group hamburger + logo -->
+        <div class="d-flex align-items-center flex-row flex-nowrap">
+            <button class="navbar-toggler d-lg-none order-1 order-lg-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand flex-shrink-0 order-2 order-lg-1" href="/user/trang_chu.html">
+                <img src="/image/logo.png" alt="SuperWin Logo" class="logo-responsive" style="height: 65px; margin-left:20px;">
+            </a>
+        </div>
+        
+        <!-- Search container -->
+        <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
+            <span class="search-icon">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" class="form-control search-input main-search-input" id="mainSearchInput" placeholder="Tìm kiếm">
+
+            
+            <!-- Desktop Search Overlay -->
+            <div id="desktopSearchOverlay" class="desktop-search-overlay">
+                <div class="desktop-search-box">
+                    <div class="desktop-search-suggestions">
+                        <div class="suggest-title">Từ khóa HOT</div>
+                        <div class="suggest-tags">
+                            <span class="suggest-tag">Máy bơm nước</span>
+                            <span class="suggest-tag">Máy bơm chìm</span>
+                            <span class="suggest-tag">Quạt công nghiệp</span>
+                            <span class="suggest-tag">Máy bơm</span>
+                            <span class="suggest-tag">SuperWin</span>
+                        </div>
+                        <div class="suggest-title mt-3">Gợi ý nổi bật</div>
+                        <div class="suggest-campaign">
+                            <div class="suggest-campaign-item">Deal sốc hôm nay!</div>
+                            <div class="suggest-campaign-item">Miễn phí vận chuyển toàn quốc</div>
+                        </div>
+                        <div class="suggest-title mt-3">Thương hiệu</div>
+                        <div class="suggest-brands">
+                            <div class="brand-logo" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666;"><img src="/image/logo.png" alt="Logo SuperWin" style="height: 28px;"></div>
+                            <div class="brand-logo" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666;"><img src="/image/logothc.png"alt="Logo SP1" style="height: 28px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Desktop menu -->
+        <ul class="navbar-nav me-4 d-none d-lg-flex flex-shrink-1">
+            <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Hỗ trợ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Bottom Navigation (Desktop only) -->
+<div class="nav-bottom d-none d-lg-block" style="margin-top: 32px;">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between" style="height: 50px;">
+            <div class="d-flex align-items-center gap-4">
+                <!-- Dropdown Danh Mục -->
+                <div class="dropdown-custom">
+                    <a href="#">
+                        <i class="fas fa-bars"></i>
+                        Danh Mục
+                    </a>
+                    <div class="dropdown-content">
+                        <ul class="main-category">
+                            <li>
+                                <a href="/user/category.html">
+                                    <span>⭐ Sản phẩm nổi bật</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>💧 Máy Bơm Nước</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                                <ul class="sub-category">       
+                                    <li><a href="#">Máy bơm nước Super Win</a></li>
+                                    <li><a href="#">Máy bơm nước Vina Pump</a></li>
+                                    <li><a href="#">Máy bơm nước ABC</a></li>
+                                    <li><a href="#">Máy bơm nước biển</a></li>
+                                    <li><a href="#">Máy bơm hồ bơi</a></li>
+                                    <li><a href="#">Máy bơm nhập khẩu</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>🌪️ Quạt công nghiệp</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                                <ul class="sub-category">
+                                    <li><a href="#">Quạt Super Win</a></li>
+                                    <li><a href="#">Quạt Deton</a></li>
+                                    <li><a href="#">Quạt STHC</a></li>
+                                    <li><a href="#">Quạt Inverter</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>💨 Quạt thông gió</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                                <ul class="sub-category">
+                                    <li><a href="#">Quạt thông gió vuông Super Win</a></li>
+                                    <li><a href="#">Quạt thông gió vuông Deton</a></li>
+                                    <li><a href="#">Quạt thông gió tròn</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>⚡ Quạt đặc biệt</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                                <ul class="sub-category">
+                                    <li><a href="#">Quạt hướng trục nổi ống</a></li>
+                                    <li><a href="#">Quạt sàn công nghiệp</a></li>
+                                    <li><a href="#">Quạt trần công nghiệp</a></li>
+                                    <li><a href="#">Quạt chống cháy nổ</a></li>
+                                    <li><a href="#">Quạt vuông (trực tiếp/gián tiếp)</a></li>
+                                    <li><a href="#">Quạt Composite</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span>❄️ Tấm làm mát</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <a href="#">🔥 Hot Deals</a>
+                <a href="#">🏷️ Thương hiệu</a>
+                <a href="#">📈 Bán chạy</a>
+                <a href="#">🔍 Top tìm kiếm</a>
+            </div>
+
+            <div class="right-links">
+                <a href="#">📰 Tin tức - Sự kiện</a>
+                <span>|</span>
+                <a href="#">📝 Bài viết</a>
+                <span>|</span>
+                <a href="#"><b>🛡️ Chính sách bảo hành</b></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas menu for mobile/tablet -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas-header">
+        <a href="/user/trang_chu.html"></a>
+        <h5 class="offcanvas-title w-100 text-center" id="offcanvasMenuLabel" style="margin:0; padding:0;">
+            
+                <img src="/image/logo.png" alt="SuperWin Logo" style="height: 50px; vertical-align: middle; display: inline-block; margin: 0 auto;">
+            
+        </h5></a>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <!-- Main Menu -->
+
+        <!-- Danh Mục Sản Phẩm Section -->
+        <div class="border-bottom">
+            <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#productCategories" aria-expanded="false" aria-controls="productCategories">
+                <span>Danh Mục Sản Phẩm</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse" id="productCategories">
+                <div class="mobile-section-content">
+                    <!-- Featured Products -->
+                    <div class="mobile-category-item">
+                        <a href="/user/category.html" class="mobile-category-toggle text-decoration-none">
+                            <span>Sản phẩm nổi bật</span>
+                        </a>
+                    </div>
+
+                    <!-- Water Pumps -->
+                    <div class="mobile-category-item">
+                        <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#waterPumps" aria-expanded="false" aria-controls="waterPumps">
+                            <span>Máy Bơm Nước</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="waterPumps">
+                            <div class="mobile-sub-category">
+                                <a href="#">Máy bơm nước Super Win</a>
+                                <a href="#">Máy bơm nước Vina Pump</a>
+                                <a href="#">Máy bơm nước ABC</a>
+                                <a href="#">Máy bơm nước biển</a>
+                                <a href="#">Máy bơm hồ bơi</a>
+                                <a href="#">Máy bơm nhập khẩu</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Industrial Fans -->
+                    <div class="mobile-category-item">
+                        <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#industrialFans" aria-expanded="false" aria-controls="industrialFans">
+                            <span>Quạt công nghiệp</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="industrialFans">
+                            <div class="mobile-sub-category">
+                                <a href="#">Quạt Super Win</a>
+                                <a href="#">Quạt Deton</a>
+                                <a href="#">Quạt STHC</a>
+                                <a href="#">Quạt Inverter</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ventilation Fans -->
+                    <div class="mobile-category-item">
+                        <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#ventilationFans" aria-expanded="false" aria-controls="ventilationFans">
+                            <span>Quạt thông gió</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="ventilationFans">
+                            <div class="mobile-sub-category">
+                                <a href="#">Quạt thông gió vuông Super Win</a>
+                                <a href="#">Quạt thông gió vuông Deton</a>
+                                <a href="#">Quạt thông gió tròn</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Special Fans -->
+                    <div class="mobile-category-item">
+                        <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#specialFans" aria-expanded="false" aria-controls="specialFans">
+                            <span>Quạt đặc biệt</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="specialFans">
+                            <div class="mobile-sub-category">
+                                <a href="#">Quạt hướng trục nổi ống</a>
+                                <a href="#">Quạt sàn công nghiệp</a>
+                                <a href="#">Quạt trần công nghiệp</a>
+                                <a href="#">Quạt chống cháy nổ</a>
+                                <a href="#">Quạt vuông (trực tiếp/gián tiếp)</a>
+                                <a href="#">Quạt Composite</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cooling Panels -->
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Tấm làm mát</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="border-bottom">
+            <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#quickLinks" aria-expanded="false" aria-controls="quickLinks">
+                <span>Liên Kết Nhanh</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse" id="quickLinks">
+                <div class="mobile-section-content">
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Hot Deals</span>
+                        </a>
+                    </div>
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Thương hiệu</span>
+                        </a>
+                    </div>
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Bán chạy</span>
+                        </a>
+                    </div>
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Top tìm kiếm</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="border-bottom">
+            <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#information" aria-expanded="false" aria-controls="information">
+                <span>Thông Tin</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="collapse" id="information">
+                <div class="mobile-section-content">
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Tin tức - Sự kiện</span>
+                        </a>
+                    </div>
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Bài viết</span>
+                        </a>
+                    </div>
+                    <div class="mobile-category-item">
+                        <a href="#" class="mobile-category-toggle text-decoration-none">
+                            <span>Chính sách bảo hành</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <div class="search-overlay" id="searchOverlay">
+    <div class="search-header">
+        <div class="search-input-container">
+            <input type="text" class="search-input" placeholder="Tìm kiếm sản phẩm, thương hiệu..." id="searchInput">
+            <button class="search-clear" id="clearBtn"></button>
+            <button class="cancel-btn" id="cancelBtn">&times;</button>
+        </div>
+    </div>
+    <div class="search-content">
+        <div class="search-section">
+            <div class="section-title">Từ Khóa HOT</div>
+            <div class="hot-keywords">
+                <div class="keyword-tag">SuperWin</div>
+                <div class="keyword-tag">Bơm nước 1HP</div>
+                <div class="keyword-tag">Quạt công nghiệp</div>
+                <div class="keyword-tag">Bơm chìm</div>
+                <div class="keyword-tag">Bơm Inox 304</div>
+                <div class="keyword-tag">Bơm ABC</div>
+                <div class="keyword-tag">Quạt Thông Gió</div>
+                <div class="keyword-tag">Quạt Vuông</div>
+                <div class="keyword-tag">Bơm Thả Chìm DC</div>
+            </div>
+        </div>
+        <div class="search-section">
+            <div class="section-title">Thương Hiệu</div>
+            <div class="brand-grid">
+                <div class="brand-item">SuperWin</div>
+                <div class="brand-item">VinaPump</div>
+                <div class="brand-item">Deton</div>
+                <div class="brand-item">Quạt Inverter</div>
+                <div class="brand-item">STHC</div>
+            </div>
+        </div>
+        <!--<div class="search-section">
+            <div class="section-title">Campaigns</div>
+            <div class="campaign-list">
+                <div class="campaign-item special">
+                    Hasaki Beauty Week (Áp Dụng Từ 08/07 - 15/07)
+                </div>
+                <div class="campaign-item">
+                    Deal 2K-4K Áp Dụng CN265 P. Hoà Khánh, TP. Đà Nẵng (07-13/07)
+                </div>
+                <div class="campaign-item">
+                    Mua Nước Hoa Cao Cấp Chính Hãng - Chọn Ngay Hasaki!
+                </div>
+            </div>
+        </div>-->
+    </div>
+    <div class="search-blur-bg"></div>
+</div>
+
+    <!-- Cart -->
+    <div class="container">
+        <!-- Bảng sản phẩm -->
+        <div class="cart-section">
+            <h2 class="section-title">Giỏ Hàng</h2>
+            <div id="cartItems">
+                <!-- Sản phẩm sẽ được render ở đây -->
+            </div>
+        </div>
+
+        <!-- Bảng thanh toán -->
+        <div class="payment-section">
+            <h3 class="section-title">Thanh Toán</h3>
+            
+            <div class="payment-row">
+                <span>Số lượng sản phẩm:</span>
+                <span id="productCount">0</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Tạm tính:</span>
+                <span id="subtotal">0₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Phí VAT (8%):</span>
+                <span id="vat">0₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Phí vận chuyển:</span>
+                <span id="shipping">30.000₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Giảm giá:</span>
+                <span id="discount">0₫</span>
+            </div>
+            
+            <div class="payment-row total">
+                <span>Tổng cộng:</span>
+                <span id="total">0₫</span>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">
+                <i class="fas fa-credit-card"></i> Tiến Hành Thanh Toán
+            </button>
+
+            <div class="security-info">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Thanh toán an toàn & bảo mật</strong>
+                <br>
+                <small>Thông tin của bạn được mã hóa và bảo vệ</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fas fa-exclamation-triangle" style="color:#dc3545;margin-right:8px;"></i>
+                Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?
+            </div>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="modal-btn delete">Xóa</button>
+                <button id="cancelDelete" class="modal-btn cancel">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer" style= "@media (max-width: 768px) {
+        .footer {
+            margin-bottom: 80px;
+        }
+    }">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Hỗ trợ khách hàng</h3>
+                <ul>
+                    <li><span class="hotline">Hotline: 028.6269.7382</span></li>
+                    <li>(08-17h từ T2-T7)</li>
+                    <li><a href="#">Các câu hỏi thường gặp</a></li>
+                    <li><a href="#">Gửi yêu cầu hỗ trợ</a></li>
+                    <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                    <li><a href="#">Phương thức vận chuyển</a></li>
+                    <li><a href="#">Chính sách đổi trả</a></li>
+                </ul>
+            </div>
+    
+            <div class="footer-column">
+                <h3>Về SuperWin.vn</h3>
+                <ul>
+                    <li><a href="#">Giới thiệu SuperWin.vn</a></li>
+                    <li><a href="#">Tuyển dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Liên hệ</a></li>
+                </ul>
+            </div>
+    
+            <div class="footer-column newsletter-section">
+                <h3>Cập nhật thông tin khuyến mãi</h3>
+                <div id="phone-error" style="color:red; font-size:0.9em; display:none; margin-bottom:4px; margin-left:10px;"></div>
+                <form class="newsletter-form" onsubmit="return validatePhoneNumber(event)">
+                    <input type="tel" id="newsletter-phone" placeholder="Số điện thoại của bạn">
+                    <button type="submit">Đăng ký</button>
+                </form>
+                <script>
+                function validatePhoneNumber(event) {
+                    var phoneInput = document.getElementById('newsletter-phone');
+                    var errorDiv = document.getElementById('phone-error');
+                    var phone = phoneInput.value.trim();
+                    // Chấp nhận số bắt đầu bằng 0 hoặc +84, theo sau là 9-10 số
+                    var phoneRegex = /^(0\d{9,10}|\+84\d{9,10})$/;
+                    if (!phoneRegex.test(phone)) {
+                        errorDiv.textContent =   'Vui lòng nhập số điện thoại hợp lệ';
+                        errorDiv.style.display = 'block';
+                        event.preventDefault();
+                        return false;
+                    } else {    
+                        errorDiv.style.display = 'none';
+                        var now = new Date();
+                        var day = now.getDay(); // 0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7
+                        var hour = now.getHours();
+                        if (day >= 1 && day <= 6 && hour >= 8 && hour < 17) {
+                            alert('Đã nhận thông tin! Nhân viên tư vấn sẽ gọi cho bạn trong vòng ít phút tới.');
+                            window.location.href = '/';
+                        } else {
+                            alert('Cảm ơn bạn! Chúng tôi sẽ liên hệ lại trong giờ làm việc tiếp theo.');
+                            window.location.href = '/';
+                        }
+                    }
+                }
+                </script>
+                <div class="footer-logo-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 20px;">
+                    <div style="font-size: 13px;">
+                        <div><strong>Địa chỉ:</strong> Lô C2-2, Đường VL3, Khu Công Nghiệp Vĩnh Lộc 2, Quốc Lộ 1, Xã Long Hiệp, Huyện Bến Lức, Tỉnh Long An, VN</div>
+                        <div><strong>Mã số doanh nghiệp:</strong> 1102 046 767</div>
+                    </div>
+                    <a href="#">
+                        <img src="/image/logoSaleNoti.png" alt="Bộ Công Thương" style="max-width: 130px; height: auto;">
+                    </a>
+                </div>
+    
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample cart data
+        let cartData = [
+            {
+                id: 1,
+                name: "iPhone 14 Pro Max",
+                price: 29990000,
+                quantity: 1,
+                power: "256GB",
+                image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=150&h=150&fit=crop&crop=center"
+            },
+            {
+                id: 2,
+                name: "Samsung Galaxy S23 Ultra",
+                price: 26990000,
+                quantity: 2,
+                power: "512GB",
+                image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&crop=center"
+            },
+            {
+                id: 3,
+                name: "iPad Pro 11 inch",
+                price: 20990000,
+                quantity: 1,
+                power: "128GB WiFi",
+                image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=150&h=150&fit=crop&crop=center"
+            },
+            {
+                id: 4,
+                name: "MacBook Air M2",
+                price: 27990000,
+                quantity: 1,
+                power: "8GB RAM, 256GB SSD",
+                image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=150&h=150&fit=crop&crop=center"
+            }
+        ];
+
+        let itemToRemove = null; // Store item ID to be removed
+
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items');
+            const emptyCart = document.getElementById('empty-cart');
+            const mobileCheckoutBar = document.getElementById('mobile-checkout-bar');
+            const mobileSummary = document.getElementById('mobile-summary');
+            
+            if (cartData.length === 0) {
+                container.style.display = 'none';
+                emptyCart.style.display = 'block';
+                mobileSummary.style.display = 'none';
+                // Hide mobile checkout bar when cart is empty
+                mobileCheckoutBar.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            emptyCart.style.display = 'none';
+            // Show mobile checkout bar and summary when there are items
+            if (window.innerWidth <= 768) {
+                mobileCheckoutBar.style.display = 'block';
+                mobileSummary.style.display = 'block';
+            }
+            
+            container.innerHTML = '';
+
+            cartData.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-3 col-md-2">
+                            <img src="${item.image}" alt="${item.name}" class="product-image img-fluid">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="product-info">
+                                <h5>${item.name}</h5>
+                                <div class="product-specs">
+                                    <i class="fas fa-microchip me-1"></i>
+                                    ${item.power}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 mt-3 mt-md-0">
+                            <div class="row align-items-center">
+                                <div class="col-6 col-md-4">
+                                    <div class="price">${formatPrice(item.price)}</div>
+                                </div>
+                                <div class="col-5 col-md-6">
+                                    <div class="quantity-controls">
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="quantity-input" value="${item.quantity}" readonly>
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-1 col-md-2 text-end">
+                                    <i class="fas fa-trash remove-btn" onclick="showRemoveModal(${item.id})" title="Xóa sản phẩm"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(cartItem);
+            });
+
+            updateSummary();
+        }
+
+        function updateQuantity(id, change) {
+            const item = cartData.find(item => item.id === id);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + change);
+                renderCartItems();
+            }
+        }
+
+        function removeItem(id) {
+            cartData = cartData.filter(item => item.id !== id);
+            renderCartItems();
+        }
+
+        function showRemoveModal(id) {
+            itemToRemove = id;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            itemToRemove = null;
+        }
+
+        function confirmRemove() {
+            if (itemToRemove) {
+                removeItem(itemToRemove);
+            }
+            closeModal();
+        }
+
+        function goHome() {
+            alert('Chuyển hướng về trang chủ...');
+            // window.location.href = '/'; // Uncomment this line to redirect to homepage
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function updateSummary() {
+            const subtotal = cartData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = 30000;
+            const discount = 50000;
+            const total = subtotal + shipping - discount;
+
+            // Update desktop summary
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('total').textContent = formatPrice(total);
+            document.getElementById('product-types').textContent = cartData.length;
+            // Update mobile summary
+            document.getElementById('mobile-subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('mobile-total').textContent = formatPrice(total);
+            document.getElementById('mobile-product-types').textContent = cartData.length;
+        }
+
+        function checkout() {
+            if (cartData.length === 0) {
+                alert('Giỏ hàng của bạn đang trống!');
+                return;
+            }
+            
+            alert('Cảm ơn bạn! Chuyển hướng đến trang thanh toán...');
+            // Here you would typically redirect to payment page
+        }
+
+        // Initialize the cart
+        renderCartItems();
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const mobileCheckoutBar = document.getElementById('mobile-checkout-bar');
+            const mobileSummary = document.getElementById('mobile-summary');
+            
+            if (window.innerWidth > 768) {
+                mobileCheckoutBar.style.display = 'none';
+                mobileSummary.style.display = 'none';
+            } else if (cartData.length > 0) {
+                mobileCheckoutBar.style.display = 'block';
+                mobileSummary.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

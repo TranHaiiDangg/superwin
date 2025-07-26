@@ -1,0 +1,1628 @@
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SuperWin</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/css/trang_chu/header.css">
+        <link rel="stylesheet" href="/css/trang_chu/banner_silder.css">
+        <link rel="stylesheet" href="/css/trang_chu/container-menu.css">
+        <link rel="stylesheet" href="/css/trang_chu/flass_deal.css">
+        <link rel="stylesheet" href="/css/trang_chu/image-row.css">
+        <link rel="stylesheet" href="/css/trang_chu/top_sales.css">
+        <link rel="stylesheet" href="/css/trang_chu/top_search.css">
+        <link rel="stylesheet" href="/css/trang_chu/product.css">
+        <link rel="stylesheet" href="/css/trang_chu/footer.css">
+        <link rel="stylesheet" href="/css/chat/chat.css">
+        <link rel="stylesheet" href="/css/chat/main.css">
+        
+        <meta name="theme-color" content="#4facfe">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+            <style>
+                
+                * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* ===== MOBILE-FIRST BASE STYLES ===== */
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                line-height: 1.6;
+                color: #212529;
+                background-color: #ffffff;
+                overflow-x: hidden;
+                font-size: 0.93rem;
+                padding-top: 60px; /* Mobile default */
+            }
+            </style>
+    </head>
+
+    
+    <body>
+            <!-- Main Navigation -->
+            <nav class="navbar navbar-expand-lg">
+                <div class="container d-flex align-items-center justify-content-between flex-nowrap">
+                    <!-- Group hamburger + logo -->
+                    <div class="d-flex align-items-center flex-row flex-nowrap">
+                        <button class="navbar-toggler d-lg-none order-1 order-lg-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <a class="navbar-brand flex-shrink-0 order-2 order-lg-1" href="/user/trang_chu.html">
+                            <img src="/image/logo.png" alt="SuperWin Logo" class="logo-responsive" style="height: 65px; margin-left:20px;">
+                        </a>
+                    </div>
+                    
+                    <!-- Search container -->
+                    <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
+                        <span class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control search-input main-search-input" id="mainSearchInput" placeholder="Tìm kiếm">
+
+                        
+                        <!-- Desktop Search Overlay -->
+                        <div id="desktopSearchOverlay" class="desktop-search-overlay">
+                            <div class="desktop-search-box">
+                                <div class="desktop-search-suggestions">
+                                    <div class="suggest-title">Từ khóa HOT</div>
+                                    <div class="suggest-tags">
+                                        <span class="suggest-tag">Máy bơm nước</span>
+                                        <span class="suggest-tag">Máy bơm chìm</span>
+                                        <span class="suggest-tag">Quạt công nghiệp</span>
+                                        <span class="suggest-tag">Máy bơm</span>
+                                        <span class="suggest-tag">SuperWin</span>
+                                    </div>
+                                    <div class="suggest-title mt-3">Gợi ý nổi bật</div>
+                                    <div class="suggest-campaign">
+                                        <div class="suggest-campaign-item">Deal sốc hôm nay!</div>
+                                        <div class="suggest-campaign-item">Miễn phí vận chuyển toàn quốc</div>
+                                    </div>
+                                    <div class="suggest-title mt-3">Thương hiệu</div>
+                                    <div class="suggest-brands">
+                                        <div class="brand-logo" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666;"><img src="/image/logo.png" alt="Logo SuperWin" style="height: 28px;"></div>
+                                        <div class="brand-logo" style="background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #666;"><img src="/image/logothc.png"alt="Logo SP1" style="height: 28px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Desktop menu -->
+                    <ul class="navbar-nav me-4 d-none d-lg-flex flex-shrink-1">
+                        <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Hỗ trợ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Bottom Navigation (Desktop only) -->
+            <div class="nav-bottom d-none d-lg-block" style="margin-top: 32px;">
+                <div class="container">
+                    <div class="d-flex align-items-center justify-content-between" style="height: 50px;">
+                        <div class="d-flex align-items-center gap-4">
+                            <!-- Dropdown Danh Mục -->
+                            <div class="dropdown-custom">
+                                <a href="#">
+                                    <i class="fas fa-bars"></i>
+                                    Danh Mục
+                                </a>
+                                <div class="dropdown-content">
+                                    <ul class="main-category">
+                                        <li>
+                                            <a href="/user/category.html">
+                                                <span>⭐ Sản phẩm nổi bật</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span>💧 Máy Bơm Nước</span>
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                            <ul class="sub-category">       
+                                                <li><a href="#">Máy bơm nước Super Win</a></li>
+                                                <li><a href="#">Máy bơm nước Vina Pump</a></li>
+                                                <li><a href="#">Máy bơm nước ABC</a></li>
+                                                <li><a href="#">Máy bơm nước biển</a></li>
+                                                <li><a href="#">Máy bơm hồ bơi</a></li>
+                                                <li><a href="#">Máy bơm nhập khẩu</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span>🌪️ Quạt công nghiệp</span>
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                            <ul class="sub-category">
+                                                <li><a href="#">Quạt Super Win</a></li>
+                                                <li><a href="#">Quạt Deton</a></li>
+                                                <li><a href="#">Quạt STHC</a></li>
+                                                <li><a href="#">Quạt Inverter</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span>💨 Quạt thông gió</span>
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                            <ul class="sub-category">
+                                                <li><a href="#">Quạt thông gió vuông Super Win</a></li>
+                                                <li><a href="#">Quạt thông gió vuông Deton</a></li>
+                                                <li><a href="#">Quạt thông gió tròn</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span>⚡ Quạt đặc biệt</span>
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                            <ul class="sub-category">
+                                                <li><a href="#">Quạt hướng trục nổi ống</a></li>
+                                                <li><a href="#">Quạt sàn công nghiệp</a></li>
+                                                <li><a href="#">Quạt trần công nghiệp</a></li>
+                                                <li><a href="#">Quạt chống cháy nổ</a></li>
+                                                <li><a href="#">Quạt vuông (trực tiếp/gián tiếp)</a></li>
+                                                <li><a href="#">Quạt Composite</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <span>❄️ Tấm làm mát</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <a href="#">🔥 Hot Deals</a>
+                            <a href="#">🏷️ Thương hiệu</a>
+                            <a href="#">📈 Bán chạy</a>
+                            <a href="#">🔍 Top tìm kiếm</a>
+                        </div>
+
+                        <div class="right-links">
+                            <a href="#">📰 Tin tức - Sự kiện</a>
+                            <span>|</span>
+                            <a href="#">📝 Bài viết</a>
+                            <span>|</span>
+                            <a href="#"><b>🛡️ Chính sách bảo hành</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offcanvas menu for mobile/tablet -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+                <div class="offcanvas-header">
+                    <a href="/user/trang_chu.html"></a>
+                    <h5 class="offcanvas-title w-100 text-center" id="offcanvasMenuLabel" style="margin:0; padding:0;">
+                        
+                            <img src="/image/logo.png" alt="SuperWin Logo" style="height: 50px; vertical-align: middle; display: inline-block; margin: 0 auto;">
+                        
+                    </h5></a>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0">
+                    <!-- Main Menu -->
+
+                    <!-- Danh Mục Sản Phẩm Section -->
+                    <div class="border-bottom">
+                        <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#productCategories" aria-expanded="false" aria-controls="productCategories">
+                            <span>Danh Mục Sản Phẩm</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="productCategories">
+                            <div class="mobile-section-content">
+                                <!-- Featured Products -->
+                                <div class="mobile-category-item">
+                                    <a href="/user/category.html" class="mobile-category-toggle text-decoration-none">
+                                        <span>Sản phẩm nổi bật</span>
+                                    </a>
+                                </div>
+
+                                <!-- Water Pumps -->
+                                <div class="mobile-category-item">
+                                    <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#waterPumps" aria-expanded="false" aria-controls="waterPumps">
+                                        <span>Máy Bơm Nước</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="collapse" id="waterPumps">
+                                        <div class="mobile-sub-category">
+                                            <a href="#">Máy bơm nước Super Win</a>
+                                            <a href="#">Máy bơm nước Vina Pump</a>
+                                            <a href="#">Máy bơm nước ABC</a>
+                                            <a href="#">Máy bơm nước biển</a>
+                                            <a href="#">Máy bơm hồ bơi</a>
+                                            <a href="#">Máy bơm nhập khẩu</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Industrial Fans -->
+                                <div class="mobile-category-item">
+                                    <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#industrialFans" aria-expanded="false" aria-controls="industrialFans">
+                                        <span>Quạt công nghiệp</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="collapse" id="industrialFans">
+                                        <div class="mobile-sub-category">
+                                            <a href="#">Quạt Super Win</a>
+                                            <a href="#">Quạt Deton</a>
+                                            <a href="#">Quạt STHC</a>
+                                            <a href="#">Quạt Inverter</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ventilation Fans -->
+                                <div class="mobile-category-item">
+                                    <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#ventilationFans" aria-expanded="false" aria-controls="ventilationFans">
+                                        <span>Quạt thông gió</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="collapse" id="ventilationFans">
+                                        <div class="mobile-sub-category">
+                                            <a href="#">Quạt thông gió vuông Super Win</a>
+                                            <a href="#">Quạt thông gió vuông Deton</a>
+                                            <a href="#">Quạt thông gió tròn</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Special Fans -->
+                                <div class="mobile-category-item">
+                                    <button class="mobile-category-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#specialFans" aria-expanded="false" aria-controls="specialFans">
+                                        <span>Quạt đặc biệt</span>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div class="collapse" id="specialFans">
+                                        <div class="mobile-sub-category">
+                                            <a href="#">Quạt hướng trục nổi ống</a>
+                                            <a href="#">Quạt sàn công nghiệp</a>
+                                            <a href="#">Quạt trần công nghiệp</a>
+                                            <a href="#">Quạt chống cháy nổ</a>
+                                            <a href="#">Quạt vuông (trực tiếp/gián tiếp)</a>
+                                            <a href="#">Quạt Composite</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cooling Panels -->
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Tấm làm mát</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Section -->
+                    <div class="border-bottom">
+                        <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#quickLinks" aria-expanded="false" aria-controls="quickLinks">
+                            <span>Liên Kết Nhanh</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="quickLinks">
+                            <div class="mobile-section-content">
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Hot Deals</span>
+                                    </a>
+                                </div>
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Thương hiệu</span>
+                                    </a>
+                                </div>
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Bán chạy</span>
+                                    </a>
+                                </div>
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Top tìm kiếm</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Information Section -->
+                    <div class="border-bottom">
+                        <button class="mobile-section-header" type="button" data-bs-toggle="collapse" data-bs-target="#information" aria-expanded="false" aria-controls="information">
+                            <span>Thông Tin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="collapse" id="information">
+                            <div class="mobile-section-content">
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Tin tức - Sự kiện</span>
+                                    </a>
+                                </div>
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Bài viết</span>
+                                    </a>
+                                </div>
+                                <div class="mobile-category-item">
+                                    <a href="#" class="mobile-category-toggle text-decoration-none">
+                                        <span>Chính sách bảo hành</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-overlay" id="searchOverlay">
+                <div class="search-header">
+                    <div class="search-input-container">
+                        <input type="text" class="search-input" placeholder="Tìm kiếm sản phẩm, thương hiệu..." id="searchInput">
+                        <button class="search-clear" id="clearBtn"></button>
+                        <button class="cancel-btn" id="cancelBtn">&times;</button>
+                    </div>
+                </div>
+                <div class="search-content">
+                    <div class="search-section">
+                        <div class="section-title">Từ Khóa HOT</div>
+                        <div class="hot-keywords">
+                            <div class="keyword-tag">SuperWin</div>
+                            <div class="keyword-tag">Bơm nước 1HP</div>
+                            <div class="keyword-tag">Quạt công nghiệp</div>
+                            <div class="keyword-tag">Bơm chìm</div>
+                            <div class="keyword-tag">Bơm Inox 304</div>
+                            <div class="keyword-tag">Bơm ABC</div>
+                            <div class="keyword-tag">Quạt Thông Gió</div>
+                            <div class="keyword-tag">Quạt Vuông</div>
+                            <div class="keyword-tag">Bơm Thả Chìm DC</div>
+                        </div>
+                    </div>
+                    <div class="search-section">
+                        <div class="section-title">Thương Hiệu</div>
+                        <div class="brand-grid">
+                            <div class="brand-item">SuperWin</div>
+                            <div class="brand-item">VinaPump</div>
+                            <div class="brand-item">Deton</div>
+                            <div class="brand-item">Quạt Inverter</div>
+                            <div class="brand-item">STHC</div>
+                        </div>
+                    </div>
+                    <!--<div class="search-section">
+                        <div class="section-title">Campaigns</div>
+                        <div class="campaign-list">
+                            <div class="campaign-item special">
+                                Hasaki Beauty Week (Áp Dụng Từ 08/07 - 15/07)
+                            </div>
+                            <div class="campaign-item">
+                                Deal 2K-4K Áp Dụng CN265 P. Hoà Khánh, TP. Đà Nẵng (07-13/07)
+                            </div>
+                            <div class="campaign-item">
+                                Mua Nước Hoa Cao Cấp Chính Hãng - Chọn Ngay Hasaki!
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                <div class="search-blur-bg"></div>
+            </div>
+
+        <div class="container-fluid">
+            <div class="banner-wrapper">
+                <div class="banner-grid">
+                    <!-- Main Banner -->
+                    <div class="main-banner">
+                        <div class="slider-column">
+                            <div class="main-slider">
+                                <div class="slide-container">
+                                    <!-- Clone of last slide (slide 3) -->
+                                    <div class="slide">
+                                        <img src="/image/baner3.png" alt="Banner 3" loading="lazy">
+                                    </div>
+                                    
+                                    <!-- Real slides -->
+                                    <div class="slide">
+                                        <img src="/image/baner1.png" alt="Banner 1" loading="lazy">
+                                    </div>
+                                    <div class="slide">
+                                        <img src="/image/baner2.png" alt="Banner 2" loading="lazy">
+                                    </div>
+                                    <div class="slide">
+                                        <img src="/image/baner3.png" alt="Banner 3" loading="lazy">
+                                    </div>
+                                    
+                                    <!-- Clone of first slide (slide 1) -->
+                                    <div class="slide">
+                                        <img src="/image/baner1.png" alt="Banner 1" loading="lazy">
+                                    </div>
+                                </div>
+                                
+                                <!-- Navigation -->
+                                <button class="slider-nav prev" aria-label="Previous slide">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="slider-nav next" aria-label="Next slide">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                                
+                                <!-- Pagination Dots -->
+                                <div class="pagination-dots" role="tablist" aria-label="Slide navigation"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Side Banner 1 -->
+                    <div class="side-banner-1">
+                        <div class="image-box">
+                            <img src="/image/baner1.png" alt="Promotion 1" loading="lazy">
+                        </div>
+                    </div>
+                    
+                    <!-- Side Banner 2 -->
+                    <div class="side-banner-2">
+                        <div class="image-box">
+                            <img src="/image/baner2.png" alt="Promotion 2" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-menu">
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/bom.png" alt="Bơm Nước" class="menu-img" />
+                </div>
+                <p>Bơm Nước</p>
+            </a>
+            
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat.png" alt="Quạt" class="menu-img" />
+                </div>
+                <p>Quạt</p>
+            </a>
+            
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat.png" alt="Quạt" class="menu-img" />
+                </div>
+                <p>Quạt</p>
+            </a>
+
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat.png" alt="Quạt" class="menu-img" />
+                </div>
+                <p>Quạt</p>
+            </a>
+
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/bom_chim.png" alt="Bơm Nhập Khẩu" class="menu-img" />
+                </div>
+                <p>Bơm Nhập Khẩu</p>
+            </a>
+            
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat_vuong.png" alt="Quạt Vuông" class="menu-img" />
+                </div>
+                <p>Quạt Vuông</p>
+            </a>
+            
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat_tron.png" alt="Quạt Tròn" class="menu-img" />
+                </div>
+                <p>Quạt Tròn</p>
+            </a>
+            
+            <a href="#" class="menu-item">
+                <div class="icon-container">
+                    <img src="../image/quat_tran.png" alt="Quạt Trần" class="menu-img" />
+                </div>
+                <p>Quạt Trần</p>
+            </a>
+        </div>
+
+        <div class="flash-deal-container" style="background-color: aqua;">
+            <div class="flash-deal-header">
+                <div class="flash-deal-left">
+                    <h1 class="flash-deal-title">Flash Deal</h1>
+                    <div class="flash-deal-timer">
+                        <span class="timer-label">Kết thúc trong:</span>
+                        <div class="timer-display">
+                            <div class="timer-unit" id="hours">02</div>
+                            <div class="timer-unit" id="minutes">52</div>
+                            <div class="timer-unit" id="seconds">52</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+            </div>
+            
+            <button id="flash-prev" class="flash-deal-nav prev">‹</button>
+            <button id="flash-next" class="flash-deal-nav next">›</button>
+    
+            <div class="flash-deal-grid">
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-50%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 3 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">1.250.000đ</span>
+                        <span class="flash-deal-price-original">2.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 150/200</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">150 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-35%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">650.000đ</span>
+                        <span class="flash-deal-price-original">1.000.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 45/100</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">45 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-30%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">490.000đ</span>
+                        <span class="flash-deal-price-original">700.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 23/80</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 29%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">23 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-45%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">330.000đ</span>
+                        <span class="flash-deal-price-original">600.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 67/120</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 56%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">67 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-25%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win Mini</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">225.000đ</span>
+                        <span class="flash-deal-price-original">300.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 12/50</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 24%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">12 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flash-deal-container">
+            <div class="flash-deal-header">
+                <div class="flash-deal-left">
+                    <h1 class="flash-deal-title">Flash Deal</h1>
+                    <div class="flash-deal-timer">
+                        <span class="timer-label">Kết thúc trong:</span>
+                        <div class="timer-display">
+                            <div class="timer-unit" id="hours">02</div>
+                            <div class="timer-unit" id="minutes">52</div>
+                            <div class="timer-unit" id="seconds">52</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+            </div>
+            
+            <button id="flash-prev" class="flash-deal-nav prev">‹</button>
+            <button id="flash-next" class="flash-deal-nav next">›</button>
+    
+            <div class="flash-deal-grid">
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-50%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 3 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">1.250.000đ</span>
+                        <span class="flash-deal-price-original">2.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 150/200</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">150 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-35%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">650.000đ</span>
+                        <span class="flash-deal-price-original">1.000.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 45/100</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">45 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-30%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">490.000đ</span>
+                        <span class="flash-deal-price-original">700.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 23/80</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 29%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">23 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-45%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">330.000đ</span>
+                        <span class="flash-deal-price-original">600.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 67/120</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 56%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">67 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-25%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win Mini</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">225.000đ</span>
+                        <span class="flash-deal-price-original">300.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 12/50</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 24%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">12 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flash-deal-container">
+            <div class="flash-deal-header">
+                <div class="flash-deal-left">
+                    <h1 class="flash-deal-title">Flash Deal</h1>
+                    <div class="flash-deal-timer">
+                        <span class="timer-label">Kết thúc trong:</span>
+                        <div class="timer-display">
+                            <div class="timer-unit" id="hours">02</div>
+                            <div class="timer-unit" id="minutes">52</div>
+                            <div class="timer-unit" id="seconds">52</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+            </div>
+            
+            <button id="flash-prev" class="flash-deal-nav prev">‹</button>
+            <button id="flash-next" class="flash-deal-nav next">›</button>
+    
+            <div class="flash-deal-grid">
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-50%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 3 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">1.250.000đ</span>
+                        <span class="flash-deal-price-original">2.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 150/200</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">150 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-35%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">650.000đ</span>
+                        <span class="flash-deal-price-original">1.000.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 45/100</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">45 đã bán</div>
+                </div>
+                
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-30%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">490.000đ</span>
+                        <span class="flash-deal-price-original">700.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 23/80</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 29%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">23 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-45%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">330.000đ</span>
+                        <span class="flash-deal-price-original">600.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 67/120</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 56%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">67 đã bán</div>
+                </div>
+    
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-25%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win Mini</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">225.000đ</span>
+                        <span class="flash-deal-price-original">300.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 12/50</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 24%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">12 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+
+                <div class="flash-deal-card">
+                    <div class="flash-deal-discount">-40%</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
+                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
+                    <div class="flash-deal-price">
+                        <span class="flash-deal-price-current">900.000đ</span>
+                        <span class="flash-deal-price-original">1.500.000đ</span>
+                    </div>
+                    <div class="flash-deal-progress">
+                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
+                        <div class="flash-deal-progress-bar">
+                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
+                        </div>
+                    </div>
+                    <div class="flash-deal-sold">89 đã bán</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-row-section">
+            <div class="image-row">
+                <a href="#" class="image-item">
+                    <img src="/image/baner1.png" alt="Banner 1">
+                </a>
+                <a href="#" class="image-item">
+                    <img src="/image/baner2.png" alt="Banner 2">
+                </a>
+                <a href="#" class="image-item">
+                    <img src="/image/baner3.png" alt="Banner 3">
+                </a>
+            </div>
+        </div>
+
+
+        <!--Bestseller-->
+    <!--<div class="bestseller-container">
+            <h1 class="bestseller-heading">Top bán chạy</h1>
+            
+            <!-- Đây là container cho bestseller hiện tại 
+            <div class="bestseller-grid" id="bestsellerGrid"> 
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">1</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 3 HP</div>
+                    <div class="bestseller-sales">1,250 đã bán</div>
+                </div>
+                
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">2</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 2 HP</div>
+                    <div class="bestseller-sales">890 đã bán</div>
+                </div>
+                
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">3</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1.5 HP</div>
+                    <div class="bestseller-sales">720 đã bán</div>
+                </div>
+                
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">4</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1 HP</div>
+                    <div class="bestseller-sales">650 đã bán</div>
+                </div>
+    
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">5</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1 HP</div>
+                    <div class="bestseller-sales">650 đã bán</div>
+                </div>
+    
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">6</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1 HP</div>
+                    <div class="bestseller-sales">650 đã bán</div>
+                </div>
+    
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">7</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1 HP</div>
+                    <div class="bestseller-sales">650 đã bán</div>
+                </div>
+    
+                <div class="bestseller-card">
+                    <div class="bestseller-rank">8</div>
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="bestseller-img">
+                    <div class="bestseller-title">Máy bơm nước Super Win 1 HP</div>
+                    <div class="bestseller-sales">650 đã bán</div>
+                </div>
+            </div>
+            
+        </div>-->
+
+        
+        <!--Top-Search-->
+    <!--<div class="wrapper">
+            <h1 class="title">Top tìm kiếm</h1>
+            
+            <div class="list">
+                <div class="item">
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="image">
+                    <div class="name">Máy bơm nước Super Win 3 HP</div>
+                    <div class="count">408 sản phẩm</div>
+                </div>
+                
+                <div class="item">
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="image">
+                    <div class="name">Máy bơm nước Super Win 3 HP</div>
+                    <div class="count">180 sản phẩm</div>
+                </div>
+                
+                <div class="item">
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="image">
+                    <div class="name">Máy bơm nước Super Win 3 HP</div>
+                    <div class="count">491 sản phẩm</div>
+                </div>
+                
+                <div class="item">
+                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="image">
+                    <div class="name">Máy bơm nước Super Win 3 HP</div>
+                    <div class="count">403 sản phẩm</div>
+                </div>
+            </div>
+        </div>-->
+
+        <!--Product-->
+        <div class="merchandise-realm-container">
+            <div class="catalog-mesh-wrapper">
+                <h2 class="banner-headline">Gợi Ý Cho Bạn</h2>
+    
+                <div class="inventory-lattice">
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Nước Tự Động" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">2.330.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Nước Tự Động Công Suất 1HP - Panasonic</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(185)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Quạt Công Nghiệp" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">3.450.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Quạt Công Nghiệp Đứng 3 Cánh 750mm - Deton</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(237)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Chìm" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">1.850.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Chìm Nước Thải 750W - Pentax</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(119)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Quạt Trần Công Nghiệp" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">5.200.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Quạt Trần Công Nghiệp 1500mm Điều Khiển Từ Xa - Mitsubishi</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(84)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Ly Tâm" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">4.150.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Ly Tâm Công Suất 2HP - Grundfos</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(156)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Quạt Hút Công Nghiệp" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">2.890.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Quạt Hút Công Nghiệp 600mm Lắp Tường - Senko</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(203)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Hỏa Tiễn" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">1.650.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Hỏa Tiễn Inox 4 Inch - Leo</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(92)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Tăng Áp" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">3.240.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Tăng Áp Tự Động 1.5HP - Pentax</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(171)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+    
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Áp Lực" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">2.750.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Áp Lực Tự Động 1.2HP - Shimizu</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(134)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+                    <!-- Thêm 1 sản phẩm để test layout 5 cột -->
+                    <div class="commodity-exhibit">
+                        <div class="visual-enclosure">
+                            <img src="/image/sp1.png" alt="Máy Bơm Áp Lực" class="item-portrait">
+                        </div>
+                        <div class="specification-zone">
+                            <div class="pricing-showcase">
+                                <span class="monetary-value">2.750.000 ₫</span>
+                            </div>
+                            <div class="narrative-text">Máy Bơm Áp Lực Tự Động 1.2HP - Shimizu</div>
+                            <div class="assessment-metrics">
+                                <div class="celestial-rating">
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                    <div class="luminous-icon"></div>
+                                </div>
+                                <span class="testimonial-tally">(134)</span>
+                            </div>
+                            <button class="acquisition-trigger">Xem Ngay</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="expansion-hub-container">
+                    <button class="revelation-activator" id="viewMoreBtn">Xem thêm</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer" style="margin: 10px auto">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>Hỗ trợ khách hàng</h3>
+                    <ul>
+                        <li><span class="hotline">Hotline: 028.6269.7382</span></li>
+                        <li>(08-17h từ T2-T7)</li>
+                        <li><a href="#">Các câu hỏi thường gặp</a></li>
+                        <li><a href="#">Gửi yêu cầu hỗ trợ</a></li>
+                        <li><a href="#">Hướng dẫn đặt hàng</a></li>
+                        <li><a href="#">Phương thức vận chuyển</a></li>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                    </ul>
+                </div>
+        
+                <div class="footer-column">
+                    <h3>Về SuperWin.vn</h3>
+                    <ul>
+                        <li><a href="#">Giới thiệu SuperWin.vn</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+        
+                <div class="footer-column newsletter-section">
+                    <h3>Cập nhật thông tin khuyến mãi</h3>
+                    <div id="phone-error" style="color:red; font-size:0.9em; display:none; margin-bottom:4px; margin-left:10px;"></div>
+                    <form class="newsletter-form" onsubmit="return validatePhoneNumber(event)">
+                        <input type="tel" id="newsletter-phone" placeholder="Số điện thoại của bạn">
+                        <button type="submit">Đăng ký</button>
+                    </form>
+                    <script>
+                    function validatePhoneNumber(event) {
+                        var phoneInput = document.getElementById('newsletter-phone');
+                        var errorDiv = document.getElementById('phone-error');
+                        var phone = phoneInput.value.trim();
+                        // Chấp nhận số bắt đầu bằng 0 hoặc +84, theo sau là 9-10 số
+                        var phoneRegex = /^(0\d{9,10}|\+84\d{9,10})$/;
+                        if (!phoneRegex.test(phone)) {
+                            errorDiv.textContent =   'Vui lòng nhập số điện thoại hợp lệ';
+                            errorDiv.style.display = 'block';
+                            event.preventDefault();
+                            return false;
+                        } else {    
+                            errorDiv.style.display = 'none';
+                            var now = new Date();
+                            var day = now.getDay(); // 0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7
+                            var hour = now.getHours();
+                            if (day >= 1 && day <= 6 && hour >= 8 && hour < 17) {
+                                alert('Đã nhận thông tin! Nhân viên tư vấn sẽ gọi cho bạn trong vòng ít phút tới.');
+                                window.location.href = '/';
+                            } else {
+                                alert('Cảm ơn bạn! Chúng tôi sẽ liên hệ lại trong giờ làm việc tiếp theo.');
+                                window.location.href = '/';
+                            }
+                        }
+                    }
+                    </script>
+                    <div class="footer-logo-row" style="display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 20px;">
+                        <div style="font-size: 13px;">
+                            <div><strong>Địa chỉ:</strong> Lô C2-2, Đường VL3, Khu Công Nghiệp Vĩnh Lộc 2, Quốc Lộ 1, Xã Long Hiệp, Huyện Bến Lức, Tỉnh Long An, VN</div>
+                            <div><strong>Mã số doanh nghiệp:</strong> 1102 046 767</div>
+                        </div>
+                        <a href="#">
+                            <img src="/image/logoSaleNoti.png" alt="Bộ Công Thương" style="max-width: 130px; height: auto;">
+                        </a>
+                    </div>
+        
+                </div>
+            </div>
+        </footer>
+    
+            <!-- Chat Icon -->
+        <button class="chat-icon has-notification" id="chatIcon">
+            <i class="fas fa-comments"></i>
+        </button>
+
+        <!-- Desktop Chat Popup -->
+        <div class="chat-popup" id="chatPopup">
+            <div class="popup-header">
+                <div>
+                    <h5>Hỗ trợ trực tuyến</h5>
+                    <p>Chúng tôi luôn sẵn sàng giúp đỡ bạn</p>
+                </div>
+                <button class="popup-close" id="popupClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="popup-messages" id="popupMessages">
+                <!-- Messages will be loaded here -->
+            </div>
+            
+            <div class="quick-replies" id="popupQuickReplies">
+                <div class="quick-reply" onclick="sendQuickReply('popup', 'Xin chào!')">Xin chào!</div>
+                <div class="quick-reply" onclick="sendQuickReply('popup', 'Tôi cần hỗ trợ')">Tôi cần hỗ trợ</div>
+                <div class="quick-reply" onclick="sendQuickReply('popup', 'Cảm ơn bạn')">Cảm ơn bạn</div>
+            </div>
+            
+            <div class="popup-input">
+                <input type="text" id="popupInput" placeholder="Nhập tin nhắn..." onkeypress="handlePopupKeyPress(event)">
+                <button class="popup-send" onclick="sendPopupMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Chat Page -->
+        <div class="mobile-chat-page" id="mobileChatPage">
+            <div class="mobile-header">
+                <div class="mobile-header-left">
+                    <button class="mobile-back" id="mobileBack">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h5>Hỗ trợ trực tuyến</h5>
+                        <p>Đang hoạt động</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="mobile-back" onclick="showMobileMenu()">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mobile-messages" id="mobileMessages">
+                <!-- Messages will be loaded here -->
+            </div>
+            
+            <div class="quick-replies" id="mobileQuickReplies">
+                <div class="quick-reply" onclick="sendQuickReply('mobile', 'Xin chào!')">Xin chào!</div>
+                <div class="quick-reply" onclick="sendQuickReply('mobile', 'Tôi cần hỗ trợ')">Tôi cần hỗ trợ</div>
+                <div class="quick-reply" onclick="sendQuickReply('mobile', 'Cảm ơn bạn')">Cảm ơn bạn</div>
+                <div class="quick-reply" onclick="sendQuickReply('mobile', 'Kết thúc chat')">Kết thúc chat</div>
+            </div>
+            
+            <div class="mobile-input">
+                <input type="text" id="mobileInput" placeholder="Nhập tin nhắn..." onkeypress="handleMobileKeyPress(event)">
+                <button class="mobile-send" onclick="sendMobileMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="/js/trang_chu/search-and-menu.js"></script>
+        <script src="/js/trang_chu/banner_slider.js"></script>
+        <script src="/js/trang_chu/flass_deal.js"></script>   
+        <script src="/js/trang_chu/top_sales.js"></script>
+        <script src="/js/trang_chu/product.js"></script>
+        <script src="/js/chat/main.js"></script>
+        <script src="/js/chat/chat.js"></script>
+</body>
+
+</html>

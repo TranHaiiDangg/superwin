@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .cart-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #0066cc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0066cc;
+        }
+
+        /* Bảng sản phẩm */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .products-table td {
+            padding: 20px 10px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-details h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-model {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #0066cc;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #0052a3;
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        /* Bảng thanh toán */
+        .payment-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+
+        .payment-row.total {
+            border-bottom: none;
+            border-top: 2px solid #0066cc;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .security-info {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .security-info i {
+            color: #28a745;
+            margin-right: 8px;
+        }
+
+        /* Modal xác nhận xóa */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            min-width: 350px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #0066cc;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            background: #0052a3;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .products-table {
+                font-size: 14px;
+            }
+            
+            .products-table th,
+            .products-table td {
+                padding: 10px 5px;
+            }
+            
+            .product-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .product-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Bảng sản phẩm -->
+        <div class="cart-section">
+            <h2 class="section-title">Giỏ Hàng</h2>
+            <div id="cartItems">
+                <!-- Sản phẩm sẽ được render ở đây -->
+            </div>
+        </div>
+
+        <!-- Bảng thanh toán -->
+        <div class="payment-section">
+            <h3 class="section-title">Thanh Toán</h3>
+            
+            <div class="payment-row">
+                <span>Số lượng sản phẩm:</span>
+                <span id="productCount">0</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Tạm tính:</span>
+                <span id="subtotal">0₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Phí VAT (8%):</span>
+                <span id="vat">0₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Phí vận chuyển:</span>
+                <span id="shipping">30.000₫</span>
+            </div>
+            
+            <div class="payment-row">
+                <span>Giảm giá:</span>
+                <span id="discount">0₫</span>
+            </div>
+            
+            <div class="payment-row total">
+                <span>Tổng cộng:</span>
+                <span id="total">0₫</span>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">
+                <i class="fas fa-credit-card"></i> Tiến Hành Thanh Toán
+            </button>
+
+            <div class="security-info">
+                <i class="fas fa-shield-alt"></i>
+                <strong>Thanh toán an toàn & bảo mật</strong>
+                <br>
+                <small>Thông tin của bạn được mã hóa và bảo vệ</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fas fa-exclamation-triangle" style="color:#dc3545;margin-right:8px;"></i>
+                Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?
+            </div>
+            <div class="modal-buttons">
+                <button id="confirmDelete" class="modal-btn delete">Xóa</button>
+                <button id="cancelDelete" class="modal-btn cancel">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu giỏ hàng mẫu
+        let cartData = [
+            {
+                id: 1,
+                name: "Máy bơm nước Super Win 3 HP",
+                model: "SW-3HP-2024",
+                price: 2500000,
+                quantity: 1,
+                image: "https://via.placeholder.com/80x80/0066cc/ffffff?text=SP1"
+            },
+            {
+                id: 2,
+                name: "Quạt công nghiệp Super Win",
+                model: "SW-FAN-150",
+                price: 1800000,
+                quantity: 2,
+                image: "https://via.placeholder.com/80x80/28a745/ffffff?text=SP2"
+            },
+            {
+                id: 3,
+                name: "Máy bơm chìm Super Win",
+                model: "SW-SUB-50",
+                price: 450000,
+                quantity: 1,
+                image: "https://via.placeholder.com/80x80/dc3545/ffffff?text=SP3"
+            }
+        ];
+
+        let deleteProductId = null;
+
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + '₫';
+        }
+
+        function renderCartItems() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            
+            if (cartData.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Giỏ hàng trống</h3>
+                        <p>Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+                        <a href="#" class="continue-shopping">Tiếp tục mua sắm</a>
+                    </div>
+                `;
+                return;
+            }
+
+            cartItemsContainer.innerHTML = `
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Model</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cartData.map(item => `
+                            <tr>
+                                <td>
+                                    <div class="product-info">
+                                        <img src="${item.image}" alt="${item.name}" class="product-image">
+                                        <div class="product-details">
+                                            <h4>${item.name}</h4>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="product-model">${item.model}</div>
+                                </td>
+                                <td>
+                                    <div class="quantity-controls">
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)" 
+                                                ${item.quantity === 1 ? 'disabled' : ''}>
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" class="quantity-input" value="${item.quantity}" 
+                                               onchange="setQuantity(${item.id}, this.value)" min="1">
+                                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>${formatPrice(item.price * item.quantity)}</td>
+                                <td>
+                                    <button class="remove-btn" onclick="removeItem(${item.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateQuantity(id, change) {
+            const item = cartData.find(item => item.id === id);
+            if (item) {
+                const newQuantity = item.quantity + change;
+                if (newQuantity >= 1) {
+                    item.quantity = newQuantity;
+                    renderCartItems();
+                    updatePaymentSummary();
+                } else if (change < 0 && item.quantity === 1) {
+                    // Hiện popup xác nhận xóa
+                    deleteProductId = id;
+                    document.getElementById('deleteModal').style.display = 'flex';
+                }
+            }
+        }
+
+        function setQuantity(id, quantity) {
+            const item = cartData.find(item => item.id === id);
+            const newQuantity = parseInt(quantity);
+            if (item && newQuantity >= 1) {
+                item.quantity = newQuantity;
+                renderCartItems();
+                updatePaymentSummary();
+            }
+        }
+
+        function removeItem(id) {
+            deleteProductId = id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function updatePaymentSummary() {
+            const productCount = cartData.length;
+            const subtotal = cartData.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const vat = subtotal * 0.08;
+            const shipping = 30000;
+            const discount = 0;
+            const total = subtotal + vat + shipping - discount;
+
+            document.getElementById('productCount').textContent = productCount;
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('vat').textContent = formatPrice(vat);
+            document.getElementById('shipping').textContent = formatPrice(shipping);
+            document.getElementById('discount').textContent = formatPrice(discount);
+            document.getElementById('total').textContent = formatPrice(total);
+        }
+
+        function checkout() {
+            if (cartData.length === 0) {
+                alert('Giỏ hàng trống!');
+                return;
+            }
+            alert('Chuyển đến trang thanh toán...');
+        }
+
+        // Xử lý modal
+        document.getElementById('confirmDelete').onclick = function() {
+            if (deleteProductId !== null) {
+                cartData = cartData.filter(item => item.id !== deleteProductId);
+                renderCartItems();
+                updatePaymentSummary();
+                closeModal();
+            }
+        }
+
+        document.getElementById('cancelDelete').onclick = closeModal;
+
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteProductId = null;
+        }
+
+        // Đóng modal khi click bên ngoài
+        document.getElementById('deleteModal').onclick = function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        }
+
+        // Khởi tạo trang
+        renderCartItems();
+        updatePaymentSummary();
+    </script>
+</body>
+</html>

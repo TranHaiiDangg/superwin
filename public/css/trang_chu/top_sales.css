@@ -1,0 +1,232 @@
+.bestseller-container {
+  max-width: 1280px;
+  margin: 20px auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border: 1px solid #e8e8e8;
+}
+
+.bestseller-heading {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-align: left;
+  position: relative;
+}
+
+.bestseller-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #e74c3c, #f39c12);
+  border-radius: 2px;
+}
+
+.bestseller-grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 0 30px 0;
+  justify-content: flex-start;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.bestseller-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.bestseller-card {
+  background: #ffffff;
+  border: 1px solid #e1e8ed;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 300px;
+  flex: 0 0 auto;
+}
+
+.bestseller-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e74c3c, #f39c12);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.bestseller-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+  border-color: #e74c3c;
+}
+
+.bestseller-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bestseller-img {
+  width: 100%;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+  border-radius: 8px;
+  background: #f8f9fa;
+  padding: 10px;
+}
+
+.bestseller-card:hover .bestseller-img {
+  transform: scale(1.05);
+}
+
+.bestseller-title {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-weight: 600;
+  line-height: 1.4;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bestseller-sales {
+  font-size: 14px;
+  color: #e74c3c;
+  font-weight: 600;
+  padding: 6px 12px;
+  background: #ffeaa7;
+  border-radius: 20px;
+  display: inline-block;
+  position: relative;
+}
+
+.bestseller-sales::before {
+  content: '🔥';
+  margin-right: 5px;
+}
+
+.bestseller-card:hover .bestseller-sales {
+  background: #e74c3c;
+  color: white;
+}
+
+.bestseller-rank {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e74c3c;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Smooth scrolling cho mobile */
+.bestseller-grid.active {
+  cursor: grabbing;
+}
+
+.bestseller-grid {
+  cursor: grab;
+}
+
+@media (max-width: 768px) {
+  .bestseller-container {
+      margin: 10px;
+      padding: 15px;
+      border-radius: 8px;
+  }
+  
+  .bestseller-heading {
+      font-size: 20px;
+      margin-bottom: 15px;
+  }
+  
+  .bestseller-grid {
+      gap: 12px;
+      padding: 10px 0 20px 0;
+      margin: 0 -15px;
+      padding-left: 15px;
+      padding-right: 15px;
+  }
+  
+  .bestseller-card {
+      min-width: 200px;
+      max-width: 200px;
+      padding: 12px;
+      border-radius: 8px;
+  }
+  
+  .bestseller-img {
+      height: 100px;
+      margin-bottom: 8px;
+  }
+  
+  .bestseller-title {
+      font-size: 13px;
+      min-height: 32px;
+      margin-bottom: 6px;
+  }
+  
+  .bestseller-sales {
+      font-size: 11px;
+      padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bestseller-container {
+      margin: 5px;
+      padding: 10px;
+  }
+  
+  .bestseller-heading {
+      font-size: 18px;
+      margin-bottom: 12px;
+  }
+  
+  .bestseller-grid {
+      margin: 0 -10px;
+      padding-left: 10px;
+      padding-right: 10px;
+  }
+  
+  .bestseller-card {
+      min-width: 160px;
+      max-width: 160px;
+      padding: 10px;
+  }
+  
+  .bestseller-img {
+      height: 80px;
+  }
+  
+  .bestseller-title {
+      font-size: 12px;
+      min-height: 28px;
+  }
+  
+  .bestseller-sales {
+      font-size: 10px;
+  }
+}

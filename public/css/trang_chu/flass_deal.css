@@ -1,0 +1,438 @@
+.flash-deal-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    background: #FFE5B4; /* Cam nhạt */
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.flash-deal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.flash-deal-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: nowrap;
+    flex: 1;
+}
+
+.flash-deal-title {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    background: #FF6B35;
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    height: 40px; /* Đặt chiều cao cố định */
+    box-sizing: border-box;
+}
+
+.flash-deal-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #fff;
+    height: 40px; /* Đặt chiều cao cố định giống flash-deal-title */
+    box-sizing: border-box;
+}
+
+.timer-label {
+    font-size: 12px;
+    color: #000;
+}
+
+.timer-display {
+    display: flex;
+    gap: 4px;
+}
+
+.timer-unit {
+    background: #FF6B35;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.flash-deal-view-all {
+    background: #FF6B35;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.flash-deal-view-all:hover {
+    background: #E55A2B;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.flash-deal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 107, 53, 0.9);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-deal-nav:hover {
+    background: #FF6B35;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.flash-deal-nav.prev {
+    left: 10px;
+}
+
+.flash-deal-nav.next {
+    right: 10px;
+}
+
+.flash-deal-grid {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: space-between;
+}
+
+.flash-deal-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.flash-deal-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    min-width: 200px;
+    flex: 0 0 auto;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.flash-deal-card:hover {
+    transform: translateY(-2px);
+}
+
+.flash-deal-discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #FF6B35;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.flash-deal-img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    padding: 10px;
+}
+
+.flash-deal-title-product {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-deal-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.flash-deal-price-current {
+    font-size: 16px;
+    color: #FF6B35;
+    font-weight: 700;
+}
+
+.flash-deal-price-original {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.flash-deal-progress {
+    margin-bottom: 10px;
+}
+
+.flash-deal-progress-label {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.flash-deal-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.flash-deal-progress-fill {
+    height: 100%;
+    background: #FF6B35;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.flash-deal-sold {
+    font-size: 11px;
+    color: #FF6B35;
+    font-weight: 600;
+    background: #FFF3E0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* Responsive cho iPhone 5 đến 14 Pro Max */
+@media (max-width: 896px) {
+    .flash-deal-container {
+        padding: 15px;
+        margin: 5px;
+    }
+
+    .flash-deal-header {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .flash-deal-left {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .flash-deal-title {
+        font-size: 16px;
+        padding: 6px 10px;
+        flex-shrink: 0;
+        height: 32px; /* Chiều cao nhỏ hơn cho mobile */
+    }
+
+    .flash-deal-timer {
+        padding: 6px 8px;
+        flex-shrink: 0;
+        height: 32px; /* Chiều cao nhỏ hơn cho mobile */
+    }
+
+    .timer-label {
+        display: none; /* Ẩn chữ "Kết thúc trong" trên mobile */
+    }
+
+    .timer-unit {
+        font-size: 12px;
+        padding: 3px 6px;
+        min-width: 25px;
+    }
+
+    .flash-deal-view-all {
+        padding: 6px 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .flash-deal-nav {
+        display: none; /* Ẩn nút navigation trên mobile */
+    }
+
+    .flash-deal-card {
+        
+        width: calc(20% - 10px);
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    .flash-deal-img {
+        height: 100px;
+    }
+
+    .flash-deal-title-product {
+        font-size: 12px;
+        height: 32px;
+    }
+
+    .flash-deal-price-current {
+        font-size: 14px;
+    }
+}
+
+/* iPhone 5/SE (320px) */
+@media (max-width: 375px) {
+    .flash-deal-container {
+        padding: 10px;
+        margin: 2px;
+    }
+
+    .flash-deal-header {
+        gap: 6px;
+    }
+
+    .flash-deal-left {
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .flash-deal-title {
+        font-size: 14px;
+        padding: 4px 8px;
+        flex-shrink: 0;
+        height: 28px; /* Chiều cao nhỏ hơn cho mobile nhỏ */
+    }
+
+    .flash-deal-timer {
+        padding: 4px 6px;
+        flex-shrink: 0;
+        height: 28px; /* Chiều cao nhỏ hơn cho mobile nhỏ */
+    }
+
+    .timer-label {
+        display: none; /* Ẩn chữ "Kết thúc trong" trên mobile nhỏ */
+    }
+
+    .timer-unit {
+        font-size: 10px;
+        padding: 2px 4px;
+        min-width: 20px;
+    }
+
+    .flash-deal-view-all {
+        padding: 4px 8px;
+        font-size: 10px;
+        flex-shrink: 0;
+    }
+
+    .flash-deal-nav {
+        display: none; /* Ẩn nút navigation trên mobile nhỏ */
+    }
+
+    .flash-deal-card {
+        
+        width: calc(60% - 10px);
+        min-width: 140px;
+        padding: 10px;
+    }
+
+    .flash-deal-img {
+        height: 80px;
+    }
+
+    .flash-deal-title-product {
+        font-size: 11px;
+        height: 28px;
+    }
+
+    .flash-deal-price-current {
+        font-size: 13px;
+    }
+
+    .flash-deal-price-original {
+        font-size: 10px;
+    }
+}
+
+/* iPhone 6/7/8 (375px) */
+@media (min-width: 375px) and (max-width: 414px) {
+    .flash-deal-card {
+        min-width: 150px;
+    }
+}
+
+/* iPhone 6/7/8 Plus (414px) */
+@media (min-width: 414px) and (max-width: 480px) {
+    .flash-deal-card {
+        min-width: 170px;
+    }
+}
+
+/* iPhone X/11/12/13/14 (390px-428px) */
+@media (min-width: 390px) and (max-width: 428px) {
+    .flash-deal-card {
+        min-width: 165px;
+    }
+}
+
+/* iPhone 14 Pro Max (430px) */
+@media (min-width: 430px) and (max-width: 500px) {
+    .flash-deal-card {
+        min-width: 180px;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .flash-deal-nav {
+        display: none; /* Ẩn nút navigation trên tablet */
+    }
+    
+    .flash-deal-container {
+        padding: 20px;
+    }
+    
+    .flash-deal-card {
+        min-width: 220px;
+    }
+}

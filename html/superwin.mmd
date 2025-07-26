@@ -1,0 +1,371 @@
+erDiagram
+    USERS {
+        int user_id PK
+        string username
+        string email
+        string password_hash
+        string full_name
+        string phone
+        text address
+        string company_name
+        string tax_code
+        string user_type
+        datetime created_at
+        datetime updated_at
+        boolean is_active
+        datetime last_login
+    }
+    
+    CATEGORIES {
+        int category_id PK
+        string category_name
+        string category_code
+        text description
+        string icon_url
+        int parent_category_id FK
+        int sort_order
+        boolean is_active
+        datetime created_at
+    }
+    
+    BRANDS {
+        int brand_id PK
+        string brand_name
+        string brand_code
+        text description
+        string logo_url
+        string origin_country
+        boolean is_active
+        datetime created_at
+    }
+    
+    PRODUCTS {
+        int product_id PK
+        string product_name
+        string product_code
+        string sku
+        text description
+        text additional_info
+        decimal price
+        decimal discount_price
+        decimal cost_price
+        int quantity_in_stock
+        int min_stock_level
+        string unit
+        int category_id FK
+        int brand_id FK
+        string product_type
+        string status
+        boolean is_featured
+        boolean is_hot_deal
+        decimal weight
+        string warranty_period
+        text installation_guide
+        decimal average_rating
+        int total_reviews
+        datetime created_at
+        datetime updated_at
+    }
+    
+    PRODUCT_IMAGES {
+        int image_id PK
+        int product_id FK
+        string image_url
+        string image_alt
+        string image_type
+        boolean is_primary
+        int sort_order
+        datetime uploaded_at
+    }
+    
+    PUMP_SPECIFICATIONS {
+        int pump_spec_id PK
+        int product_id FK
+        decimal power_capacity
+        decimal suction_depth
+        decimal head_pressure
+        decimal flow_rate
+        string pipe_diameter
+        decimal voltage
+        decimal current
+        decimal diameter
+    }
+    
+    FAN_SPECIFICATIONS {
+        int fan_spec_id PK
+        int product_id FK
+        decimal blade_diameter
+        decimal voltage
+        decimal power_capacity
+        decimal air_flow
+        decimal speed_rpm
+    }
+    
+    ORDERS {
+        int order_id PK
+        string order_number
+        int user_id FK
+        decimal subtotal
+        decimal shipping_fee
+        decimal discount_amount
+        decimal tax_amount
+        decimal total_amount
+        string order_status
+        string payment_status
+        string payment_method
+        string shipping_method
+        text shipping_address
+        text billing_address
+        string contact_phone
+        text notes
+        text internal_notes
+        datetime order_date
+        datetime confirmed_date
+        datetime shipped_date
+        datetime delivered_date
+    }
+    
+    ORDER_ITEMS {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        string product_name
+        string product_code
+        int quantity
+        decimal unit_price
+        decimal discount_amount
+        decimal total_price
+        text notes
+    }
+    
+    SHOPPING_CART {
+        int cart_id PK
+        int user_id FK
+        int product_id FK
+        int quantity
+        datetime added_at
+        datetime updated_at
+    }
+    
+    PAYMENTS {
+        int payment_id PK
+        int order_id FK
+        string payment_method
+        decimal amount
+        string payment_status
+        string transaction_id
+        string bank_code
+        text payment_details
+        datetime payment_date
+        datetime confirmed_date
+    }
+    
+    SUPPLIERS {
+        int supplier_id PK
+        string supplier_name
+        string supplier_code
+        string contact_person
+        string email
+        string phone
+        text address
+        string tax_code
+        string bank_account
+        text payment_terms
+        boolean is_active
+        datetime created_at
+    }
+    
+    PRODUCT_SUPPLIERS {
+        int product_supplier_id PK
+        int product_id FK
+        int supplier_id FK
+        decimal supplier_price
+        int min_order_quantity
+        string supplier_product_code
+        int lead_time_days
+        datetime last_updated
+    }
+    
+    REVIEWS {
+        int review_id PK
+        int product_id FK
+        int user_id FK
+        int rating
+        text review_title
+        text review_text
+        text pros
+        text cons
+        boolean is_verified_purchase
+        boolean is_approved
+        datetime created_at
+        datetime approved_at
+    }
+    
+    REVIEW_IMAGES {
+        int review_image_id PK
+        int review_id FK
+        string image_url
+        string image_alt
+        datetime uploaded_at
+    }
+    
+    FLASH_DEALS {
+        int deal_id PK
+        string deal_name
+        int product_id FK
+        decimal original_price
+        decimal deal_price
+        decimal discount_percentage
+        int quantity_limit
+        int sold_quantity
+        datetime start_time
+        datetime end_time
+        boolean is_active
+        datetime created_at
+    }
+    
+    BANNERS {
+        int banner_id PK
+        string banner_title
+        string banner_image
+        string banner_url
+        string banner_type
+        string position
+        int sort_order
+        boolean is_active
+        datetime start_date
+        datetime end_date
+        datetime created_at
+    }
+    
+    NEWS_ARTICLES {
+        int article_id PK
+        string title
+        string slug
+        text summary
+        text content
+        string featured_image
+        string article_type
+        int author_id FK
+        boolean is_published
+        int view_count
+        datetime published_at
+        datetime created_at
+        datetime updated_at
+    }
+    
+    CONTACT_INQUIRIES {
+        int inquiry_id PK
+        string name
+        string email
+        string phone
+        string company_name
+        string subject
+        text message
+        string inquiry_type
+        string status
+        int assigned_to FK
+        text response
+        datetime created_at
+        datetime resolved_at
+    }
+    
+    QUOTATIONS {
+        int quotation_id PK
+        string quotation_number
+        int user_id FK
+        string company_name
+        string contact_person
+        string email
+        string phone
+        text project_description
+        decimal total_amount
+        string status
+        text terms_conditions
+        datetime valid_until
+        datetime created_at
+        datetime updated_at
+    }
+    
+    QUOTATION_ITEMS {
+        int quotation_item_id PK
+        int quotation_id FK
+        int product_id FK
+        string product_name
+        int quantity
+        decimal unit_price
+        decimal total_price
+        text specifications
+        text notes
+    }
+    
+    ADMIN_USERS {
+        int admin_id PK
+        string username
+        string email
+        string password_hash
+        string full_name
+        string role
+        text permissions
+        boolean is_active
+        datetime last_login
+        datetime created_at
+    }
+    
+    INVENTORY_TRANSACTIONS {
+        int transaction_id PK
+        int product_id FK
+        string transaction_type
+        int quantity_change
+        int quantity_after
+        string reference_type
+        int reference_id
+        text notes
+        int created_by FK
+        datetime created_at
+    }
+    
+    WISHLISTS {
+        int wishlist_id PK
+        int user_id FK
+        int product_id FK
+        datetime added_at
+    }
+
+    %% Relationships
+    USERS ||--o{ ORDERS : places
+    USERS ||--o{ SHOPPING_CART : has
+    USERS ||--o{ REVIEWS : writes
+    USERS ||--o{ CONTACT_INQUIRIES : submits
+    USERS ||--o{ QUOTATIONS : requests
+    USERS ||--o{ WISHLISTS : creates
+    
+    CATEGORIES ||--o{ PRODUCTS : contains
+    CATEGORIES ||--o{ CATEGORIES : "parent-child"
+    
+    BRANDS ||--o{ PRODUCTS : manufactures
+    
+    PRODUCTS ||--o{ PUMP_SPECIFICATIONS : "has pump specs"
+    PRODUCTS ||--o{ FAN_SPECIFICATIONS : "has fan specs"
+    PRODUCTS ||--o{ PRODUCT_IMAGES : has
+    PRODUCTS ||--o{ ORDER_ITEMS : "ordered in"
+    PRODUCTS ||--o{ SHOPPING_CART : "added to"
+    PRODUCTS ||--o{ PRODUCT_SUPPLIERS : "supplied by"
+    PRODUCTS ||--o{ REVIEWS : receives
+    PRODUCTS ||--o{ FLASH_DEALS : "featured in"
+    PRODUCTS ||--o{ QUOTATION_ITEMS : "quoted in"
+    PRODUCTS ||--o{ INVENTORY_TRANSACTIONS : tracks
+    PRODUCTS ||--o{ WISHLISTS : "saved in"
+    
+    REVIEWS ||--o{ REVIEW_IMAGES : "has images"
+    
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    ORDERS ||--o{ PAYMENTS : "paid by"
+    
+    QUOTATIONS ||--o{ QUOTATION_ITEMS : contains
+    
+    SUPPLIERS ||--o{ PRODUCT_SUPPLIERS : supplies
+    
+    ADMIN_USERS ||--o{ NEWS_ARTICLES : writes
+    ADMIN_USERS ||--o{ CONTACT_INQUIRIES : "assigned to"
+    ADMIN_USERS ||--o{ INVENTORY_TRANSACTIONS : creates
