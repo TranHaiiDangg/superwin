@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="/css/trang_chu/top_search.css">
         <link rel="stylesheet" href="/css/trang_chu/product.css">
         <link rel="stylesheet" href="/css/trang_chu/footer.css">
-        <link rel="stylesheet" href="/css/chat/chat.css">
         <link rel="stylesheet" href="/css/chat/main.css">
         
         <meta name="theme-color" content="#4facfe">
@@ -535,7 +534,31 @@
             </a>
         </div>
 
-        <div class="flash-deal-container" style="background-color: aqua;">
+        <!-- FLASH DEAL SECTION -->
+    <div id="flashDealSection" class="flash-deal-container" style="display: none;">
+        <div class="flash-deal-header">
+            <div class="flash-deal-left">
+                <h1 class="flash-deal-title">Flash Deal</h1>
+                <div class="flash-deal-timer">
+                    <span class="timer-label">Kết thúc trong:</span>
+                    <div class="timer-display">
+                        <div class="timer-unit" id="hours">00</div>
+                        <div class="timer-unit" id="minutes">00</div>
+                        <div class="timer-unit" id="seconds">00</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="flash-prev" class="flash-deal-nav prev">‹</button>
+        <button id="flash-next" class="flash-deal-nav next">›</button>
+
+        <div class="flash-deal-grid" id="flashDealGrid">
+            <!-- Flash deal products sẽ được load từ API/JavaScript -->
+        </div>
+    </div>
+<div class="flash-deal-container" >
             <div class="flash-deal-header">
                 <div class="flash-deal-left">
                     <h1 class="flash-deal-title">Flash Deal</h1>
@@ -726,404 +749,827 @@
                 </div>
             </div>
         </div>
+    <!-- NORMAL PRODUCTS SECTION -->
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Nước THC</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
 
-        <div class="flash-deal-container">
-            <div class="flash-deal-header">
-                <div class="flash-deal-left">
-                    <h1 class="flash-deal-title">Flash Deal</h1>
-                    <div class="flash-deal-timer">
-                        <span class="timer-label">Kết thúc trong:</span>
-                        <div class="timer-display">
-                            <div class="timer-unit" id="hours">02</div>
-                            <div class="timer-unit" id="minutes">52</div>
-                            <div class="timer-unit" id="seconds">52</div>
-                        </div>
-                    </div>
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
                 </div>
-                <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+                <div class="normal-product-sold">Còn hàng</div>
             </div>
             
-            <button id="flash-prev" class="flash-deal-nav prev">‹</button>
-            <button id="flash-next" class="flash-deal-nav next">›</button>
-    
-            <div class="flash-deal-grid">
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-50%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 3 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">1.250.000đ</span>
-                        <span class="flash-deal-price-original">2.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 150/200</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 75%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">150 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
                 </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
-                </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-35%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1.5 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">650.000đ</span>
-                        <span class="flash-deal-price-original">1.000.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 45/100</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">45 đã bán</div>
-                </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-30%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">490.000đ</span>
-                        <span class="flash-deal-price-original">700.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 23/80</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 29%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">23 đã bán</div>
-                </div>
-    
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-45%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 0.5 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">330.000đ</span>
-                        <span class="flash-deal-price-original">600.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 67/120</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 56%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">67 đã bán</div>
-                </div>
-    
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-25%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win Mini</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">225.000đ</span>
-                        <span class="flash-deal-price-original">300.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 12/50</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 24%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">12 đã bán</div>
-                </div>
-
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
-                </div>
-
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
-                </div>
-
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
-                </div>
-
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flash-deal-container">
-            <div class="flash-deal-header">
-                <div class="flash-deal-left">
-                    <h1 class="flash-deal-title">Flash Deal</h1>
-                    <div class="flash-deal-timer">
-                        <span class="timer-label">Kết thúc trong:</span>
-                        <div class="timer-display">
-                            <div class="timer-unit" id="hours">02</div>
-                            <div class="timer-unit" id="minutes">52</div>
-                            <div class="timer-unit" id="seconds">52</div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#" class="flash-deal-view-all">Xem tất cả</a>
+                <div class="normal-product-sold">Còn hàng</div>
             </div>
             
-            <button id="flash-prev" class="flash-deal-nav prev">‹</button>
-            <button id="flash-next" class="flash-deal-nav next">›</button>
-    
-            <div class="flash-deal-grid">
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-50%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 3 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">1.250.000đ</span>
-                        <span class="flash-deal-price-original">2.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 150/200</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 75%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">150 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
                 </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
                 </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-35%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1.5 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">650.000đ</span>
-                        <span class="flash-deal-price-original">1.000.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 45/100</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">45 đã bán</div>
-                </div>
-                
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-30%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 1 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">490.000đ</span>
-                        <span class="flash-deal-price-original">700.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 23/80</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 29%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">23 đã bán</div>
-                </div>
-    
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-45%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 0.5 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">330.000đ</span>
-                        <span class="flash-deal-price-original">600.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 67/120</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 56%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">67 đã bán</div>
-                </div>
-    
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-25%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win Mini</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">225.000đ</span>
-                        <span class="flash-deal-price-original">300.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 12/50</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 24%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">12 đã bán</div>
-                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
 
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
                 </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
 
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
                 </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
 
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
                 </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
 
-                <div class="flash-deal-card">
-                    <div class="flash-deal-discount">-40%</div>
-                    <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="flash-deal-img">
-                    <div class="flash-deal-title-product">Máy bơm nước Super Win 2 HP</div>
-                    <div class="flash-deal-price">
-                        <span class="flash-deal-price-current">900.000đ</span>
-                        <span class="flash-deal-price-original">1.500.000đ</span>
-                    </div>
-                    <div class="flash-deal-progress">
-                        <div class="flash-deal-progress-label">Đã bán 89/150</div>
-                        <div class="flash-deal-progress-bar">
-                            <div class="flash-deal-progress-fill" style="width: 59%"></div>
-                        </div>
-                    </div>
-                    <div class="flash-deal-sold">89 đã bán</div>
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
                 </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
             </div>
         </div>
+    </div>
 
-        <div class="image-row-section">
-            <div class="image-row">
-                <a href="#" class="image-item">
-                    <img src="/image/baner1.png" alt="Banner 1">
-                </a>
-                <a href="#" class="image-item">
-                    <img src="/image/baner2.png" alt="Banner 2">
-                </a>
-                <a href="#" class="image-item">
-                    <img src="/image/baner3.png" alt="Banner 3">
-                </a>
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Quạt</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
             </div>
         </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Motor Kéo</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Chìm</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Chìm</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Chìm</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Chìm</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">Bơm Chìm</h1>
+            <a href="#" class="normal-product-view-all">Xem tất cả</a>
+        </div>
+        
+        <button id="normal-prev" class="normal-product-nav prev">‹</button>
+        <button id="normal-next" class="normal-product-nav next">›</button>
+
+        <div class="normal-product-grid" id="normalProductGrid">
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 3 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 3 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">2.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 2 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 2 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.500.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.000.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+            
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 1 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 1 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">700.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win 0.5 HP" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win 0.5 HP</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">600.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước Super Win Mini" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước Super Win Mini</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">300.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 1" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 1</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">800.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 2" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 2</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">950.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 3" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 3</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.200.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+
+            <div class="normal-product-card">
+                <img src="/image/sp1.png" alt="Máy bơm nước ABC Model 4" class="normal-product-img">
+                <div class="normal-product-title-product">Máy bơm nước ABC Model 4</div>
+                <div class="normal-product-price">
+                    <span class="normal-product-price-current">1.350.000đ</span>
+                </div>
+                <div class="normal-product-sold">Còn hàng</div>
+            </div>
+        </div>
+    </div>
+
+        
+        
+
+        
 
 
         <!--Bestseller-->
@@ -1466,6 +1912,19 @@
             </div>
         </div>
 
+        <div class="image-row-section">
+            <div class="image-row">
+                <a href="#" class="image-item">
+                    <img src="/image/baner1.png" alt="Banner 1">
+                </a>
+                <a href="#" class="image-item">
+                    <img src="/image/baner2.png" alt="Banner 2">
+                </a>
+                <a href="#" class="image-item">
+                    <img src="/image/baner3.png" alt="Banner 3">
+                </a>
+            </div>
+        </div>
         <footer class="footer" style="margin: 10px auto">
             <div class="footer-container">
                 <div class="footer-column">
@@ -1541,12 +2000,12 @@
         </footer>
     
             <!-- Chat Icon -->
-        <button class="chat-icon has-notification" id="chatIcon">
+        <!--<button class="chat-icon has-notification" id="chatIcon">
             <i class="fas fa-comments"></i>
-        </button>
+        </button>-->
 
         <!-- Desktop Chat Popup -->
-        <div class="chat-popup" id="chatPopup">
+        <!--<div class="chat-popup" id="chatPopup">
             <div class="popup-header">
                 <div>
                     <h5>Hỗ trợ trực tuyến</h5>
@@ -1558,7 +2017,7 @@
             </div>
             
             <div class="popup-messages" id="popupMessages">
-                <!-- Messages will be loaded here -->
+               
             </div>
             
             <div class="quick-replies" id="popupQuickReplies">
@@ -1573,10 +2032,10 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-        </div>
+        </div>-->
 
         <!-- Mobile Chat Page -->
-        <div class="mobile-chat-page" id="mobileChatPage">
+        <!--<div class="mobile-chat-page" id="mobileChatPage">
             <div class="mobile-header">
                 <div class="mobile-header-left">
                     <button class="mobile-back" id="mobileBack">
@@ -1595,10 +2054,10 @@
             </div>
             
             <div class="mobile-messages" id="mobileMessages">
-                <!-- Messages will be loaded here -->
-            </div>
+                
+            </div>-->
             
-            <div class="quick-replies" id="mobileQuickReplies">
+            <!--<div class="quick-replies" id="mobileQuickReplies">
                 <div class="quick-reply" onclick="sendQuickReply('mobile', 'Xin chào!')">Xin chào!</div>
                 <div class="quick-reply" onclick="sendQuickReply('mobile', 'Tôi cần hỗ trợ')">Tôi cần hỗ trợ</div>
                 <div class="quick-reply" onclick="sendQuickReply('mobile', 'Cảm ơn bạn')">Cảm ơn bạn</div>
@@ -1611,7 +2070,7 @@
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
-        </div>
+        </div>-->
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1622,7 +2081,6 @@
         <script src="/js/trang_chu/top_sales.js"></script>
         <script src="/js/trang_chu/product.js"></script>
         <script src="/js/chat/main.js"></script>
-        <script src="/js/chat/chat.js"></script>
 </body>
 
 </html>

@@ -1,3 +1,4 @@
+/* ===== FLASH DEAL STYLES ===== */
 .flash-deal-container {
     max-width: 1280px;
     margin: 25px auto;
@@ -5,7 +6,10 @@
     border-radius: 12px;
     padding: 20px;
     position: relative;
-    overflow: hidden;
+}
+
+.flash-deal-container.active {
+    display: block; /* Hiện khi có sự kiện */
 }
 
 .flash-deal-header {
@@ -36,7 +40,7 @@
     align-items: center;
     gap: 8px;
     white-space: nowrap;
-    height: 40px; /* Đặt chiều cao cố định */
+    height: 40px;
     box-sizing: border-box;
 }
 
@@ -47,7 +51,7 @@
     padding: 8px 12px;
     border-radius: 6px;
     color: #fff;
-    height: 40px; /* Đặt chiều cao cố định giống flash-deal-title */
+    height: 40px;
     box-sizing: border-box;
 }
 
@@ -247,7 +251,178 @@
     display: inline-block;
 }
 
-/* Responsive cho iPhone 5 đến 14 Pro Max */
+/* ===== NORMAL PRODUCTS STYLES ===== */
+.normal-product-container {
+    max-width: 1280px;
+    margin: 25px auto;
+    background: #ffffff; /* Trắng */
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.normal-product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.normal-product-title {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    background: #4facfe; /* Xanh dương */
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.normal-product-view-all {
+    background: #4facfe;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.normal-product-view-all:hover {
+    background: #3a8bdb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.normal-product-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(79, 172, 254, 0.9);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.normal-product-nav:hover {
+    background: #4facfe;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.normal-product-nav.prev {
+    left: 10px;
+}
+
+.normal-product-nav.next {
+    right: 10px;
+}
+
+.normal-product-grid {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: space-between;
+}
+
+.normal-product-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.normal-product-card {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    min-width: 200px;
+    flex: 0 0 auto;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.normal-product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.1);
+    border-color: #4facfe;
+}
+
+.normal-product-img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    padding: 10px;
+}
+
+.normal-product-title-product {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.normal-product-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.normal-product-price-current {
+    font-size: 16px;
+    color: #4facfe;
+    font-weight: 700;
+}
+
+.normal-product-sold {
+    font-size: 11px;
+    color: #4facfe;
+    font-weight: 600;
+    background: #e3f2fd;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* ===== RESPONSIVE CHO FLASH DEAL ===== */
 @media (max-width: 896px) {
     .flash-deal-container {
         padding: 15px;
@@ -269,17 +444,17 @@
         font-size: 16px;
         padding: 6px 10px;
         flex-shrink: 0;
-        height: 32px; /* Chiều cao nhỏ hơn cho mobile */
+        height: 32px;
     }
 
     .flash-deal-timer {
         padding: 6px 8px;
         flex-shrink: 0;
-        height: 32px; /* Chiều cao nhỏ hơn cho mobile */
+        height: 32px;
     }
 
     .timer-label {
-        display: none; /* Ẩn chữ "Kết thúc trong" trên mobile */
+        display: none;
     }
 
     .timer-unit {
@@ -295,11 +470,10 @@
     }
 
     .flash-deal-nav {
-        display: none; /* Ẩn nút navigation trên mobile */
+        display: none;
     }
 
     .flash-deal-card {
-        
         width: calc(20% - 10px);
         min-width: 160px;
         padding: 12px;
@@ -319,14 +493,63 @@
     }
 }
 
+/* ===== RESPONSIVE CHO NORMAL PRODUCTS ===== */
+@media (max-width: 896px) {
+    .normal-product-container {
+        padding: 15px;
+        margin: 25px 5px;
+    }
+
+    .normal-product-header {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .normal-product-title {
+        font-size: 16px;
+        padding: 6px 10px;
+        flex-shrink: 0;
+        height: 32px;
+    }
+
+    .normal-product-view-all {
+        padding: 6px 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .normal-product-nav {
+        display: none;
+    }
+
+    .normal-product-card {
+        width: calc(20% - 10px);
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    .normal-product-img {
+        height: 100px;
+    }
+
+    .normal-product-title-product {
+        font-size: 12px;
+        height: 32px;
+    }
+
+    .normal-product-price-current {
+        font-size: 14px;
+    }
+}
+
 /* iPhone 5/SE (320px) */
 @media (max-width: 375px) {
-    .flash-deal-container {
+    .flash-deal-container, .normal-product-container {
         padding: 10px;
         margin: 2px;
     }
 
-    .flash-deal-header {
+    .flash-deal-header, .normal-product-header {
         gap: 6px;
     }
 
@@ -336,21 +559,17 @@
         min-width: 0;
     }
 
-    .flash-deal-title {
+    .flash-deal-title, .normal-product-title {
         font-size: 14px;
         padding: 4px 8px;
         flex-shrink: 0;
-        height: 28px; /* Chiều cao nhỏ hơn cho mobile nhỏ */
+        height: 28px;
     }
 
     .flash-deal-timer {
         padding: 4px 6px;
         flex-shrink: 0;
-        height: 28px; /* Chiều cao nhỏ hơn cho mobile nhỏ */
-    }
-
-    .timer-label {
-        display: none; /* Ẩn chữ "Kết thúc trong" trên mobile nhỏ */
+        height: 28px;
     }
 
     .timer-unit {
@@ -359,33 +578,28 @@
         min-width: 20px;
     }
 
-    .flash-deal-view-all {
+    .flash-deal-view-all, .normal-product-view-all {
         padding: 4px 8px;
         font-size: 10px;
         flex-shrink: 0;
     }
 
-    .flash-deal-nav {
-        display: none; /* Ẩn nút navigation trên mobile nhỏ */
-    }
-
-    .flash-deal-card {
-        
+    .flash-deal-card, .normal-product-card {
         width: calc(60% - 10px);
         min-width: 140px;
         padding: 10px;
     }
 
-    .flash-deal-img {
+    .flash-deal-img, .normal-product-img {
         height: 80px;
     }
 
-    .flash-deal-title-product {
+    .flash-deal-title-product, .normal-product-title-product {
         font-size: 11px;
         height: 28px;
     }
 
-    .flash-deal-price-current {
+    .flash-deal-price-current, .normal-product-price-current {
         font-size: 13px;
     }
 
@@ -394,45 +608,17 @@
     }
 }
 
-/* iPhone 6/7/8 (375px) */
-@media (min-width: 375px) and (max-width: 414px) {
-    .flash-deal-card {
-        min-width: 150px;
-    }
-}
-
-/* iPhone 6/7/8 Plus (414px) */
-@media (min-width: 414px) and (max-width: 480px) {
-    .flash-deal-card {
-        min-width: 170px;
-    }
-}
-
-/* iPhone X/11/12/13/14 (390px-428px) */
-@media (min-width: 390px) and (max-width: 428px) {
-    .flash-deal-card {
-        min-width: 165px;
-    }
-}
-
-/* iPhone 14 Pro Max (430px) */
-@media (min-width: 430px) and (max-width: 500px) {
-    .flash-deal-card {
-        min-width: 180px;
-    }
-}
-
 /* Tablet responsive */
 @media (min-width: 768px) and (max-width: 1024px) {
-    .flash-deal-nav {
-        display: none; /* Ẩn nút navigation trên tablet */
+    .flash-deal-nav, .normal-product-nav {
+        display: none;
     }
     
-    .flash-deal-container {
+    .flash-deal-container, .normal-product-container {
         padding: 20px;
     }
     
-    .flash-deal-card {
+    .flash-deal-card, .normal-product-card {
         min-width: 220px;
     }
-}
+}   
