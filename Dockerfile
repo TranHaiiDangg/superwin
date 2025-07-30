@@ -1,4 +1,8 @@
+# Use PHP 8.2 FPM with Nginx
 FROM php:8.2-fpm
+
+# Set working directory
+WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -7,46 +11,61 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    libzip-dev
+    nodejs \
+    npm \
+    supervisor \
+    nginx \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
-
-# Get latest Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u 1000 -d /home/laravel laravel
-RUN mkdir -p /home/laravel/.composer && \
-    chown -R laravel:laravel /home/laravel
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
 
-# Set working directory
-WORKDIR /var/www
-
-# Copy existing application directory contents
-COPY . /var/www
-
-# Copy existing application directory permissions
-COPY --chown=laravel:laravel . /var/www
-
-# Change current user to laravel
-USER laravel
-
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Change back to root
-USER root
+# Copy package.json for Node.js dependencies
+COPY package.json package-lock.json* ./
+
+# Install Node.js dependencies
+RUN npm install
+
+# Copy existing application directory contents
+COPY . /var/www/html
+
+# Copy custom php.ini
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Copy Nginx configuration
+COPY docker/nginx.conf /etc/nginx/sites-available/default
+
+# Copy Supervisor configuration
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set permissions
-RUN chown -R laravel:www-data /var/www
-RUN chmod -R 775 /var/www/storage
-RUN chmod -R 775 /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Expose port 8000 and start php-fpm server
-EXPOSE 8000
+# Build assets
+RUN npm run build
+
+# Create .env file if not exists
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
+
+# Generate application key if not set
+RUN php artisan key:generate --no-interaction --force
+
+# Create storage symlink
+RUN php artisan storage:link
+
+# Expose port 80
+EXPOSE 80
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

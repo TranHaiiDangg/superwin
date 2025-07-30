@@ -138,6 +138,9 @@ Route::get('/sitemap.xml', function () {
     return response()->view('sitemap')->header('Content-Type', 'text/xml');
 })->name('sitemap');
 
+// Admin routes
+require __DIR__.'/admin.php';
+
 // 404 fallback
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
