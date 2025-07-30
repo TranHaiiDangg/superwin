@@ -47,6 +47,10 @@ class ProductController extends Controller
             'is_featured' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string|max:500',
+            'meta_robots' => 'nullable|string|max:100',
+            'meta_author' => 'nullable|string|max:255',
+            'meta_canonical_url' => 'nullable|url|max:500',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -86,6 +90,10 @@ class ProductController extends Controller
             'is_featured' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string|max:500',
+            'meta_robots' => 'nullable|string|max:100',
+            'meta_author' => 'nullable|string|max:255',
+            'meta_canonical_url' => 'nullable|url|max:500',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -104,5 +112,102 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được xóa thành công!');
+    }
+
+    public function uploadImages(Request $request, Product $product)
+    {
+        $request->validate([
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        try {
+            $uploadedImages = [];
+            
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('products', $filename, 'public');
+                
+                $productImage = $product->images()->create([
+                    'url' => '/storage/' . $path,
+                    'alt_text' => $product->name,
+                    'sort_order' => $product->images()->count() + 1,
+                    'is_base' => $product->images()->count() === 0 // First image becomes base
+                ]);
+                
+                $uploadedImages[] = $productImage;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => count($uploadedImages) . ' hình ảnh đã được tải lên thành công!',
+                'images' => $uploadedImages
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi tải lên hình ảnh: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function setBaseImage(Request $request, Product $product)
+    {
+        $request->validate([
+            'image_id' => 'required|exists:product_images,id'
+        ]);
+
+        try {
+            $image = $product->images()->findOrFail($request->image_id);
+            $image->setAsBase();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã đặt ảnh làm ảnh chính!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteImage(Request $request, Product $product)
+    {
+        $request->validate([
+            'image_id' => 'required|exists:product_images,id'
+        ]);
+
+        try {
+            $image = $product->images()->findOrFail($request->image_id);
+            
+            // Don't delete if it's the only image
+            if ($product->images()->count() <= 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không thể xóa ảnh cuối cùng!'
+                ], 400);
+            }
+
+            // If deleting base image, set another as base
+            if ($image->is_base) {
+                $nextImage = $product->images()->where('id', '!=', $image->id)->first();
+                if ($nextImage) {
+                    $nextImage->setAsBase();
+                }
+            }
+
+            $image->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã xóa ảnh thành công!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage()
+            ], 500);
+        }
     }
 } 

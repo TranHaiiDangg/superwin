@@ -33,7 +33,11 @@ class Product extends Model
         'rating_average',
         'rating_count',
         'meta_title',
-        'meta_description'
+        'meta_description',
+        'meta_keywords',
+        'meta_robots',
+        'meta_author',
+        'meta_canonical_url'
     ];
 
     protected $casts = [
@@ -64,6 +68,16 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function baseImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->where('is_base', true);
+    }
+
+    public function primaryImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
     }
 
     public function reviews(): HasMany

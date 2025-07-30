@@ -164,6 +164,131 @@
                 </div>
             </div>
 
+            <!-- SEO và Meta -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">SEO và Meta</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-2">Meta Title</label>
+                        <input type="text" id="meta_title" name="meta_title" value="{{ old('meta_title', $product->meta_title) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Tiêu đề SEO">
+                        @error('meta_title')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="meta_keywords" class="block text-sm font-medium text-gray-700 mb-2">Meta Keywords</label>
+                        <input type="text" id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords', $product->meta_keywords) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Từ khóa SEO (phân cách bằng dấu phẩy)">
+                        @error('meta_keywords')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="meta_robots" class="block text-sm font-medium text-gray-700 mb-2">Meta Robots</label>
+                        <select id="meta_robots" name="meta_robots"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="index,follow" {{ old('meta_robots', $product->meta_robots) == 'index,follow' ? 'selected' : '' }}>index,follow</option>
+                            <option value="noindex,follow" {{ old('meta_robots', $product->meta_robots) == 'noindex,follow' ? 'selected' : '' }}>noindex,follow</option>
+                            <option value="index,nofollow" {{ old('meta_robots', $product->meta_robots) == 'index,nofollow' ? 'selected' : '' }}>index,nofollow</option>
+                            <option value="noindex,nofollow" {{ old('meta_robots', $product->meta_robots) == 'noindex,nofollow' ? 'selected' : '' }}>noindex,nofollow</option>
+                        </select>
+                        @error('meta_robots')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="meta_author" class="block text-sm font-medium text-gray-700 mb-2">Meta Author</label>
+                        <input type="text" id="meta_author" name="meta_author" value="{{ old('meta_author', $product->meta_author) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Tác giả">
+                        @error('meta_author')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
+                    <textarea id="meta_description" name="meta_description" rows="3"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Mô tả SEO">{{ old('meta_description', $product->meta_description) }}</textarea>
+                    @error('meta_description')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div class="mt-4">
+                    <label for="meta_canonical_url" class="block text-sm font-medium text-gray-700 mb-2">Canonical URL</label>
+                    <input type="url" id="meta_canonical_url" name="meta_canonical_url" value="{{ old('meta_canonical_url', $product->meta_canonical_url) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="https://example.com/product-url">
+                    @error('meta_canonical_url')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Quản lý hình ảnh -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Quản lý hình ảnh</h3>
+                
+                <!-- Upload hình ảnh mới -->
+                <div class="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <h4 class="text-md font-medium text-gray-900 mb-3">Thêm hình ảnh mới</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="new_images" class="block text-sm font-medium text-gray-700 mb-2">Chọn hình ảnh</label>
+                            <input type="file" id="new_images" name="new_images[]" multiple accept="image/*"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" onclick="uploadImages()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                <i class="fas fa-upload mr-2"></i>Tải lên
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danh sách hình ảnh hiện tại -->
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4" id="product-images">
+                    @forelse($product->images as $image)
+                    <div class="relative group border border-gray-200 rounded-lg overflow-hidden" data-image-id="{{ $image->id }}">
+                        <img src="{{ $image->url }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover">
+                        
+                        <!-- Overlay controls -->
+                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                            <button type="button" onclick="setAsBase({{ $image->id }})" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full {{ $image->is_base ? 'bg-green-600' : '' }}"
+                                    title="{{ $image->is_base ? 'Ảnh chính' : 'Đặt làm ảnh chính' }}">
+                                <i class="fas fa-star text-xs"></i>
+                            </button>
+                            <button type="button" onclick="deleteImage({{ $image->id }})" 
+                                    class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full"
+                                    title="Xóa ảnh">
+                                <i class="fas fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Base image indicator -->
+                        @if($image->is_base)
+                        <div class="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded-full text-xs">
+                            <i class="fas fa-star mr-1"></i>Chính
+                        </div>
+                        @endif
+                    </div>
+                    @empty
+                    <div class="col-span-full text-center py-8 text-gray-500">
+                        <i class="fas fa-images text-4xl mb-4"></i>
+                        <p>Chưa có hình ảnh nào</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+
             <!-- Thông số kỹ thuật -->
             <div class="mt-6">
                 <h3 class="text-lg font-semibold text-gray-700 border-b pb-2 mb-4">Thông số kỹ thuật</h3>
@@ -199,4 +324,96 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Image management functions
+    function uploadImages() {
+        const fileInput = document.getElementById('new_images');
+        const files = fileInput.files;
+        
+        if (files.length === 0) {
+            alert('Vui lòng chọn ít nhất một hình ảnh');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('product_id', '{{ $product->id }}');
+        
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images[]', files[i]);
+        }
+
+        fetch('{{ route("admin.products.upload-images", $product->id) }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi tải lên hình ảnh');
+        });
+    }
+
+    function setAsBase(imageId) {
+        if (!confirm('Bạn có chắc chắn muốn đặt ảnh này làm ảnh chính?')) {
+            return;
+        }
+
+        fetch('{{ route("admin.products.set-base-image", $product->id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ image_id: imageId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra');
+        });
+    }
+
+    function deleteImage(imageId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+            return;
+        }
+
+        fetch('{{ route("admin.products.delete-image", $product->id) }}', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ image_id: imageId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.querySelector(`[data-image-id="${imageId}"]`).remove();
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra');
+        });
+    }
+</script>
 @endsection 

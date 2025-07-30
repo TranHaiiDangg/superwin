@@ -179,6 +179,77 @@
                 </div>
             </div>
             
+            <!-- SEO và Meta -->
+            <div class="space-y-4">
+                <h4 class="text-md font-medium text-gray-900 border-b pb-2">SEO và Meta</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                        <input type="text" id="meta_title" name="meta_title" value="{{ old('meta_title') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Tiêu đề SEO">
+                        @error('meta_title')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="meta_keywords" class="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
+                        <input type="text" id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Từ khóa SEO (phân cách bằng dấu phẩy)">
+                        @error('meta_keywords')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="meta_robots" class="block text-sm font-medium text-gray-700 mb-1">Meta Robots</label>
+                        <select id="meta_robots" name="meta_robots"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="index,follow" {{ old('meta_robots') == 'index,follow' ? 'selected' : '' }}>index,follow</option>
+                            <option value="noindex,follow" {{ old('meta_robots') == 'noindex,follow' ? 'selected' : '' }}>noindex,follow</option>
+                            <option value="index,nofollow" {{ old('meta_robots') == 'index,nofollow' ? 'selected' : '' }}>index,nofollow</option>
+                            <option value="noindex,nofollow" {{ old('meta_robots') == 'noindex,nofollow' ? 'selected' : '' }}>noindex,nofollow</option>
+                        </select>
+                        @error('meta_robots')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="meta_author" class="block text-sm font-medium text-gray-700 mb-1">Meta Author</label>
+                        <input type="text" id="meta_author" name="meta_author" value="{{ old('meta_author') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Tác giả">
+                        @error('meta_author')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                    <textarea id="meta_description" name="meta_description" rows="3"
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Mô tả SEO">{{ old('meta_description') }}</textarea>
+                    @error('meta_description')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div>
+                    <label for="meta_canonical_url" class="block text-sm font-medium text-gray-700 mb-1">Canonical URL</label>
+                    <input type="url" id="meta_canonical_url" name="meta_canonical_url" value="{{ old('meta_canonical_url') }}"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="https://example.com/product-url">
+                    @error('meta_canonical_url')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+            
             <!-- Settings -->
             <div class="space-y-4">
                 <h4 class="text-md font-medium text-gray-900 border-b pb-2">Cài đặt</h4>

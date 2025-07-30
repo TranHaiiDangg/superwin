@@ -26,13 +26,21 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
-            'sort_order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $path = $image->storeAs('brands', $filename, 'public');
+            $validated['image'] = '/storage/' . $path;
+        }
 
         Brand::create($validated);
 
@@ -42,6 +50,7 @@ class BrandController extends Controller
 
     public function edit(Brand $brand)
     {
+        $brand->loadCount('products');
         return view('admin.brands.edit', compact('brand'));
     }
 
@@ -49,13 +58,35 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
-            'sort_order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
+            'remove_image' => 'nullable|boolean',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
+
+        // Handle image removal
+        if ($request->has('remove_image') && $request->remove_image) {
+            $validated['image'] = null;
+            // Delete old image file if exists
+            if ($brand->image && file_exists(public_path($brand->image))) {
+                unlink(public_path($brand->image));
+            }
+        }
+        // Handle new image upload
+        elseif ($request->hasFile('image')) {
+            // Delete old image file if exists
+            if ($brand->image && file_exists(public_path($brand->image))) {
+                unlink(public_path($brand->image));
+            }
+            
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $path = $image->storeAs('brands', $filename, 'public');
+            $validated['image'] = '/storage/' . $path;
+        }
 
         $brand->update($validated);
 
