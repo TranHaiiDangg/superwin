@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BrandController extends Controller
 {
@@ -40,6 +41,9 @@ class BrandController extends Controller
             $filename = time() . '_' . $image->getClientOriginalName();
             $path = $image->storeAs('brands', $filename, 'public');
             $validated['image'] = '/storage/' . $path;
+            
+            // Debug log
+            Log::info('Brand image uploaded: ' . $validated['image']);
         }
 
         Brand::create($validated);

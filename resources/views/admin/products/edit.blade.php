@@ -128,9 +128,9 @@
 
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center">
-                            <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }}
+                            <input type="checkbox" id="status" name="status" value="1" {{ old('status', $product->status) ? 'checked' : '' }}
                                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="is_active" class="ml-2 block text-sm text-gray-900">Kích hoạt</label>
+                            <label for="status" class="ml-2 block text-sm text-gray-900">Kích hoạt</label>
                         </div>
                         <div class="flex items-center">
                             <input type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}
@@ -295,19 +295,46 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="power" class="block text-sm font-medium text-gray-700 mb-2">Công suất (HP)</label>
+                        <label for="power" class="block text-sm font-medium text-gray-700 mb-2">Công suất</label>
                         <input type="text" id="power" name="power" value="{{ old('power', $product->power) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 0.5 HP, 45W">
                     </div>
                     <div>
-                        <label for="voltage" class="block text-sm font-medium text-gray-700 mb-2">Điện áp (V)</label>
+                        <label for="voltage" class="block text-sm font-medium text-gray-700 mb-2">Điện áp</label>
                         <input type="text" id="voltage" name="voltage" value="{{ old('voltage', $product->voltage) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 220V/50Hz">
                     </div>
                     <div>
-                        <label for="flow_rate" class="block text-sm font-medium text-gray-700 mb-2">Lưu lượng (m³/h)</label>
+                        <label for="flow_rate" class="block text-sm font-medium text-gray-700 mb-2">Lưu lượng</label>
                         <input type="text" id="flow_rate" name="flow_rate" value="{{ old('flow_rate', $product->flow_rate) }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 25 L/phút">
+                    </div>
+                    <div>
+                        <label for="pressure" class="block text-sm font-medium text-gray-700 mb-2">Áp lực/Cột áp</label>
+                        <input type="text" id="pressure" name="pressure" value="{{ old('pressure', $product->pressure) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 25m">
+                    </div>
+                    <div>
+                        <label for="efficiency" class="block text-sm font-medium text-gray-700 mb-2">Hiệu suất</label>
+                        <input type="text" id="efficiency" name="efficiency" value="{{ old('efficiency', $product->efficiency) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 85%">
+                    </div>
+                    <div>
+                        <label for="noise_level" class="block text-sm font-medium text-gray-700 mb-2">Mức ồn</label>
+                        <input type="text" id="noise_level" name="noise_level" value="{{ old('noise_level', $product->noise_level) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: < 65dB">
+                    </div>
+                    <div>
+                        <label for="warranty_period" class="block text-sm font-medium text-gray-700 mb-2">Bảo hành</label>
+                        <input type="text" id="warranty_period" name="warranty_period" value="{{ old('warranty_period', $product->warranty_period) }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 12 tháng">
                     </div>
                 </div>
             </div>

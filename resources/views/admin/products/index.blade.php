@@ -143,7 +143,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-lock"></i>
                                     </button>
                                 </form>
                             </div>

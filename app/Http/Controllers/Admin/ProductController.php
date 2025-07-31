@@ -51,6 +51,13 @@ class ProductController extends Controller
             'meta_robots' => 'nullable|string|max:100',
             'meta_author' => 'nullable|string|max:255',
             'meta_canonical_url' => 'nullable|url|max:500',
+            'power' => 'nullable|string|max:100',
+            'voltage' => 'nullable|string|max:100',
+            'flow_rate' => 'nullable|string|max:100',
+            'pressure' => 'nullable|string|max:100',
+            'efficiency' => 'nullable|string|max:100',
+            'noise_level' => 'nullable|string|max:100',
+            'warranty_period' => 'nullable|string|max:100',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -94,6 +101,13 @@ class ProductController extends Controller
             'meta_robots' => 'nullable|string|max:100',
             'meta_author' => 'nullable|string|max:255',
             'meta_canonical_url' => 'nullable|url|max:500',
+            'power' => 'nullable|string|max:100',
+            'voltage' => 'nullable|string|max:100',
+            'flow_rate' => 'nullable|string|max:100',
+            'pressure' => 'nullable|string|max:100',
+            'efficiency' => 'nullable|string|max:100',
+            'noise_level' => 'nullable|string|max:100',
+            'warranty_period' => 'nullable|string|max:100',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -108,10 +122,10 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $product->delete();
+        $product->update(['status' => 0]);
 
         return redirect()->route('admin.products.index')
-            ->with('success', 'Sản phẩm đã được xóa thành công!');
+        ->with('success', 'Sản phẩm đã được vô hiệu hóa thành công!');
     }
 
     public function uploadImages(Request $request, Product $product)

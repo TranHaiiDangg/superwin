@@ -37,7 +37,14 @@ class Product extends Model
         'meta_keywords',
         'meta_robots',
         'meta_author',
-        'meta_canonical_url'
+        'meta_canonical_url',
+        'power',
+        'voltage',
+        'flow_rate',
+        'pressure',
+        'efficiency',
+        'noise_level',
+        'warranty_period'
     ];
 
     protected $casts = [

@@ -250,6 +250,83 @@
                 </div>
             </div>
             
+            <!-- Thông số kỹ thuật -->
+            <div class="space-y-4">
+                <h4 class="text-md font-medium text-gray-900 border-b pb-2">Thông số kỹ thuật</h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="power" class="block text-sm font-medium text-gray-700 mb-1">Công suất</label>
+                        <input type="text" id="power" name="power" value="{{ old('power') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 0.5 HP, 45W">
+                        @error('power')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="voltage" class="block text-sm font-medium text-gray-700 mb-1">Điện áp</label>
+                        <input type="text" id="voltage" name="voltage" value="{{ old('voltage') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 220V/50Hz">
+                        @error('voltage')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="flow_rate" class="block text-sm font-medium text-gray-700 mb-1">Lưu lượng</label>
+                        <input type="text" id="flow_rate" name="flow_rate" value="{{ old('flow_rate') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 25 L/phút">
+                        @error('flow_rate')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="pressure" class="block text-sm font-medium text-gray-700 mb-1">Áp lực/Cột áp</label>
+                        <input type="text" id="pressure" name="pressure" value="{{ old('pressure') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 25m">
+                        @error('pressure')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="efficiency" class="block text-sm font-medium text-gray-700 mb-1">Hiệu suất</label>
+                        <input type="text" id="efficiency" name="efficiency" value="{{ old('efficiency') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 85%">
+                        @error('efficiency')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="noise_level" class="block text-sm font-medium text-gray-700 mb-1">Mức ồn</label>
+                        <input type="text" id="noise_level" name="noise_level" value="{{ old('noise_level') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: < 65dB">
+                        @error('noise_level')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="warranty_period" class="block text-sm font-medium text-gray-700 mb-1">Bảo hành</label>
+                        <input type="text" id="warranty_period" name="warranty_period" value="{{ old('warranty_period') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="VD: 12 tháng">
+                        @error('warranty_period')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+            
             <!-- Settings -->
             <div class="space-y-4">
                 <h4 class="text-md font-medium text-gray-900 border-b pb-2">Cài đặt</h4>

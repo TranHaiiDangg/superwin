@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'customer_id',
         'order_code',
         'customer_name',
         'customer_phone',
@@ -48,9 +48,9 @@ class Order extends Model
         'estimated_delivery_date' => 'date'
     ];
 
-    public function user(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function orderDetails(): HasMany

@@ -56,14 +56,14 @@
                         Thương hiệu
                     </a>
                     
-                    <a href="{{ route('admin.orders.index') }}" 
-                       class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.orders.*') ? 'bg-primary text-white' : '' }}">
-                        <i class="fas fa-shopping-cart mr-3"></i>
-                        Đơn hàng
-                    </a>
-                    
                     <a href="{{ route('admin.users.index') }}" 
                        class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white' : '' }}">
+                        <i class="fas fa-user-shield mr-3"></i>
+                        User admin
+                    </a>
+                    
+                    <a href="{{ route('admin.customers.index') }}" 
+                       class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.customers.*') ? 'bg-primary text-white' : '' }}">
                         <i class="fas fa-users mr-3"></i>
                         Người dùng
                     </a>

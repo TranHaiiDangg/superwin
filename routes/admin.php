@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CustomerController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Auth routes (no middleware)
@@ -36,8 +37,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('orders', OrderController::class);
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     
-    // Users
+    // Users (Admin)
     Route::resource('users', UserController::class);
+    Route::post('users/{user}/ban', [UserController::class, 'ban'])->name('users.ban');
+    Route::post('users/{user}/unban', [UserController::class, 'unban'])->name('users.unban');
+    
+    // Customers
+    Route::resource('customers', CustomerController::class)->except(['create', 'store', 'destroy']);
+    Route::post('customers/{customer}/ban', [CustomerController::class, 'ban'])->name('customers.ban');
+    Route::post('customers/{customer}/unban', [CustomerController::class, 'unban'])->name('customers.unban');
     
         // Reports
         Route::get('reports/sales', [AdminController::class, 'salesReport'])->name('reports.sales');

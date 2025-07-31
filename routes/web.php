@@ -11,12 +11,28 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes for SuperWin Website
 |--------------------------------------------------------------------------
 */
+
+// ===== MAIN NAVIGATION ROUTES =====
+
+// ===== AUTHENTICATION ROUTES =====
+
+// Đăng nhập
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// Đăng ký
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Đăng xuất
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ===== MAIN NAVIGATION ROUTES =====
 

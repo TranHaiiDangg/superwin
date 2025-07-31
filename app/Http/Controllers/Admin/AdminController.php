@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    // Không cần middleware trong constructor vì đã được bảo vệ trong routes
 
     public function dashboard()
     {

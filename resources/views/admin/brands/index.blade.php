@@ -70,11 +70,11 @@
                             {{ $brand->id }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($brand->logo)
-                                <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" 
-                                     class="h-10 w-10 rounded-lg object-cover">
+                            @if($brand->image)
+                                <img src="{{ asset($brand->image) }}" alt="{{ $brand->name }}" 
+                                     class="h-10 w-10 rounded-lg object-cover border border-gray-200">
                             @else
-                                <div class="h-10 w-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <div class="h-10 w-10 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300">
                                     <i class="fas fa-image text-gray-400"></i>
                                 </div>
                             @endif
