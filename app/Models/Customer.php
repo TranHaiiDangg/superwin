@@ -61,7 +61,7 @@ class Customer extends Authenticatable
     // Relationships
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'user_id');
     }
 
     public function reviews(): HasMany

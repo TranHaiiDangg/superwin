@@ -11,7 +11,7 @@
  Target Server Version : 80041 (8.0.41)
  File Encoding         : 65001
 
- Date: 31/07/2025 23:06:14
+ Date: 02/08/2025 01:18:31
 */
 
 SET NAMES utf8mb4;
@@ -508,6 +508,24 @@ CREATE TABLE `payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Table structure for product_attributes
+-- ----------------------------
+DROP TABLE IF EXISTS `product_attributes`;
+CREATE TABLE `product_attributes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int unsigned NOT NULL,
+  `attribute_key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attribute_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `attribute_unit` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `attribute_description` text COLLATE utf8mb4_unicode_ci,
+  `sort_order` int NOT NULL DEFAULT '0',
+  `is_visible` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- Table structure for product_images
 -- ----------------------------
 DROP TABLE IF EXISTS `product_images`;
@@ -601,7 +619,7 @@ CREATE TABLE `products` (
   KEY `idx_slug` (`slug`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT,
   CONSTRAINT `products_ibfk_2` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for quat_details

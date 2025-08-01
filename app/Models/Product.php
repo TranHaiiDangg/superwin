@@ -92,6 +92,11 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function attributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
     // Product type specific relationships
     public function bomDetails(): HasOne
     {
@@ -152,4 +157,54 @@ class Product extends Model
     {
         return $this->sale_price && $this->sale_price < $this->price;
     }
-} 
+
+    // Static method to generate unique SKU
+    public static function generateSKU($categoryId = null, $brandId = null, $productType = null)
+    {
+        $prefix = 'SP';
+        
+        // Add category prefix if available
+        if ($categoryId) {
+            $category = \App\Models\Category::find($categoryId);
+            if ($category) {
+                $prefix .= strtoupper(substr($category->name, 0, 2));
+            }
+        }
+        
+        // Add brand prefix if available
+        if ($brandId) {
+            $brand = \App\Models\Brand::find($brandId);
+            if ($brand) {
+                $prefix .= strtoupper(substr($brand->name, 0, 2));
+            }
+        }
+        
+        // Add product type prefix
+        if ($productType) {
+            $typeMap = [
+                'bom' => 'BM',
+                'quat' => 'QT',
+                'motor' => 'MT',
+                'bom_chim' => 'BC',
+                'quat_tron' => 'QR'
+            ];
+            $prefix .= $typeMap[$productType] ?? 'SP';
+        }
+        
+        // Generate unique number
+        $counter = 1;
+        do {
+            $sku = $prefix . str_pad($counter, 4, '0', STR_PAD_LEFT);
+            $exists = self::where('sku', $sku)->exists();
+            $counter++;
+        } while ($exists);
+        
+        return $sku;
+    }
+
+    // Method to auto-generate SKU for current product
+    public function generateUniqueSKU()
+    {
+        return self::generateSKU($this->category_id, $this->brand_id, $this->product_type);
+    }
+}

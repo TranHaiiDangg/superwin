@@ -51,20 +51,59 @@ class ProductController extends Controller
             'meta_robots' => 'nullable|string|max:100',
             'meta_author' => 'nullable|string|max:255',
             'meta_canonical_url' => 'nullable|url|max:500',
-            'power' => 'nullable|string|max:100',
-            'voltage' => 'nullable|string|max:100',
-            'flow_rate' => 'nullable|string|max:100',
-            'pressure' => 'nullable|string|max:100',
-            'efficiency' => 'nullable|string|max:100',
-            'noise_level' => 'nullable|string|max:100',
-            'warranty_period' => 'nullable|string|max:100',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'attributes' => 'array',
+            'attributes.*.attribute_key' => 'required|string|max:100',
+            'attributes.*.attribute_value' => 'nullable|string|max:255',
+            'attributes.*.attribute_unit' => 'nullable|string|max:50',
+            'attributes.*.attribute_description' => 'nullable|string',
+            'attributes.*.sort_order' => 'integer|min:0',
+            'attributes.*.is_visible' => 'boolean'
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
         $validated['status'] = $request->has('status');
         $validated['is_featured'] = $request->has('is_featured');
 
-        $product = Product::create($validated);
+        // Auto-generate SKU if empty
+        if (empty($validated['sku'])) {
+            $validated['sku'] = Product::generateSKU(
+                $validated['category_id'], 
+                $validated['brand_id'], 
+                $validated['product_type']
+            );
+        }
+
+        // Create product (exclude images and attributes from mass assignment)
+        $product = Product::create(collect($validated)->except(['attributes', 'images'])->toArray());
+
+        // Handle image uploads
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('products', $filename, 'public');
+                
+                $product->images()->create([
+                    'url' => '/storage/' . $path,
+                    'alt_text' => $product->name,
+                    'sort_order' => $index + 1,
+                    'is_base' => $index === 0 // First image becomes base
+                ]);
+            }
+        }
+
+        // Handle attributes
+        if (isset($validated['attributes'])) {
+            foreach ($validated['attributes'] as $index => $attributeData) {
+                if (!empty($attributeData['attribute_key'])) {
+                    $attributeData['product_id'] = $product->id;
+                    $attributeData['sort_order'] = $attributeData['sort_order'] ?? $index;
+                    $attributeData['is_visible'] = $attributeData['is_visible'] ?? true;
+                    
+                    \App\Models\ProductAttribute::create($attributeData);
+                }
+            }
+        }
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được tạo thành công!');
@@ -101,20 +140,60 @@ class ProductController extends Controller
             'meta_robots' => 'nullable|string|max:100',
             'meta_author' => 'nullable|string|max:255',
             'meta_canonical_url' => 'nullable|url|max:500',
-            'power' => 'nullable|string|max:100',
-            'voltage' => 'nullable|string|max:100',
-            'flow_rate' => 'nullable|string|max:100',
-            'pressure' => 'nullable|string|max:100',
-            'efficiency' => 'nullable|string|max:100',
-            'noise_level' => 'nullable|string|max:100',
-            'warranty_period' => 'nullable|string|max:100',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'attributes' => 'array',
+            'attributes.*.attribute_key' => 'required|string|max:100',
+            'attributes.*.attribute_value' => 'nullable|string|max:255',
+            'attributes.*.attribute_unit' => 'nullable|string|max:50',
+            'attributes.*.attribute_description' => 'nullable|string',
+            'attributes.*.sort_order' => 'integer|min:0',
+            'attributes.*.is_visible' => 'boolean'
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
         $validated['status'] = $request->has('status');
         $validated['is_featured'] = $request->has('is_featured');
 
-        $product->update($validated);
+        // Auto-generate SKU if empty
+        if (empty($validated['sku'])) {
+            $validated['sku'] = $product->generateUniqueSKU();
+        }
+
+        // Update product basic info (exclude images and attributes)
+        $product->update(collect($validated)->except(['attributes', 'images'])->toArray());
+
+        // Handle new image uploads
+        if ($request->hasFile('images')) {
+            $currentImageCount = $product->images()->count();
+            foreach ($request->file('images') as $index => $image) {
+                $filename = time() . '_' . ($currentImageCount + $index) . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('products', $filename, 'public');
+                
+                $product->images()->create([
+                    'url' => '/storage/' . $path,
+                    'alt_text' => $product->name,
+                    'sort_order' => $currentImageCount + $index + 1,
+                    'is_base' => $currentImageCount === 0 && $index === 0 // First image becomes base if no existing images
+                ]);
+            }
+        }
+
+        // Update attributes
+        if (isset($validated['attributes'])) {
+            // Delete existing attributes
+            $product->attributes()->delete();
+
+            // Create new attributes
+            foreach ($validated['attributes'] as $index => $attributeData) {
+                if (!empty($attributeData['attribute_key'])) {
+                    $attributeData['product_id'] = $product->id;
+                    $attributeData['sort_order'] = $attributeData['sort_order'] ?? $index;
+                    $attributeData['is_visible'] = $attributeData['is_visible'] ?? true;
+                    
+                    \App\Models\ProductAttribute::create($attributeData);
+                }
+            }
+        }
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được cập nhật thành công!');
@@ -126,6 +205,14 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
         ->with('success', 'Sản phẩm đã được vô hiệu hóa thành công!');
+    }
+
+    public function restore(Product $product)
+    {
+        $product->update(['status' => 1]);
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Sản phẩm đã được kích hoạt lại thành công!');
     }
 
     public function uploadImages(Request $request, Product $product)
@@ -223,5 +310,25 @@ class ProductController extends Controller
                 'message' => 'Lỗi: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function generateSKU(Request $request)
+    {
+        $request->validate([
+            'category_id' => 'nullable|exists:categories,id',
+            'brand_id' => 'nullable|exists:brands,id',
+            'product_type' => 'nullable|in:bom,quat,motor,bom_chim,quat_tron'
+        ]);
+
+        $sku = Product::generateSKU(
+            $request->category_id,
+            $request->brand_id,
+            $request->product_type
+        );
+
+        return response()->json([
+            'success' => true,
+            'sku' => $sku
+        ]);
     }
 } 

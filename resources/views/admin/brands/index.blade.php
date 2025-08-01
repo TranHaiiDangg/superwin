@@ -109,17 +109,27 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.brands.edit', $brand) }}" 
-                                   class="text-blue-600 hover:text-blue-900">
+                                   class="text-blue-600 hover:text-blue-900" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.brands.destroy', $brand) }}" method="POST" 
-                                      class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                @if($brand->is_active)
+                                    <form action="{{ route('admin.brands.destroy', $brand) }}" method="POST" 
+                                          class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn vô hiệu hóa thương hiệu này?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-orange-600 hover:text-orange-900" title="Vô hiệu hóa">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.brands.restore', $brand) }}" method="POST" 
+                                          class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn kích hoạt lại thương hiệu này?')">
+                                        @csrf
+                                        <button type="submit" class="text-green-600 hover:text-green-900" title="Kích hoạt lại">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

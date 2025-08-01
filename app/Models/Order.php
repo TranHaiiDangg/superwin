@@ -12,7 +12,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id',
+        'user_id',
         'order_code',
         'customer_name',
         'customer_phone',
@@ -50,7 +50,7 @@ class Order extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'user_id');
     }
 
     public function orderDetails(): HasMany

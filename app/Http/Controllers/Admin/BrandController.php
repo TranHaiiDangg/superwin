@@ -11,9 +11,14 @@ class BrandController extends Controller
 {
     public function index()
     {
-        $brands = Brand::withCount('products')
-            ->orderBy('sort_order')
-            ->paginate(20);
+        $query = Brand::withCount('products');
+
+        // Filter by status if requested
+        if (request('status') !== null && request('status') !== '') {
+            $query->where('is_active', request('status'));
+        }
+
+        $brands = $query->orderBy('sort_order')->paginate(20);
 
         return view('admin.brands.index', compact('brands'));
     }
@@ -100,13 +105,22 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
-        if ($brand->products()->count() > 0) {
-            return back()->with('error', 'Không thể xóa thương hiệu có sản phẩm!');
+        // Check if brand has active products
+        if ($brand->products()->where('status', true)->count() > 0) {
+            return back()->with('error', 'Không thể vô hiệu hóa thương hiệu có sản phẩm đang hoạt động!');
         }
 
-        $brand->delete();
+        $brand->update(['is_active' => false]);
 
         return redirect()->route('admin.brands.index')
-            ->with('success', 'Thương hiệu đã được xóa thành công!');
+            ->with('success', 'Thương hiệu đã được vô hiệu hóa thành công!');
+    }
+
+    public function restore(Brand $brand)
+    {
+        $brand->update(['is_active' => true]);
+
+        return redirect()->route('admin.brands.index')
+            ->with('success', 'Thương hiệu đã được kích hoạt lại thành công!');
     }
 } 

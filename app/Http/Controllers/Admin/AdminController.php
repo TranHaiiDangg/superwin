@@ -17,7 +17,7 @@ class AdminController extends Controller
             'total_revenue' => \App\Models\Order::where('status', 'delivered')->sum('total_amount'),
         ];
 
-        $recent_orders = \App\Models\Order::with('user')
+        $recent_orders = \App\Models\Order::with('customer')
             ->latest()
             ->take(5)
             ->get();

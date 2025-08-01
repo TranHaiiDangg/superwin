@@ -50,7 +50,7 @@
                             Loại sản phẩm
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Danh mục cha
+                            Danh mục con
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Số sản phẩm
@@ -71,11 +71,18 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                @if($category->parent)
-                                    <span class="text-gray-400 mr-2">└─</span>
+                                @if($category->image)
+                                    <img src="{{ $category->image }}" alt="{{ $category->name }}" 
+                                         class="h-10 w-10 rounded-lg object-cover mr-3">
+                                @else
+                                    <div class="h-10 w-10 bg-gray-200 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-folder text-gray-400"></i>
+                                    </div>
                                 @endif
                                 <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ $category->name }}</div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $category->name }}
+                                    </div>
                                     @if($category->description)
                                         <div class="text-sm text-gray-500">{{ Str::limit($category->description, 50) }}</div>
                                     @endif
@@ -88,17 +95,17 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            @if($category->parent)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ $category->parent->name }}
+                            @if($category->children_count > 0)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <i class="fas fa-folder-open mr-1"></i>{{ $category->children_count }} danh mục con
                                 </span>
                             @else
-                                <span class="text-gray-400">Danh mục gốc</span>
+                                <span class="text-gray-400">Không có</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                {{ $category->products_count ?? 0 }}
+                                {{ $category->products_count ?? 0 }} sản phẩm
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -114,18 +121,32 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
+                                <a href="{{ route('admin.categories.show', $category) }}" 
+                                   class="text-green-600 hover:text-green-900" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
                                 <a href="{{ route('admin.categories.edit', $category) }}" 
-                                   class="text-blue-600 hover:text-blue-900">
+                                   class="text-blue-600 hover:text-blue-900" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" 
-                                      class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                @if($category->is_active)
+                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" 
+                                          class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn vô hiệu hóa danh mục này?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-orange-600 hover:text-orange-900" title="Vô hiệu hóa">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.categories.restore', $category) }}" method="POST" 
+                                          class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn kích hoạt lại danh mục này?')">
+                                        @csrf
+                                        <button type="submit" class="text-green-600 hover:text-green-900" title="Kích hoạt lại">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

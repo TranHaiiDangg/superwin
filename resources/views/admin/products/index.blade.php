@@ -133,19 +133,31 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.products.edit', $product) }}" 
-                                   class="text-blue-600 hover:text-blue-900">
+                                   class="text-blue-600 hover:text-blue-900" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.products.destroy', $product) }}" 
-                                      method="POST" 
-                                      onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?')"
-                                      class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-lock"></i>
-                                    </button>
-                                </form>
+                                @if($product->status)
+                                    <form action="{{ route('admin.products.destroy', $product) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Bạn có chắc muốn vô hiệu hoá sản phẩm này?')"
+                                          class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-orange-600 hover:text-orange-900" title="Vô hiệu hóa">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.products.restore', $product) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Bạn có chắc muốn kích hoạt lại sản phẩm này?')"
+                                          class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-green-600 hover:text-green-900" title="Kích hoạt lại">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
