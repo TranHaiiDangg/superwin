@@ -35,15 +35,15 @@
                     <!-- Login Form -->
                     <form method="POST" action="{{ route('login.post') }}">
                         @csrf
-                        
+
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-envelope"></i>
                                 </span>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                       id="email" name="email" value="{{ old('email') }}" 
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                       id="email" name="email" value="{{ old('email') }}"
                                        placeholder="Nhập email của bạn" required>
                             </div>
                             @error('email')
@@ -57,7 +57,7 @@
                                 <span class="input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
-                                <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                <input type="password" class="form-control @error('password') is-invalid @enderror"
                                        id="password" name="password" placeholder="Nhập mật khẩu" required>
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                     <i class="fas fa-eye"></i>
@@ -83,7 +83,7 @@
 
                         <div class="text-center">
                             <p class="text-muted mb-0">
-                                Chưa có tài khoản? 
+                                Chưa có tài khoản?
                                 <a href="{{ route('register') }}" class="text-decoration-none fw-bold">
                                     Đăng ký ngay
                                 </a>
@@ -96,8 +96,8 @@
             <!-- Additional Info -->
             <div class="text-center mt-4">
                 <p class="text-muted small">
-                    Bằng việc đăng nhập, bạn đồng ý với 
-                    <a href="#" class="text-decoration-none">Điều khoản sử dụng</a> và 
+                    Bằng việc đăng nhập, bạn đồng ý với
+                    <a href="#" class="text-decoration-none">Điều khoản sử dụng</a> và
                     <a href="#" class="text-decoration-none">Chính sách bảo mật</a>
                 </p>
             </div>
@@ -110,7 +110,7 @@
 document.getElementById('togglePassword').addEventListener('click', function() {
     const password = document.getElementById('password');
     const icon = this.querySelector('i');
-    
+
     if (password.type === 'password') {
         password.type = 'text';
         icon.classList.remove('fa-eye');
@@ -123,4 +123,4 @@ document.getElementById('togglePassword').addEventListener('click', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection

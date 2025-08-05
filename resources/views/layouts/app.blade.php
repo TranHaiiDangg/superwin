@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SuperWin - Máy bơm nước & Quạt công nghiệp')</title>
-    
+
     <!-- Meta tags -->
     <meta name="description" content="@yield('description', 'SuperWin - Chuyên cung cấp máy bơm nước, quạt công nghiệp chất lượng cao. Giao hàng toàn quốc, bảo hành chính hãng.')">
     <meta name="keywords" content="@yield('keywords', 'máy bơm nước, quạt công nghiệp, superwin, máy bơm chìm, quạt thông gió')">
     <meta name="author" content="SuperWin">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/image/favicon.ico">
-    
+
     <!-- CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/trang_chu/header.css">
     <link rel="stylesheet" href="/css/trang_chu/footer.css">
     <link rel="stylesheet" href="/css/trang_chu/product.css">
-    
+
     @stack('styles')
-    
+
     <style>
         * {
             margin: 0;
@@ -104,7 +105,7 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     @stack('scripts')
 </body>
-</html> 
+</html>

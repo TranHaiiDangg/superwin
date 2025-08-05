@@ -10,7 +10,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title mb-3">Bộ lọc</h5>
-                    
+
                     <!-- Search -->
                     <div class="mb-4">
                         <label class="form-label">Tìm kiếm</label>
@@ -30,7 +30,7 @@
                         <label class="form-label">Danh mục</label>
                         <div class="list-group list-group-flush">
                             @foreach($categories as $category)
-                            <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                            <a href="{{ route('products.index', ['category' => $category->slug]) }}"
                                class="list-group-item list-group-item-action {{ request('category') == $category->slug ? 'active' : '' }}">
                                 {{ $category->name }}
                             </a>
@@ -45,7 +45,7 @@
                         <label class="form-label">Thương hiệu</label>
                         <div class="list-group list-group-flush">
                             @foreach($brands as $brand)
-                            <a href="{{ route('products.index', ['brand' => $brand->slug]) }}" 
+                            <a href="{{ route('products.index', ['brand' => $brand->slug]) }}"
                                class="list-group-item list-group-item-action {{ request('brand') == $brand->slug ? 'active' : '' }}">
                                 {{ $brand->name }}
                             </a>
@@ -102,30 +102,34 @@
                 @foreach($products as $product)
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 border-0 shadow-sm product-card">
-                        <div class="position-relative">
+                        <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="position-relative">
                             @if($product->baseImage)
                                 <img src="{{ $product->baseImage->url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
                             @else
                                 <img src="/image/sp1.png" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
                             @endif
-                            
+
                             @if($product->isOnSale)
                                 <span class="badge bg-danger position-absolute top-0 end-0 m-2">
                                     -{{ $product->discount_percentage }}%
                                 </span>
                             @endif
-                            
+
                             @if($product->is_featured)
                                 <span class="badge bg-warning position-absolute top-0 start-0 m-2">
                                     <i class="fas fa-star"></i> Nổi bật
                                 </span>
                             @endif
-                        </div>
-                        
+                        </a>
+
                         <div class="card-body d-flex flex-column">
-                            <h6 class="card-title">{{ $product->name }}</h6>
+                            <h6 class="card-title">
+                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="text-decoration-none text-dark">
+                                    {{ $product->name }}
+                                </a>
+                            </h6>
                             <p class="card-text text-muted small">{{ Str::limit($product->short_description, 80) }}</p>
-                            
+
                             <div class="mt-auto">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     @if($product->isOnSale)
@@ -135,11 +139,11 @@
                                         <span class="text-primary fw-bold">{{ number_format($product->price) }}đ</span>
                                     @endif
                                 </div>
-                                
+
                                 <div class="d-grid">
-                                    <a href="#" class="btn btn-primary btn-sm">
+                                    <button onclick="addToCart('{{ $product->id }}')" class="btn btn-primary btn-sm">
                                         <i class="fas fa-shopping-cart me-1"></i>Thêm vào giỏ
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -164,6 +168,40 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+function addToCart(productId) {
+    // Show loading state
+    showNotification('Đang thêm vào giỏ hàng...', 'info');
+
+    // Simulate API call
+    setTimeout(() => {
+        showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
+    }, 1000);
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+@endpush
+
 @push('styles')
 <style>
 .product-card {
@@ -173,6 +211,16 @@
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.product-card .position-relative {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.product-card .position-relative:hover {
+    text-decoration: none;
 }
 
 .list-group-item.active {
@@ -185,4 +233,4 @@
 }
 </style>
 @endpush
-@endsection 
+@endsection

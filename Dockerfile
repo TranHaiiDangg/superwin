@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copy existing application directory contents
+COPY . /var/www/html
 # Copy composer files first for better caching
 COPY composer.json composer.lock ./
 
@@ -35,8 +37,7 @@ COPY package.json package-lock.json* ./
 # Install Node.js dependencies
 RUN npm install
 
-# Copy existing application directory contents
-COPY . /var/www/html
+
 
 # Copy custom php.ini
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini

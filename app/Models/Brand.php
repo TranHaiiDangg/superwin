@@ -12,10 +12,11 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
-        'image',
+        'slug',
         'description',
-        'is_active',
-        'sort_order'
+        'image',
+        'sort_order',
+        'is_active'
     ];
 
     protected $casts = [
@@ -37,6 +38,17 @@ class Brand extends Model
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('name');
+        return $query->orderBy('sort_order', 'asc');
     }
-} 
+
+    // Accessors
+    public function getProductsCountAttribute()
+    {
+        return $this->products()->count();
+    }
+
+    public function getActiveProductsCountAttribute()
+    {
+        return $this->products()->where('status', true)->count();
+    }
+}
