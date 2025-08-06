@@ -19,5 +19,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Chạy các seeder
+        $this->call([
+            RolePermissionSeeder::class, // Phải chạy đầu tiên
+            AdminUserSeeder::class,
+            CategorySeeder::class,
+            BrandSeeder::class,
+            CustomerSeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 }

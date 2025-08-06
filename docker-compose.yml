@@ -1,47 +1,108 @@
-  version: '3.8'
+version: "3.8"
 
-  services:
-    mysql_db:
-      image: mysql:8.0
-      container_name: super_win_mysql
-      restart: unless-stopped
-      environment:
-        MYSQL_DATABASE: super_win_db
-        MYSQL_ROOT_PASSWORD: Superwin@Root
-        MYSQL_PASSWORD: Superwin@9988
-        MYSQL_USER: admin
-        SERVICE_TAGS: dev
-        SERVICE_NAME: mysql
-      ports:
-        - "3307:3306"
-      volumes:
-        - mysql_data:/var/lib/mysql
-      networks:
-        - super_win_network
+services:
+    # Laravel Application
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: superwin_app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+            - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./docker/nginx.conf:/etc/nginx/sites-available/default
+        ports:
+            - "8000:80"
+        depends_on:
+            - mysql
+            - redis
+        networks:
+            - superwin_network
+        environment:
+            - DB_HOST=mysql
+            - DB_PORT=3306
+            - DB_DATABASE=superwin
+            - DB_USERNAME=superwin_user
+            - DB_PASSWORD=superwin_password
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - APP_ENV=local
+            - APP_DEBUG=true
 
-    laravel_app:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      container_name: super_win_app
-      restart: unless-stopped
-      working_dir: /var/www
-      volumes:
-        - ./:/var/www
-        - ./storage:/var/www/storage
-        - ./bootstrap/cache:/var/www/bootstrap/cache
-      ports:
-        - "8000:8000"
-      depends_on:
-        - mysql_db
-      networks:
-        - super_win_network
-      command: php artisan serve --host=0.0.0.0 --port=8000
+    # MySQL Database
+    mysql:
+        image: mysql:8.0
+        container_name: superwin_mysql
+        restart: unless-stopped
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: superwin
+            MYSQL_USER: superwin_user
+            MYSQL_PASSWORD: superwin_password
+            MYSQL_ROOT_PASSWORD: root_password
+        volumes:
+            - mysql_data:/var/lib/mysql
+            - ./mysql-inti/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - superwin_network
+        command: --default-authentication-plugin=mysql_native_password
 
-  volumes:
+    # phpMyAdmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        platform: linux/amd64
+        container_name: superwin_phpmyadmin
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: superwin_user
+            PMA_PASSWORD: superwin_password
+            MYSQL_ROOT_PASSWORD: root_password
+        depends_on:
+            - mysql
+        networks:
+            - superwin_network
+
+    # Redis Cache
+    redis:
+        image: redis:7-alpine
+        container_name: superwin_redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - superwin_network
+
+    # Node.js for development (optional)
+    node:
+        image: node:18-alpine
+        container_name: superwin_node
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+        ports:
+            - "3000:3000"
+        command: sh -c "npm install && npm run dev"
+        networks:
+            - superwin_network
+        profiles:
+            - dev
+
+volumes:
     mysql_data:
-      driver: local
+        driver: local
+    redis_data:
+        driver: local
 
-  networks:
-    super_win_network:
-      driver: bridge
+networks:
+    superwin_network:
+        driver: bridge

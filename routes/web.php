@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +22,51 @@ use App\Http\Controllers\WarrantyController;
 
 // ===== MAIN NAVIGATION ROUTES =====
 
+// ===== AUTHENTICATION ROUTES =====
+
+// Đăng nhập
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// Đăng ký
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+// Đăng xuất
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Routes cần customer authentication
+Route::middleware(['customer'])->group(function () {
+    // Profile routes
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+    // TODO: Uncomment khi có CartController và OrderController
+    // Cart routes
+    // Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    // Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    // Route::put('/cart/update', [CartController::class, 'update'])->name('cart.update');
+    // Route::delete('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+    // Order routes
+    // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    // Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+});
+
+// ===== MAIN NAVIGATION ROUTES =====
+
 // Trang chủ
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Cart Routes
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth:customer');
+    Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update')->middleware('auth:customer');
+    Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth:customer');
+    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear')->middleware('auth:customer');
+});
 
 // Sản phẩm
 Route::prefix('products')->name('products.')->group(function () {
@@ -61,7 +106,7 @@ Route::prefix('brands')->name('products.brand.')->group(function () {
     Route::get('/super-win', [BrandController::class, 'superWin'])->name('super-win');
     Route::get('/vina-pump', [BrandController::class, 'vinaPump'])->name('vina-pump');
     Route::get('/abc', [BrandController::class, 'abc'])->name('abc');
-    
+
     // Quạt brands
     Route::get('/super-win-fan', [BrandController::class, 'superWinFan'])->name('super-win-fan');
     Route::get('/deton', [BrandController::class, 'deton'])->name('deton');
@@ -79,12 +124,12 @@ Route::prefix('product-category')->name('products.category.')->group(function ()
     Route::get('/may-bom-nuoc-bien', [ProductController::class, 'categoryShow'])->name('may-bom-nuoc-bien');
     Route::get('/may-bom-ho-boi', [ProductController::class, 'categoryShow'])->name('may-bom-ho-boi');
     Route::get('/may-bom-nhap-khau', [ProductController::class, 'categoryShow'])->name('may-bom-nhap-khau');
-    
+
     // Quạt thông gió categories
     Route::get('/quat-thong-gio-vuong-super-win', [ProductController::class, 'categoryShow'])->name('quat-thong-gio-vuong-super-win');
     Route::get('/quat-thong-gio-vuong-deton', [ProductController::class, 'categoryShow'])->name('quat-thong-gio-vuong-deton');
     Route::get('/quat-thong-gio-tron', [ProductController::class, 'categoryShow'])->name('quat-thong-gio-tron');
-    
+
     // Quạt đặc biệt categories
     Route::get('/quat-huong-truc-noi-ong', [ProductController::class, 'categoryShow'])->name('quat-huong-truc-noi-ong');
     Route::get('/quat-san-cong-nghiep', [ProductController::class, 'categoryShow'])->name('quat-san-cong-nghiep');
@@ -138,6 +183,9 @@ Route::get('/sitemap.xml', function () {
     return response()->view('sitemap')->header('Content-Type', 'text/xml');
 })->name('sitemap');
 
+// Admin routes
+require __DIR__.'/admin.php';
+
 // 404 fallback
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
@@ -153,7 +201,7 @@ Route::fallback(function () {
 // Dynamic category route
 // Route::get('/category/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 
-// Dynamic brand route  
+// Dynamic brand route
 // Route::get('/brand/{brand:slug}', [BrandController::class, 'show'])->name('products.brand');
 
 // Dynamic product category route
