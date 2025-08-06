@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
 
         // Chạy các seeder
         $this->call([
+            RolePermissionSeeder::class, // Phải chạy đầu tiên
+            AdminUserSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             CustomerSeeder::class,

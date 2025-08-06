@@ -20,9 +20,16 @@ class AdminMiddleware
             return redirect()->route('admin.login');
         }
 
-        // Kiểm tra user có phải admin không (có thể thêm logic kiểm tra role)
-        // Hiện tại cho phép tất cả user đã đăng nhập truy cập admin
-        // Bạn có thể thêm logic kiểm tra role admin ở đây
+        // Kiểm tra user có quyền truy cập admin không
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        // Cho phép admin, super_admin, manager, staff truy cập admin panel
+        $allowedRoles = ['super_admin', 'admin', 'manager', 'staff'];
+        if (!in_array($user->role, $allowedRoles)) {
+            return redirect()->route('admin.login')->withErrors([
+                'error' => 'Bạn không có quyền truy cập khu vực admin.'
+            ]);
+        }
 
         return $next($request);
     }

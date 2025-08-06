@@ -68,18 +68,61 @@
                         <i class="fas fa-shopping-cart mr-3"></i>
                         Đơn hàng
                     </a>
-                    
-                    <a href="{{ route('admin.users.index') }}" 
-                       class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white' : '' }}">
-                        <i class="fas fa-user-shield mr-3"></i>
-                        User admin
-                    </a>
-                    
                     <a href="{{ route('admin.customers.index') }}" 
                        class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.customers.*') ? 'bg-primary text-white' : '' }}">
                         <i class="fas fa-users mr-3"></i>
-                        Người dùng
+                        Khách hàng
                     </a>
+                    @if(auth()->user()->hasPermission('revenue.view'))
+                    <a href="{{ route('admin.revenue.index') }}" 
+                       class="flex items-center justify-between px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.revenue.*') ? 'bg-primary text-white' : '' }}">
+                        <div class="flex items-center">
+                            <i class="fas fa-chart-bar mr-3"></i>
+                            Báo cáo Doanh thu
+                        </div>
+                        <!-- <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                            <i class="fas fa-chart-line"></i>
+                        </span> -->
+                    </a>
+                    @endif
+                    
+                    <!-- System Management Dropdown -->
+                    <div class="relative group">
+                        <button class="w-full flex items-center justify-between px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.users.*') || request()->routeIs('admin.permissions.*') ? 'bg-primary text-white' : '' }}" 
+                                onclick="toggleDropdown('systemDropdown')">
+                            <div class="flex items-center">
+                                <i class="fas fa-cog mr-3"></i>
+                                Quản lý Hệ thống
+                            </div>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="systemDropdownIcon"></i>
+                        </button>
+                        
+                        <div id="systemDropdown" class="hidden mt-2 ml-4 space-y-1">
+                            <a href="{{ route('admin.users.index') }}" 
+                               class="flex items-center justify-between px-4 py-2 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors text-sm {{ request()->routeIs('admin.users.*') ? 'bg-gray-800 text-white' : '' }}">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-shield mr-3 text-xs"></i>
+                                    User Admin
+                                </div>
+                                <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                                    {{ \App\Models\User::where('is_active', true)->count() }}
+                                </span>
+                            </a>
+                            
+                            @if(auth()->user()->hasPermission('users.permissions'))
+                            <a href="{{ route('admin.permissions.index') }}" 
+                               class="flex items-center justify-between px-4 py-2 text-gray-400 hover:bg-gray-800 hover:text-white rounded-lg transition-colors text-sm {{ request()->routeIs('admin.permissions.*') ? 'bg-gray-800 text-white' : '' }}">
+                                <div class="flex items-center">
+                                    <i class="fas fa-key mr-3 text-xs"></i>
+                                    Quản lý Quyền
+                                </div>
+                                <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                                    {{ \App\Models\Permission::count() }}
+                                </span>
+                            </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -145,6 +188,49 @@
             const sidebar = document.querySelector('.bg-gray-900');
             sidebar.classList.toggle('hidden');
         }
+
+        // Toggle dropdown menu
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const icon = document.getElementById(dropdownId + 'Icon');
+            
+            dropdown.classList.toggle('hidden');
+            
+            if (dropdown.classList.contains('hidden')) {
+                icon.classList.remove('rotate-180');
+            } else {
+                icon.classList.add('rotate-180');
+            }
+        }
+
+        // Auto-expand dropdown if current page is in dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if current route is users.* or permissions.*
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('/admin/users') || currentPath.includes('/admin/permissions')) {
+                const systemDropdown = document.getElementById('systemDropdown');
+                const systemIcon = document.getElementById('systemDropdownIcon');
+                
+                if (systemDropdown && systemIcon) {
+                    systemDropdown.classList.remove('hidden');
+                    systemIcon.classList.add('rotate-180');
+                }
+            }
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdowns = document.querySelectorAll('[id$="Dropdown"]');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.closest('.relative').contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                    const icon = document.getElementById(dropdown.id + 'Icon');
+                    if (icon) {
+                        icon.classList.remove('rotate-180');
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html> 

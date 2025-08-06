@@ -17,40 +17,96 @@
 
     <!-- Search and Filters -->
     <div class="bg-white rounded-lg shadow p-6">
-        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
-                <input type="text" name="search" value="{{ request('search') }}" 
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       placeholder="Tên sản phẩm, SKU...">
+        <form method="GET" class="space-y-4">
+            <!-- Row 1 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
+                    <input type="text" name="search" value="{{ request('search') }}" 
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="Tên sản phẩm, SKU...">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
+                    <select name="category_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả danh mục</option>
+                        @foreach(\App\Models\Category::active()->get() as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Thương hiệu</label>
+                    <select name="brand_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả thương hiệu</option>
+                        @foreach(\App\Models\Brand::active()->get() as $brand)
+                            <option value="{{ $brand->id }}" {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+                    <select name="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Hoạt động</option>
+                        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Không hoạt động</option>
+                    </select>
+                </div>
             </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
-                <select name="category_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tất cả danh mục</option>
-                    @foreach(\App\Models\Category::active()->get() as $category)
-                        <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
-                <select name="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tất cả</option>
-                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Hoạt động</option>
-                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Không hoạt động</option>
-                </select>
-            </div>
-            
-            <div class="flex items-end">
-                <button type="submit" class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
-                    <i class="fas fa-search mr-2"></i>
-                    Tìm kiếm
-                </button>
+
+            <!-- Row 2 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Loại sản phẩm</label>
+                    <select name="product_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả loại</option>
+                        <option value="bom" {{ request('product_type') === 'bom' ? 'selected' : '' }}>Máy bơm</option>
+                        <option value="quat" {{ request('product_type') === 'quat' ? 'selected' : '' }}>Quạt</option>
+                        <option value="motor" {{ request('product_type') === 'motor' ? 'selected' : '' }}>Motor</option>
+                        <option value="bom_chim" {{ request('product_type') === 'bom_chim' ? 'selected' : '' }}>Máy bơm chìm</option>
+                        <option value="quat_tron" {{ request('product_type') === 'quat_tron' ? 'selected' : '' }}>Quạt tròn</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nổi bật</label>
+                    <select name="is_featured" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="1" {{ request('is_featured') === '1' ? 'selected' : '' }}>Nổi bật</option>
+                        <option value="0" {{ request('is_featured') === '0' ? 'selected' : '' }}>Thường</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Khuyến mãi</label>
+                    <select name="is_sale" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả</option>
+                        <option value="1" {{ request('is_sale') === '1' ? 'selected' : '' }}>Đang sale</option>
+                        <option value="0" {{ request('is_sale') === '0' ? 'selected' : '' }}>Không sale</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-search mr-2"></i>
+                        Tìm kiếm
+                    </button>
+                </div>
+
+                <div class="flex items-end">
+                    <a href="{{ route('admin.products.index') }}" 
+                       class="w-full bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-center">
+                        <i class="fas fa-times mr-2"></i>
+                        Reset
+                    </a>
+                </div>
             </div>
         </form>
     </div>
@@ -120,15 +176,22 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                {{ $product->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                {{ $product->status ? 'Hoạt động' : 'Không hoạt động' }}
-                            </span>
-                            @if($product->is_featured)
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 ml-1">
-                                    Nổi bật
+                            <div class="flex flex-wrap gap-1">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                    {{ $product->status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $product->status ? 'Hoạt động' : 'Không hoạt động' }}
                                 </span>
-                            @endif
+                                @if($product->is_featured)
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        <i class="fas fa-star mr-1"></i>Nổi bật
+                                    </span>
+                                @endif
+                                @if($product->is_sale)
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                        <i class="fas fa-fire mr-1"></i>Sale
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-2">

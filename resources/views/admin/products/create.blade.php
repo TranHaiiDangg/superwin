@@ -257,7 +257,15 @@
                                 <input type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
                                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                                 <label for="is_featured" class="ml-2 block text-sm text-gray-900">
-                                    Sản phẩm nổi bật
+                                    <i class="fas fa-star mr-1 text-yellow-500"></i>Sản phẩm nổi bật
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input type="checkbox" id="is_sale" name="is_sale" value="1" {{ old('is_sale') ? 'checked' : '' }}
+                                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
+                                <label for="is_sale" class="ml-2 block text-sm text-gray-900">
+                                    <i class="fas fa-fire mr-1 text-red-500"></i>Sản phẩm khuyến mãi
                                 </label>
                             </div>
                         </div>

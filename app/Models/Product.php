@@ -28,6 +28,7 @@ class Product extends Model
         'weight',
         'status',
         'is_featured',
+        'is_sale',
         'view_count',
         'sold_count',
         'rating_average',
@@ -55,6 +56,7 @@ class Product extends Model
         'weight' => 'decimal:3',
         'status' => 'boolean',
         'is_featured' => 'boolean',
+        'is_sale' => 'boolean',
         'view_count' => 'integer',
         'sold_count' => 'integer',
         'rating_average' => 'decimal:1',
@@ -132,6 +134,11 @@ class Product extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+    public function scopeOnSale($query)
+    {
+        return $query->where('is_sale', true);
     }
 
     public function scopeInStock($query)

@@ -11,11 +11,51 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand'])
-            ->latest()
-            ->paginate(20);
+        $query = Product::with(['category', 'brand', 'images']);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Brand filter
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Featured filter
+        if ($request->filled('is_featured')) {
+            $query->where('is_featured', $request->is_featured);
+        }
+
+        // Sale filter
+        if ($request->filled('is_sale')) {
+            $query->where('is_sale', $request->is_sale);
+        }
+
+        // Product type filter
+        if ($request->filled('product_type')) {
+            $query->where('product_type', $request->product_type);
+        }
+
+        $products = $query->latest()->paginate(20)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }
@@ -45,6 +85,7 @@ class ProductController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'status' => 'boolean',
             'is_featured' => 'boolean',
+            'is_sale' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:500',
@@ -64,6 +105,7 @@ class ProductController extends Controller
         $validated['slug'] = Str::slug($validated['name']);
         $validated['status'] = $request->has('status');
         $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_sale'] = $request->has('is_sale');
 
         // Auto-generate SKU if empty
         if (empty($validated['sku'])) {
@@ -134,6 +176,7 @@ class ProductController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'status' => 'boolean',
             'is_featured' => 'boolean',
+            'is_sale' => 'boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string|max:500',
@@ -153,6 +196,7 @@ class ProductController extends Controller
         $validated['slug'] = Str::slug($validated['name']);
         $validated['status'] = $request->has('status');
         $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_sale'] = $request->has('is_sale');
 
         // Auto-generate SKU if empty
         if (empty($validated['sku'])) {

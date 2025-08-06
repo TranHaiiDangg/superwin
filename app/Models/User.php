@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -103,16 +104,107 @@ class User extends Authenticatable
     // Methods
     public function hasPermission(string $permission): bool
     {
-        if ($this->role === 'super_admin') {
-            return true;
+        // Cache để tránh query nhiều lần
+        static $cache = [];
+        $cacheKey = $this->id . '_' . $permission;
+        
+        if (isset($cache[$cacheKey])) {
+            return $cache[$cacheKey];
         }
 
-        return in_array($permission, $this->permissions ?? []);
+        // Super admin có tất cả quyền
+        if ($this->role === 'super_admin') {
+            return $cache[$cacheKey] = true;
+        }
+
+        // Kiểm tra từ roles system (ưu tiên)
+        $hasRolePermission = $this->roles()
+            ->whereHas('permissions', function($query) use ($permission) {
+                $query->where('name', $permission)
+                      ->where('is_active', true);
+            })
+            ->exists();
+
+        if ($hasRolePermission) {
+            return $cache[$cacheKey] = true;
+        }
+
+        // Fallback: Kiểm tra permissions cũ (chỉ khi không có roles)
+        if ($this->roles()->count() === 0 && !empty($this->permissions)) {
+            $result = $this->checkLegacyPermissions($permission);
+            return $cache[$cacheKey] = $result;
+        }
+
+        return $cache[$cacheKey] = false;
+    }
+
+    /**
+     * Kiểm tra permissions cũ với mapping
+     */
+    private function checkLegacyPermissions(string $permission): bool
+    {
+        $oldPermissions = $this->permissions ?? [];
+        
+        // Kiểm tra permission trực tiếp
+        if (in_array($permission, $oldPermissions)) {
+            return true;
+        }
+        
+        // Mapping permissions cũ sang mới
+        $permissionMapping = [
+            'products.manage' => ['products.view', 'products.create', 'products.edit', 'products.delete'],
+            'categories.manage' => ['categories.view', 'categories.create', 'categories.edit', 'categories.delete'],
+            'brands.manage' => ['brands.view', 'brands.create', 'brands.edit', 'brands.delete'],
+            'orders.manage' => ['orders.view', 'orders.edit', 'orders.delete'],
+            'users.manage' => ['users.view', 'users.create', 'users.edit', 'users.delete'],
+            'customers.manage' => ['customers.view', 'customers.edit'],
+            'dashboard.manage' => ['dashboard.view', 'dashboard.stats', 'dashboard.reports'],
+        ];
+        
+        // Kiểm tra qua mapping
+        foreach ($permissionMapping as $oldPerm => $newPerms) {
+            if (in_array($oldPerm, $oldPermissions) && in_array($permission, $newPerms)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     public function hasRole(string $role): bool
     {
-        return $this->role === $role;
+        // Kiểm tra từ role cũ (string field)
+        if ($this->role === $role) {
+            return true;
+        }
+
+        // Kiểm tra từ roles mới
+        return $this->roles()->where('name', $role)->where('is_active', true)->exists();
+    }
+
+    public function assignRole(Role $role): void
+    {
+        $this->roles()->attach($role->id);
+    }
+
+    public function removeRole(Role $role): void
+    {
+        $this->roles()->detach($role->id);
+    }
+
+    public function getAllPermissions(): array
+    {
+        $permissions = $this->permissions ?? [];
+        
+        // Thêm permissions từ roles
+        $rolePermissions = $this->roles()->with('permissions')->get()
+            ->pluck('permissions')
+            ->flatten()
+            ->where('is_active', true)
+            ->pluck('name')
+            ->toArray();
+        
+        return array_unique(array_merge($permissions, $rolePermissions));
     }
 
     public function isSuperAdmin(): bool
@@ -136,6 +228,11 @@ class User extends Authenticatable
     }
 
     // Relationships
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
     public function orderTracking(): HasMany
     {
         return $this->hasMany(OrderTracking::class, 'created_by');
