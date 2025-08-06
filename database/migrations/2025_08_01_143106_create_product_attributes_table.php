@@ -13,19 +13,16 @@ return new class extends Migration
     {
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->string('attribute_key', 100); // power, voltage, flow_rate, etc.
-            $table->string('attribute_value', 255)->nullable(); // giá trị của thuộc tính
-            $table->string('attribute_unit', 50)->nullable(); // đơn vị: HP, V, L/phút, etc.
-            $table->text('attribute_description')->nullable(); // mô tả thuộc tính
-            $table->integer('sort_order')->default(0); // thứ tự hiển thị
-            $table->boolean('is_visible')->default(true); // có hiển thị không
+            $table->unsignedBigInteger('product_id');
+            $table->string('name');
+            $table->text('value');
+            $table->string('type')->default('text'); // text, number, boolean, etc.
+            $table->integer('sort_order')->default(0);
+            $table->boolean('is_visible')->default(true);
             $table->timestamps();
-            
-            // Index
-            $table->index(['product_id', 'attribute_key']);
-            $table->index('sort_order');
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->index(['product_id', 'sort_order']);
         });
     }
 
@@ -36,4 +33,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('product_attributes');
     }
-};
+}; 

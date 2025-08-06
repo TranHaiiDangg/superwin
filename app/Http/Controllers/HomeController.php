@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -33,12 +34,14 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        // Lấy sản phẩm khuyến mãi
+        // Lấy sản phẩm khuyến mãi cho Flash Deals
         $saleProducts = Product::with(['category', 'brand', 'baseImage'])
             ->where('status', true)
             ->whereNotNull('sale_price')
             ->where('sale_price', '>', 0)
-            ->take(8)
+            ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
+            ->orderByRaw('((price - sale_price) / price * 100) DESC') // Sắp xếp theo % giảm giá cao nhất
+            ->take(10)
             ->get();
 
         // Lấy danh mục chính
@@ -59,7 +62,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'featuredProducts',
-            'bestSellers', 
+            'bestSellers',
             'newProducts',
             'saleProducts',
             'mainCategories',

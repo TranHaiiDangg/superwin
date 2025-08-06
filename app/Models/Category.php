@@ -13,6 +13,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'parent_id',
         'product_type',
         'image',
@@ -61,4 +62,4 @@ class Category extends Model
         }
         return $this->name;
     }
-} 
+}

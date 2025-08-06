@@ -162,7 +162,7 @@ class Product extends Model
     public static function generateSKU($categoryId = null, $brandId = null, $productType = null)
     {
         $prefix = 'SP';
-        
+
         // Add category prefix if available
         if ($categoryId) {
             $category = \App\Models\Category::find($categoryId);
@@ -170,7 +170,7 @@ class Product extends Model
                 $prefix .= strtoupper(substr($category->name, 0, 2));
             }
         }
-        
+
         // Add brand prefix if available
         if ($brandId) {
             $brand = \App\Models\Brand::find($brandId);
@@ -178,7 +178,7 @@ class Product extends Model
                 $prefix .= strtoupper(substr($brand->name, 0, 2));
             }
         }
-        
+
         // Add product type prefix
         if ($productType) {
             $typeMap = [
@@ -190,7 +190,7 @@ class Product extends Model
             ];
             $prefix .= $typeMap[$productType] ?? 'SP';
         }
-        
+
         // Generate unique number
         $counter = 1;
         do {
@@ -198,7 +198,7 @@ class Product extends Model
             $exists = self::where('sku', $sku)->exists();
             $counter++;
         } while ($exists);
-        
+
         return $sku;
     }
 
