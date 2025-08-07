@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Category;
 use App\Models\Brand;
 use Illuminate\Http\Request;
@@ -50,10 +51,7 @@ class ProductController extends Controller
             $query->where('is_sale', $request->is_sale);
         }
 
-        // Product type filter
-        if ($request->filled('product_type')) {
-            $query->where('product_type', $request->product_type);
-        }
+
 
         $products = $query->latest()->paginate(20)->withQueryString();
 
@@ -74,7 +72,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
+
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
@@ -99,7 +97,15 @@ class ProductController extends Controller
             'attributes.*.attribute_unit' => 'nullable|string|max:50',
             'attributes.*.attribute_description' => 'nullable|string',
             'attributes.*.sort_order' => 'integer|min:0',
-            'attributes.*.is_visible' => 'boolean'
+            'attributes.*.is_visible' => 'boolean',
+            'variants' => 'nullable|array',
+            'variants.*.name' => 'nullable|string|max:255',
+            'variants.*.code' => 'nullable|string|max:50',
+            'variants.*.quantity' => 'nullable|integer|min:0',
+            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.price_sale' => 'nullable|numeric|min:0',
+            'variants.*.is_active' => 'nullable|boolean',
+            'variants.*.sort_order' => 'nullable|integer|min:0'
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -111,13 +117,12 @@ class ProductController extends Controller
         if (empty($validated['sku'])) {
             $validated['sku'] = Product::generateSKU(
                 $validated['category_id'], 
-                $validated['brand_id'], 
-                $validated['product_type']
+                $validated['brand_id']
             );
         }
 
-        // Create product (exclude images and attributes from mass assignment)
-        $product = Product::create(collect($validated)->except(['attributes', 'images'])->toArray());
+        // Create product (exclude images, attributes and variants from mass assignment)
+        $product = Product::create(collect($validated)->except(['attributes', 'images', 'variants'])->toArray());
 
         // Handle image uploads
         if ($request->hasFile('images')) {
@@ -147,6 +152,19 @@ class ProductController extends Controller
             }
         }
 
+        // Handle variants
+        if (isset($validated['variants'])) {
+            foreach ($validated['variants'] as $index => $variantData) {
+                if (!empty($variantData['name']) && !empty($variantData['code'])) {
+                    $variantData['product_id'] = $product->id;
+                    $variantData['sort_order'] = $variantData['sort_order'] ?? $index;
+                    $variantData['is_active'] = $variantData['is_active'] ?? true;
+                    
+                    ProductVariant::create($variantData);
+                }
+            }
+        }
+
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được tạo thành công!');
     }
@@ -165,7 +183,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
+
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
@@ -360,14 +378,12 @@ class ProductController extends Controller
     {
         $request->validate([
             'category_id' => 'nullable|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'product_type' => 'nullable|in:bom,quat,motor,bom_chim,quat_tron'
+            'brand_id' => 'nullable|exists:brands,id'
         ]);
 
         $sku = Product::generateSKU(
             $request->category_id,
-            $request->brand_id,
-            $request->product_type
+            $request->brand_id
         );
 
         return response()->json([

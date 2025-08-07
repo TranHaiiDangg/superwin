@@ -63,17 +63,7 @@
 
             <!-- Row 2 -->
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Loại sản phẩm</label>
-                    <select name="product_type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Tất cả loại</option>
-                        <option value="bom" {{ request('product_type') === 'bom' ? 'selected' : '' }}>Máy bơm</option>
-                        <option value="quat" {{ request('product_type') === 'quat' ? 'selected' : '' }}>Quạt</option>
-                        <option value="motor" {{ request('product_type') === 'motor' ? 'selected' : '' }}>Motor</option>
-                        <option value="bom_chim" {{ request('product_type') === 'bom_chim' ? 'selected' : '' }}>Máy bơm chìm</option>
-                        <option value="quat_tron" {{ request('product_type') === 'quat_tron' ? 'selected' : '' }}>Quạt tròn</option>
-                    </select>
-                </div>
+
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nổi bật</label>

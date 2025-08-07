@@ -40,3 +40,7 @@ INSERT INTO `permissions` VALUES (40, 'categories.restore', 'Khôi phục danh m
 INSERT INTO `permissions` VALUES (41, 'brands.restore', 'Khôi phục thương hiệu', 'Quyền Khôi phục thương hiệu', 'brands', 1, '2025-08-06 04:40:54', '2025-08-06 06:24:56');
 INSERT INTO `permissions` VALUES (42, 'customers.ban', 'Khóa/Mở khóa khách hàng', 'Quyền Khóa/Mở khóa khách hàng', 'customers', 1, '2025-08-06 04:40:54', '2025-08-06 06:24:56');
 INSERT INTO `permissions` VALUES (43, 'customers.export', 'Xuất khách hàng', 'Quyền Xuất khách hàng', 'customers', 1, '2025-08-06 04:40:54', '2025-08-06 06:24:56');
+INSERT INTO `permissions` VALUES (44, 'product_variants.view', 'Xem biến thể sản phẩm', 'Quyền xem biến thể sản phẩm', 'product_variants', 1, '2025-08-06 05:00:00', '2025-08-06 05:00:00');
+INSERT INTO `permissions` VALUES (45, 'product_variants.create', 'Tạo biến thể sản phẩm', 'Quyền tạo biến thể sản phẩm', 'product_variants', 1, '2025-08-06 05:00:00', '2025-08-06 05:00:00');
+INSERT INTO `permissions` VALUES (46, 'product_variants.edit', 'Sửa biến thể sản phẩm', 'Quyền sửa biến thể sản phẩm', 'product_variants', 1, '2025-08-06 05:00:00', '2025-08-06 05:00:00');
+INSERT INTO `permissions` VALUES (47, 'product_variants.delete', 'Xóa biến thể sản phẩm', 'Quyền xóa biến thể sản phẩm', 'product_variants', 1, '2025-08-06 05:00:00', '2025-08-06 05:00:00');

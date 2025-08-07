@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique()->nullable();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->string('product_type')->nullable(); // may-bom-nuoc, quat-cong-nghiep, etc.
+
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);

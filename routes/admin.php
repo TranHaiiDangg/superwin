@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProductAttributeController;
+use App\Http\Controllers\Admin\ProductVariantController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Auth routes (no middleware)
@@ -41,6 +42,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('products/{product}/delete-image', [ProductController::class, 'deleteImage'])->name('products.delete-image')->middleware('permission:products.edit');
     Route::post('products/generate-sku', [ProductController::class, 'generateSKU'])->name('products.generate-sku')->middleware('permission:products.create');
 
+    Route::get('products/{product}/variants', [ProductVariantController::class, 'index'])->name('products.variants.index')->middleware('permission:product_variants.view');
+    Route::post('products/{product}/variants/bulk-update', [ProductVariantController::class, 'bulkUpdate'])->name('products.variants.bulk-update')->middleware('permission:product_variants.edit');
+
     // Product Attributes
     Route::middleware('permission:product_attributes.view')->group(function () {
         Route::get('product-attributes', [ProductAttributeController::class, 'index'])->name('product-attributes.index');
@@ -55,25 +59,27 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('product-attributes/{productAttribute}/restore', [ProductAttributeController::class, 'restore'])->name('product-attributes.restore')->middleware('permission:product_attributes.edit');
     Route::post('products/{product}/attributes', [ProductAttributeController::class, 'storeForProduct'])->name('products.attributes.store')->middleware('permission:product_attributes.create');
     
-    // Categories
+    // Categories - Đặt routes cụ thể trước routes có parameter
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:categories.create');
+    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:categories.create');
+    
     Route::middleware('permission:categories.view')->group(function () {
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
     });
-    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:categories.create');
-    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:categories.create');
+    
     Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('permission:categories.edit');
     Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update')->middleware('permission:categories.edit');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('permission:categories.delete');
     Route::post('categories/{category}/restore', [CategoryController::class, 'restore'])->name('categories.restore')->middleware('permission:categories.edit');
     
-    // Brands
+    // Brands  
+    Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create')->middleware('permission:brands.create');
+    Route::post('brands', [BrandController::class, 'store'])->name('brands.store')->middleware('permission:brands.create');
     Route::middleware('permission:brands.view')->group(function () {
         Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
         Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
     });
-    Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create')->middleware('permission:brands.create');
-    Route::post('brands', [BrandController::class, 'store'])->name('brands.store')->middleware('permission:brands.create');
     Route::get('brands/{brand}/edit', [BrandController::class, 'edit'])->name('brands.edit')->middleware('permission:brands.edit');
     Route::put('brands/{brand}', [BrandController::class, 'update'])->name('brands.update')->middleware('permission:brands.edit');
     Route::delete('brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy')->middleware('permission:brands.delete');

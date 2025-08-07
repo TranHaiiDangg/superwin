@@ -17,7 +17,6 @@ class Product extends Model
         'slug',
         'category_id',
         'brand_id',
-        'product_type',
         'description',
         'short_description',
         'price',
@@ -99,6 +98,16 @@ class Product extends Model
         return $this->hasMany(ProductAttribute::class);
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function activeVariants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class)->where('is_active', true)->ordered();
+    }
+
     // Product type specific relationships
     public function bomDetails(): HasOne
     {
@@ -166,7 +175,7 @@ class Product extends Model
     }
 
     // Static method to generate unique SKU
-    public static function generateSKU($categoryId = null, $brandId = null, $productType = null)
+    public static function generateSKU($categoryId = null, $brandId = null)
     {
         $prefix = 'SP';
 
@@ -186,18 +195,6 @@ class Product extends Model
             }
         }
 
-        // Add product type prefix
-        if ($productType) {
-            $typeMap = [
-                'bom' => 'BM',
-                'quat' => 'QT',
-                'motor' => 'MT',
-                'bom_chim' => 'BC',
-                'quat_tron' => 'QR'
-            ];
-            $prefix .= $typeMap[$productType] ?? 'SP';
-        }
-
         // Generate unique number
         $counter = 1;
         do {
@@ -212,6 +209,6 @@ class Product extends Model
     // Method to auto-generate SKU for current product
     public function generateUniqueSKU()
     {
-        return self::generateSKU($this->category_id, $this->brand_id, $this->product_type);
+        return self::generateSKU($this->category_id, $this->brand_id);
     }
 }

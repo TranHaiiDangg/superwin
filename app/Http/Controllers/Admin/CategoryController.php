@@ -42,7 +42,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
@@ -76,7 +75,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
