@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Toán</title>
-    
+
     <style>
-            
+
         * {
         margin: 0;
         padding: 0;
@@ -21,7 +21,7 @@
         background-color: #ffffff;
         overflow-x: hidden;
         font-size: 16px;
-        padding-top: 60px; 
+        padding-top: 60px;
     }
 
         input,
@@ -964,11 +964,11 @@ input:checked + .slider:before {
     body {
         padding-top: 45px;
     }
-    
+
     .logo-link {
         display: none;
     }
-    
+
     .back-button {
         display: block;
     }
@@ -1052,7 +1052,7 @@ input:checked + .slider:before {
         margin: 0 !important;
         transform: none !important;
     }
-    
+
     .modal-header {
         padding: 16px 20px;
         position: sticky;
@@ -1060,16 +1060,16 @@ input:checked + .slider:before {
         background: white;
         z-index: 10;
     }
-    
+
     .modal-title {
         font-size: 16px;
     }
-    
+
     .modal #invoiceForm {
         padding: 0 20px;
     }
-    
-    
+
+
     .modal-actions {
         padding: 16px 20px;
         position: sticky;
@@ -1077,7 +1077,7 @@ input:checked + .slider:before {
         background: white;
         z-index: 10;
     }
-    
+
     .modal .invoice-type-toggle {
         padding: 0 20px;
         flex-direction: column;
@@ -1117,12 +1117,12 @@ input:checked + .slider:before {
             <a href="/Trang_Chu/index.html" class="logo-link">
                 <img src="/image/logo.png" alt="Logo">
             </a>
-            
+
             <!-- Nút quay lại cho mobile/tablet -->
             <button class="back-button" onclick="goBack()">
                 ←
             </button>
-            
+
             <h2>Thanh toán đơn hàng</h2>
         </div>
     </div>
@@ -1237,7 +1237,7 @@ input:checked + .slider:before {
                 <div class="form-group" style="margin-bottom: 15px;">
                     <textarea class="form-control" id="individualAddress" rows="3" placeholder="Nhập địa chỉ (bao gồm Phường/Xã, Quận/Huyện, Tỉnh/Thành phố nếu có)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background: #f8f9fa; resize: vertical;"></textarea>
                 </div>
-                
+
                 <!-- Use delivery address toggle -->
                 <div class="checkbox-group" style="margin-bottom: 15px;">
                     <label style="display: flex; align-items: center; cursor: pointer;">
@@ -1268,7 +1268,7 @@ input:checked + .slider:before {
         </div>
     </div>
 </div>
-            
+
             <div class="product-item">
                 <img class="product-image" src="/Trang_Chu/image/sp1.png" alt="Máy bơm nước Super Win 3 HP">
                 <div class="product-details">
@@ -1324,7 +1324,7 @@ input:checked + .slider:before {
                 <h3 class="modal-title">Địa chỉ nhận hàng</h3>
                 <button class="close-btn" onclick="closeAddressModal()">&times;</button>
             </div>
-            
+
             <div class="address-list" id="addressList">
                 <div class="address-item selected" data-id="1">
                     <h4>Trần Đăng - 0915378844</h4>
@@ -1362,7 +1362,7 @@ input:checked + .slider:before {
                     <div class="form-group">
                         <label class="form-label required">Số điện thoại</label>
                         <div style="display: flex; gap: 10px;">
-                            
+
                             <input type="tel" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại" maxlength="10" pattern="0[0-9]{9}" onchange="toggleLocationFields()" oninput="validatePhone()">
                         </div>
                         <div id="phoneError" style="color: #e74c3c; font-size: 13px; margin-top: 3px; display: none;"></div>
@@ -1406,7 +1406,7 @@ input:checked + .slider:before {
                     <input type="checkbox" id="setDefault">
                     <label for="setDefault">Đặt làm địa chỉ mặc định</label>
                 </div>
-            </form>
+            </form>html
 
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeAddAddressModal()">Hủy</button>
