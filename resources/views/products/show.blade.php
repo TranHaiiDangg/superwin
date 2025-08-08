@@ -53,7 +53,12 @@
 
             <!-- Product Info -->
             <div class="col-lg-7">
-                <div class="product-info">
+                <div class="product-info"
+                     data-product-id="{{ $product->id }}"
+                     data-product-name="{{ $product->name }}"
+                     data-product-model="{{ $product->sku ?? 'SW-' . $product->id }}"
+                     data-product-price="{{ $product->sale_price ?? $product->price }}"
+                     data-product-image="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}">
                     <div class="row">
                         <div class="col-md-8">
                             <h1 class="product-title">{{ $product->name }}</h1>
@@ -460,6 +465,8 @@
                 @endif
             </div>
         </div>
+    </div>
+    </div>
     </div>
     </div>
     </div>
@@ -1520,9 +1527,7 @@
     }
 
     function addToCart(productId) {
-        @auth('customer')
         const quantity = document.getElementById('quantity') ? parseInt(document.getElementById('quantity').value) : 1;
-        const attributes = {};
 
         // Validate quantity
         if (quantity < 1 || quantity > 99) {
@@ -1537,47 +1542,69 @@
             addButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...';
         }
 
+        // Show loading notification
         showNotification('Đang thêm vào giỏ hàng...', 'info');
 
-        fetch(`/cart/add/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    quantity,
-                    attributes
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
+        // Get product data from DOM or create default
+        const productElement = document.querySelector(`[data-product-id="${productId}"]`);
+        let product;
 
-                    // Update cart count in header
-                    updateCartCount(data.cartData.count);
+        if (productElement) {
+            product = {
+                id: parseInt(productId),
+                name: productElement.dataset.productName || `Sản phẩm ${productId}`,
+                model: productElement.dataset.productModel || `SW-${productId}`,
+                price: parseInt(productElement.dataset.productPrice) || 1000000,
+                quantity: quantity,
+                image: productElement.dataset.productImage || '/image/sp1.png'
+            };
+        } else {
+            // Fallback to default product data
+            product = {
+                id: parseInt(productId),
+                name: `Sản phẩm ${productId}`,
+                model: `SW-${productId}`,
+                price: 1000000,
+                quantity: quantity,
+                image: '/image/sp1.png'
+            };
+        }
 
-                    // Update cart icon animation
-                    animateCartIcon();
+        // Use cartManager if available
+        if (typeof cartManager !== 'undefined' && cartManager) {
+            cartManager.addItem(product);
+            showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
+        } else {
+            // Fallback to localStorage directly
+            try {
+                const cartKey = 'superwin_cart';
+                const existingCart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+
+                const existingItem = existingCart.find(item => item.id === product.id);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
                 } else {
-                    showNotification(data.message || 'Có lỗi xảy ra', 'error');
+                    existingCart.push(product);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+
+                localStorage.setItem(cartKey, JSON.stringify(existingCart));
+
+                // Update cart count
+                const totalCount = existingCart.reduce((sum, item) => sum + item.quantity, 0);
+                updateCartCount(totalCount);
+
+                showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
+            } catch (error) {
+                console.error('Error adding to cart:', error);
                 showNotification('Có lỗi xảy ra khi thêm vào giỏ hàng', 'error');
-            })
-            .finally(() => {
-                // Re-enable button
-                if (addButton) {
-                    addButton.disabled = false;
-                    addButton.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ';
-                }
-            });
-        @else
-        window.location.href = '{{ route("login") }}?redirect=' + encodeURIComponent(window.location.href);
-        @endauth
+            }
+        }
+
+        // Re-enable button
+        if (addButton) {
+            addButton.disabled = false;
+            addButton.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ';
+        }
     }
 
     function updateCartCount(count) {
