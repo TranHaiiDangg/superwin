@@ -13,6 +13,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,17 +42,13 @@ Route::middleware(['customer'])->group(function () {
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
-    // TODO: Uncomment khi có CartController và OrderController
-    // Cart routes
-    // Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    // Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-    // Route::put('/cart/update', [CartController::class, 'update'])->name('cart.update');
-    // Route::delete('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-
     // Order routes
-    // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    // Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 // ===== MAIN NAVIGATION ROUTES =====
@@ -62,10 +59,39 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Cart Routes
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/count', [CartController::class, 'count'])->name('cart.count');
+    Route::get('/data', [CartController::class, 'getCartData'])->name('cart.data');
     Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth:customer');
     Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update')->middleware('auth:customer');
+    Route::patch('/quantity/{itemKey}', [CartController::class, 'updateQuantity'])->name('cart.quantity')->middleware('auth:customer');
     Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth:customer');
     Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear')->middleware('auth:customer');
+});
+
+// API Routes for Cart
+Route::prefix('api')->group(function () {
+    Route::get('/products/{product}', [ProductController::class, 'apiShow'])->name('api.products.show');
+    Route::get('/cart/count', [CartController::class, 'apiCount'])->name('api.cart.count');
+    Route::post('/cart/add', [CartController::class, 'apiAdd'])->name('api.cart.add');
+    Route::put('/cart/update', [CartController::class, 'apiUpdate'])->name('api.cart.update');
+    Route::delete('/cart/remove', [CartController::class, 'apiRemove'])->name('api.cart.remove');
+
+    // Test route for debugging
+    Route::get('/test/product/{id}', function($id) {
+        $product = \App\Models\Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+        return response()->json([
+            'id' => $product->id,
+            'name' => $product->name,
+            'model' => $product->sku,
+            'price' => $product->price,
+            'sale_price' => $product->sale_price,
+            'image' => $product->baseImage ? $product->baseImage->url : '/image/sp1.png',
+            'slug' => $product->slug
+        ]);
+    });
 });
 
 // Sản phẩm
@@ -97,7 +123,7 @@ Route::prefix('categories')->name('categories.')->group(function () {
 });
 
 // Hoặc sử dụng dynamic route cho categories
-Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
 // ===== BRAND ROUTES =====
 

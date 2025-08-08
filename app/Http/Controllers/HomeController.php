@@ -60,13 +60,48 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
+        // Lấy sản phẩm theo từng category chính (limit 10 sản phẩm mỗi category)
+        $categoryProducts = [];
+        foreach($mainCategories as $category) {
+            $products = Product::with(['category', 'brand', 'baseImage'])
+                ->where('status', true)
+                ->where(function($query) use ($category) {
+                    $query->where('category_id', $category->id)
+                          ->orWhereIn('category_id', $category->children->pluck('id'));
+                })
+                ->latest()
+                ->take(10)
+                ->get();
+
+            if($products->count() > 0) {
+                $categoryProducts[$category->id] = [
+                    'category' => $category,
+                    'products' => $products
+                ];
+            }
+        }
+
+        // Lấy sản phẩm gợi ý (mix của featured và best sellers)
+        $suggestedProducts = Product::with(['category', 'brand', 'baseImage'])
+            ->where('status', true)
+            ->where(function($query) {
+                $query->where('is_featured', true)
+                      ->orWhereNotNull('sale_price')
+                      ->orWhere('sold_count', '>', 0);
+            })
+            ->orderByRaw('RAND()')
+            ->take(10)
+            ->get();
+
         return view('home', compact(
             'featuredProducts',
             'bestSellers',
             'newProducts',
             'saleProducts',
             'mainCategories',
-            'brands'
+            'brands',
+            'categoryProducts',
+            'suggestedProducts'
         ));
     }
 }

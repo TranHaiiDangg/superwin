@@ -51,31 +51,32 @@
             <!-- User actions -->
             <div class="d-flex align-items-center flex-shrink-0">
                 <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="btn btn-outline-primary me-2 position-relative">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
-                        {{ Session::has('cart') ? collect(Session::get('cart'))->sum('quantity') : '0' }}
+                <a href="{{ route('cart.index') }}" class="btn btn-outline-primary me-2 position-relative cart-link">
+                    <i class="fas fa-shopping-cart cart-icon"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count"
+                          style="display: none;">
+                        0
                     </span>
                 </a>
 
                 <!-- User menu -->
                 @auth('customer')
                     <div class="dropdown">
-                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>
                             {{ Auth::guard('customer')->user()->name }}
                         </button>
-                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-file-alt me-2"></i>Tài khoản của bạn</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-list me-2"></i>Quản lý đơn hàng</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Sản phẩm yêu thích</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ giao hàng</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="fas fa-file-alt me-2"></i>Tài khoản của bạn</a></li>
+                            <li><a class="dropdown-item" href="{{ route('orders.index') }}"><i class="fas fa-list me-2"></i>Quản lý đơn hàng</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Sản phẩm yêu thích</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-map-marker-alt me-2"></i>Địa chỉ giao hàng</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf
-                                <button type="submit" class="dropdown-item text-danger logout-btn">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Thoát
+                                    <button type="button" class="dropdown-item text-danger logout-btn">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Thoát
                                     </button>
                                 </form>
                             </li>
@@ -110,33 +111,33 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.show', 'may-bom-nuoc') }}">
+                                    <a href="{{ route('categories.show', 1) }}">
                                         <span>💧 Máy Bơm Nước</span>
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                     <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand', 'super-win') }}">Máy bơm nước Super Win</a></li>
-                                        <li><a href="{{ route('products.brand', 'vina-pump') }}">Máy bơm nước Vina Pump</a></li>
-                                        <li><a href="{{ route('products.brand', 'abc') }}">Máy bơm nước ABC</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'super-win']) }}">Máy bơm nước Super Win</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'vina-pump']) }}">Máy bơm nước Vina Pump</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'abc']) }}">Máy bơm nước ABC</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-nuoc-bien') }}">Máy bơm nước biển</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-ho-boi') }}">Máy bơm hồ bơi</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-nhap-khau') }}">Máy bơm nhập khẩu</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.show', 'quat-cong-nghiep') }}">
+                                    <a href="{{ route('categories.show', 2) }}">
                                         <span>🌪️ Quạt công nghiệp</span>
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                     <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand', 'super-win-fan') }}">Quạt Super Win</a></li>
-                                        <li><a href="{{ route('products.brand', 'deton') }}">Quạt Deton</a></li>
-                                        <li><a href="{{ route('products.brand', 'sthc') }}">Quạt STHC</a></li>
-                                        <li><a href="{{ route('products.brand', 'inverter') }}">Quạt Inverter</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'super-win-fan']) }}">Quạt Super Win</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'deton']) }}">Quạt Deton</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'sthc']) }}">Quạt STHC</a></li>
+                                        <li><a href="{{ route('products.brand', ['slug' => 'inverter']) }}">Quạt Inverter</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.show', 'quat-thong-gio') }}">
+                                    <a href="{{ route('categories.show', 5) }}">
                                         <span>💨 Quạt thông gió</span>
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
@@ -147,7 +148,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.show', 'quat-dac-biet') }}">
+                                    <a href="{{ route('categories.show', 3) }}">
                                         <span>⚡ Quạt đặc biệt</span>
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
@@ -161,7 +162,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="{{ route('categories.show', 'tam-lam-mat') }}">
+                                    <a href="{{ route('categories.show', 4) }}">
                                         <span>❄️ Tấm làm mát</span>
                                     </a>
                                 </li>
@@ -208,7 +209,9 @@
                     <a href="{{ route('profile') }}" class="btn btn-outline-primary btn-sm me-2">Tài khoản</a>
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
-                    <button type="submit" class="btn btn-outline-danger btn-sm logout-btn">Thoát</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm logout-btn">
+                            <i class="fas fa-sign-out-alt me-1"></i>Thoát
+                        </button>
                     </form>
                 </div>
             @else
@@ -484,6 +487,7 @@ window.updateCartCount = function(count) {
     const cartCountElement = document.querySelector('.cart-count');
     if (cartCountElement) {
         cartCountElement.textContent = count;
+        cartCountElement.style.display = 'inline-block'; // Ensure it's visible
 
         // Thêm hiệu ứng nhấp nháy khi cập nhật
         cartCountElement.classList.add('cart-update');
@@ -492,65 +496,44 @@ window.updateCartCount = function(count) {
         }, 300);
     }
 };
+
+// Cập nhật giỏ hàng từ localStorage
+function updateCartFromLocalStorage() {
+    const cartCountElement = document.querySelector('.cart-count');
+    if (cartCountElement) {
+        const cartCount = localStorage.getItem('cartCount');
+        if (cartCount) {
+            cartCountElement.textContent = cartCount;
+            cartCountElement.style.display = 'inline-block';
+        } else {
+            cartCountElement.textContent = '0';
+            cartCountElement.style.display = 'none';
+        }
+    }
+}
+
 // Cải thiện trải nghiệm đăng xuất và dropdown
 document.addEventListener('DOMContentLoaded', function() {
-    // Kiểm tra và khởi tạo dropdown
-    const userDropdown = document.getElementById('userDropdown');
-    const dropdownMenu = document.querySelector('.dropdown-menu');
+    // Sử dụng Bootstrap 5 Dropdown
+    const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+    const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
 
-    if (userDropdown && dropdownMenu) {
-        console.log('Dropdown elements found');
-
-        // Thêm event listener cho dropdown
-        userDropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', !isExpanded);
-
-            if (isExpanded) {
-                dropdownMenu.classList.remove('show');
-            } else {
-                dropdownMenu.classList.add('show');
-            }
-        });
-
-        // Đóng dropdown khi click bên ngoài
-        document.addEventListener('click', function(e) {
-            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.remove('show');
-                userDropdown.setAttribute('aria-expanded', 'false');
-            }
-        });
-    } else {
-        console.log('Dropdown elements not found');
-    }
-
-    // Tìm tất cả các form đăng xuất
-    const logoutForms = document.querySelectorAll('form[action*="logout"]');
-
-    logoutForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Hiển thị dialog xác nhận
-            if (confirm('Bạn có chắc chắn muốn thoát?')) {
-                // Nếu người dùng xác nhận, submit form
-                this.submit();
+    // Đóng dropdown khi click item
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const dropdown = bootstrap.Dropdown.getInstance(item.closest('.dropdown').querySelector('.dropdown-toggle'));
+            if (dropdown) {
+                dropdown.hide();
             }
         });
     });
 
-    // Thêm hiệu ứng hover cho nút đăng xuất
-    const logoutButtons = document.querySelectorAll('.logout-btn');
-
-    logoutButtons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateX(5px)';
-        });
-
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateX(0)';
-        });
+    // Xử lý đăng xuất
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.logout-btn')) {
+            e.preventDefault();
+            e.target.closest('form').submit();
+        }
     });
 
     // Tự động ẩn flash messages sau 5 giây
@@ -575,6 +558,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
     });
+
+    // Cập nhật giỏ hàng khi trang được tải
+    updateCartFromLocalStorage();
 });
 </script>
 @endpush

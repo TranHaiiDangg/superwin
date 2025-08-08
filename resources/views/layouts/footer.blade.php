@@ -1,4 +1,4 @@
-<footer class="bg-dark text-light py-5 mt-5">
+<footer class=" text-light py-5 mt-5" style="background-color: #4facfe;">
     <div class="container text-light">
         <div class="row">
             <!-- Company Info -->
