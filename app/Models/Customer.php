@@ -29,6 +29,7 @@ class Customer extends Authenticatable
         'email_verified_at',
         'phone_verified_at',
         'status',
+        'is_active',
         'customer_code',
         'total_spent',
         'loyalty_points',
@@ -53,6 +54,7 @@ class Customer extends Authenticatable
             'password' => 'hashed',
             'total_spent' => 'decimal:2',
             'loyalty_points' => 'integer',
+            'is_active' => 'boolean',
             'marketing_consent' => 'boolean',
             'newsletter_subscription' => 'boolean',
         ];
@@ -102,7 +104,12 @@ class Customer extends Authenticatable
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('is_active', true);
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('is_active', false);
     }
 
     public function scopeBanned($query)
@@ -110,9 +117,9 @@ class Customer extends Authenticatable
         return $query->where('status', 'banned');
     }
 
-    public function scopeInactive($query)
+    public function scopeStatusActive($query)
     {
-        return $query->where('status', 'inactive');
+        return $query->where('status', 'active');
     }
 
     // Accessors
@@ -167,12 +174,22 @@ class Customer extends Authenticatable
 
     public function ban(): void
     {
-        $this->update(['status' => 'banned']);
+        $this->update(['status' => 'banned', 'is_active' => false]);
     }
 
     public function unban(): void
     {
-        $this->update(['status' => 'active']);
+        $this->update(['status' => 'active', 'is_active' => true]);
+    }
+
+    public function activate(): void
+    {
+        $this->update(['is_active' => true]);
+    }
+
+    public function deactivate(): void
+    {
+        $this->update(['is_active' => false]);
     }
 
     public function isBanned(): bool
@@ -182,6 +199,6 @@ class Customer extends Authenticatable
 
     public function isActive(): bool
     {
-        return $this->status === 'active';
+        return $this->is_active === true;
     }
 } 

@@ -88,6 +88,7 @@ class CustomerController extends Controller
             'district' => 'nullable|string|max:100',
             'ward' => 'nullable|string|max:100',
             'status' => 'required|in:active,inactive,banned',
+            'is_active' => 'boolean',
             'loyalty_points' => 'nullable|integer|min:0',
             'preferred_payment_method' => 'nullable|in:cod,bank_transfer,momo,zalopay,vnpay',
             'marketing_consent' => 'boolean',
@@ -161,5 +162,21 @@ class CustomerController extends Controller
             'success' => false,
             'message' => 'Không đủ điểm thưởng để trừ!'
         ], 400);
+    }
+
+    public function activate(Customer $customer)
+    {
+        $customer->activate();
+
+        return redirect()->back()
+            ->with('success', 'Khách hàng đã được kích hoạt thành công!');
+    }
+
+    public function deactivate(Customer $customer)
+    {
+        $customer->deactivate();
+
+        return redirect()->back()
+            ->with('success', 'Khách hàng đã được vô hiệu hóa thành công!');
     }
 } 

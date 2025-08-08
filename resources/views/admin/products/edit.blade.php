@@ -409,9 +409,14 @@
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h4 class="text-md font-medium text-gray-900 border-b pb-2 flex-1">Thông số kỹ thuật</h4>
-                            <button type="button" onclick="addAttribute()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg ml-4">
-                                <i class="fas fa-plus mr-2"></i>Thêm thuộc tính
-                            </button>
+                            <div class="ml-4 space-x-2">
+                                <button type="button" onclick="addAttribute()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-plus mr-2"></i>Thêm thuộc tính
+                                </button>
+                                <button type="button" onclick="saveAttributes()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-save mr-2"></i>Cập nhật thuộc tính
+                                </button>
+                            </div>
                         </div>
                         
                         <div id="product-attributes">
@@ -620,12 +625,9 @@ function addExistingAttribute(attribute) {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tag mr-1 text-blue-500"></i>Thuộc tính
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_key]" class="attribute-key-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn thuộc tính</option>
-                    ${Object.entries(commonKeys).map(([key, label]) => 
-                        `<option value="${key}" ${key === attribute.attribute_key ? 'selected' : ''}>${label}</option>`
-                    ).join('')}
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_key]" value="${attribute.attribute_key || ''}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Nhập tên thuộc tính (VD: Công suất, Điện áp, Lưu lượng...)">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -639,9 +641,9 @@ function addExistingAttribute(attribute) {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-ruler mr-1 text-purple-500"></i>Đơn vị
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_unit]" class="attribute-unit-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn đơn vị</option>
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_unit]" value="${attribute.attribute_unit || ''}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="VD: HP, V, L/phút, m, %...">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -671,24 +673,10 @@ function addExistingAttribute(attribute) {
     
     // Add event listeners after adding to DOM
     const removeBtn = attributeRow.querySelector('.remove-attribute-btn');
-    const keySelect = attributeRow.querySelector('.attribute-key-select');
     
     removeBtn.addEventListener('click', function() {
         removeAttribute(this);
     });
-    
-    keySelect.addEventListener('change', function() {
-        updateAttributeUnits(this);
-    });
-    
-    // Update units for this attribute
-    updateAttributeUnits(keySelect);
-    
-    // Set the selected unit
-    const unitSelect = attributeRow.querySelector('.attribute-unit-select');
-    if (attribute.attribute_unit) {
-        unitSelect.value = attribute.attribute_unit;
-    }
     
     attributeIndex++;
 }
@@ -712,10 +700,9 @@ function addAttribute() {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tag mr-1 text-blue-500"></i>Thuộc tính
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_key]" class="attribute-key-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn thuộc tính</option>
-                    ${Object.entries(commonKeys).map(([key, label]) => `<option value="${key}">${label}</option>`).join('')}
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_key]"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Nhập tên thuộc tính (VD: Công suất, Điện áp, Lưu lượng...)">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -729,9 +716,9 @@ function addAttribute() {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-ruler mr-1 text-purple-500"></i>Đơn vị
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_unit]" class="attribute-unit-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn đơn vị</option>
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_unit]"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="VD: HP, V, L/phút, m, %...">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -761,14 +748,9 @@ function addAttribute() {
     
     // Add event listeners after adding to DOM
     const removeBtn = attributeRow.querySelector('.remove-attribute-btn');
-    const keySelect = attributeRow.querySelector('.attribute-key-select');
     
     removeBtn.addEventListener('click', function() {
         removeAttribute(this);
-    });
-    
-    keySelect.addEventListener('change', function() {
-        updateAttributeUnits(this);
     });
     
     attributeIndex++;
@@ -794,24 +776,65 @@ function removeAttribute(button) {
     }
 }
 
-function updateAttributeUnits(selectElement) {
-    const attributeKey = selectElement.value;
-    const row = selectElement.closest('.attribute-row');
-    const unitSelect = row.querySelector('.attribute-unit-select');
+function saveAttributes() {
+    const saveBtn = event.target;
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang lưu...';
+    saveBtn.disabled = true;
+
+    // Collect all attribute data
+    const attributes = [];
+    const attributeRows = document.querySelectorAll('.attribute-row');
     
-    // Clear current options
-    unitSelect.innerHTML = '<option value="">Chọn đơn vị</option>';
-    
-    // Add units for selected attribute
-    if (commonUnits[attributeKey]) {
-        commonUnits[attributeKey].forEach(unit => {
-            const option = document.createElement('option');
-            option.value = unit;
-            option.textContent = unit;
-            unitSelect.appendChild(option);
-        });
-    }
+    attributeRows.forEach(row => {
+        const attributeKey = row.querySelector('[name*="[attribute_key]"]').value;
+        const attributeValue = row.querySelector('[name*="[attribute_value]"]').value;
+        const attributeUnit = row.querySelector('[name*="[attribute_unit]"]').value;
+        const attributeDescription = row.querySelector('[name*="[attribute_description]"]').value;
+        const sortOrder = row.querySelector('[name*="[sort_order]"]').value;
+        const isVisible = row.querySelector('[name*="[is_visible]"]').value;
+        
+        if (attributeKey.trim()) {
+            attributes.push({
+                attribute_key: attributeKey,
+                attribute_value: attributeValue,
+                attribute_unit: attributeUnit,
+                attribute_description: attributeDescription,
+                sort_order: parseInt(sortOrder) || 0,
+                is_visible: isVisible === '1'
+            });
+        }
+    });
+
+    // Send AJAX request
+    fetch(`/admin/products/${productId}/attributes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ attributes: attributes })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Cập nhật thuộc tính thành công!');
+            window.location.reload(); // Reload toàn trang
+        } else {
+            alert('Lỗi: ' + (data.message || 'Unknown error'));
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error saving attributes:', error);
+        alert('Có lỗi xảy ra khi lưu thuộc tính');
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    });
 }
+
+// Function removed - no longer using dropdown for units
 
 // Image Management Functions
 function previewNewImages(input) {

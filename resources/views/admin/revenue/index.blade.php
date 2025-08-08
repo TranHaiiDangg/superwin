@@ -22,12 +22,71 @@
                 @endforeach
             </select>
             
-            <!-- Export Button -->
-            <button onclick="exportExcel()" 
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
-                <i class="fas fa-file-excel mr-2"></i>
-                Xuất Excel
-            </button>
+            <!-- Export Options Button -->
+            <div class="relative">
+                <button onclick="toggleExportMenu()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center">
+                    <i class="fas fa-file-excel mr-2"></i>
+                    Xuất Excel
+                    <i class="fas fa-chevron-down ml-2"></i>
+                </button>
+                
+                <!-- Export Menu -->
+                <div id="exportMenu" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div class="p-4">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Tùy chọn xuất dữ liệu</h3>
+                        
+                        <!-- Export by Year -->
+                        <div class="mb-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="exportType" value="year" checked class="mr-2">
+                                <span class="text-sm">Xuất theo năm hiện tại ({{ $current_year }})</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Export by Date Range -->
+                        <div class="mb-4">
+                            <label class="flex items-center mb-2">
+                                <input type="radio" name="exportType" value="date_range" class="mr-2">
+                                <span class="text-sm">Xuất theo khoảng thời gian</span>
+                            </label>
+                            <div id="dateRangeInputs" class="ml-6 hidden">
+                                <div class="flex space-x-2 mb-2">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Từ ngày</label>
+                                        <input type="date" id="startDate" 
+                                               class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                               value="{{ date('Y-m-01') }}">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Đến ngày</label>
+                                        <input type="date" id="endDate" 
+                                               class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                               value="{{ date('Y-m-d') }}">
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="setDateRange('today')" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-xs rounded">Hôm nay</button>
+                                    <button onclick="setDateRange('week')" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-xs rounded">7 ngày qua</button>
+                                    <button onclick="setDateRange('month')" 
+                                            class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-xs rounded">Tháng này</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-2 pt-3 border-t border-gray-200">
+                            <button onclick="toggleExportMenu()" 
+                                    class="px-3 py-1 text-sm text-gray-600 hover:text-gray-800">Hủy</button>
+                            <button onclick="performExport()" 
+                                    class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-sm rounded">
+                                Xuất Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -403,9 +462,87 @@ function changeYear() {
     window.location.href = `{{ route('admin.revenue.index') }}?year=${year}`;
 }
 
+function toggleExportMenu() {
+    const menu = document.getElementById('exportMenu');
+    menu.classList.toggle('hidden');
+}
+
+// Đóng menu khi click bên ngoài
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('exportMenu');
+    const button = event.target.closest('[onclick="toggleExportMenu()"]');
+    if (!button && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+    }
+});
+
+// Toggle hiển thị date range inputs
+document.addEventListener('change', function(event) {
+    if (event.target.name === 'exportType') {
+        const dateRangeInputs = document.getElementById('dateRangeInputs');
+        if (event.target.value === 'date_range') {
+            dateRangeInputs.classList.remove('hidden');
+        } else {
+            dateRangeInputs.classList.add('hidden');
+        }
+    }
+});
+
+function setDateRange(type) {
+    const today = new Date();
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    
+    let start, end;
+    
+    switch(type) {
+        case 'today':
+            start = end = today;
+            break;
+        case 'week':
+            start = new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000);
+            end = today;
+            break;
+        case 'month':
+            start = new Date(today.getFullYear(), today.getMonth(), 1);
+            end = today;
+            break;
+    }
+    
+    startDate.value = start.toISOString().split('T')[0];
+    endDate.value = end.toISOString().split('T')[0];
+}
+
+function performExport() {
+    const exportType = document.querySelector('input[name="exportType"]:checked').value;
+    
+    if (exportType === 'year') {
+        const year = document.getElementById('yearFilter').value;
+        window.location.href = `{{ route('admin.revenue.export') }}?export_type=year&year=${year}`;
+    } else {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            alert('Vui lòng chọn khoảng thời gian');
+            return;
+        }
+        
+        if (new Date(startDate) > new Date(endDate)) {
+            alert('Ngày bắt đầu phải nhỏ hơn ngày kết thúc');
+            return;
+        }
+        
+        window.location.href = `{{ route('admin.revenue.export') }}?export_type=date_range&start_date=${startDate}&end_date=${endDate}`;
+    }
+    
+    // Đóng menu
+    toggleExportMenu();
+}
+
+// Legacy function for compatibility
 function exportExcel() {
-    const year = document.getElementById('yearFilter').value;
-    window.location.href = `{{ route('admin.revenue.export') }}?year=${year}`;
+    performExport();
 }
 </script>
 @endsection

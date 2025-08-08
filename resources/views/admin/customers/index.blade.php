@@ -119,17 +119,28 @@
                             <div class="text-sm text-gray-500">{{ $customer->loyalty_points }} điểm</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                {{ $customer->status == 'active' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $customer->status == 'inactive' ? 'bg-gray-100 text-gray-800' : '' }}
-                                {{ $customer->status == 'banned' ? 'bg-red-100 text-red-800' : '' }}">
-                                {{ $customer->status == 'active' ? 'Hoạt động' : '' }}
-                                {{ $customer->status == 'inactive' ? 'Không hoạt động' : '' }}
-                                {{ $customer->status == 'banned' ? 'Bị cấm' : '' }}
-                            </span>
-                            @if($customer->newsletter_subscription)
-                                <div class="text-xs text-green-600 mt-1">📧 Newsletter</div>
-                            @endif
+                            <div class="flex flex-col space-y-1">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {{ $customer->status == 'active' ? 'bg-green-100 text-green-800' : '' }}
+                                    {{ $customer->status == 'inactive' ? 'bg-gray-100 text-gray-800' : '' }}
+                                    {{ $customer->status == 'banned' ? 'bg-red-100 text-red-800' : '' }}">
+                                    {{ $customer->status == 'active' ? 'Hoạt động' : '' }}
+                                    {{ $customer->status == 'inactive' ? 'Không hoạt động' : '' }}
+                                    {{ $customer->status == 'banned' ? 'Bị cấm' : '' }}
+                                </span>
+                                @if($customer->is_active)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-check mr-1"></i>Kích hoạt
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                        <i class="fas fa-pause mr-1"></i>Tạm dừng
+                                    </span>
+                                @endif
+                                @if($customer->newsletter_subscription)
+                                    <div class="text-xs text-green-600">📧 Newsletter</div>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                             <a href="{{ route('admin.customers.show', $customer) }}"
@@ -140,24 +151,37 @@
                                class="text-yellow-600 hover:text-yellow-900" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            @if($customer->status !== 'banned')
-                                <form method="POST" action="{{ route('admin.customers.ban', $customer) }}" class="inline">
+                            @if($customer->is_active)
+                                <form method="POST" action="{{ route('admin.customers.deactivate', $customer) }}" class="inline">
                                     @csrf
-                                    <button type="submit" class="text-red-600 hover:text-red-900" 
-                                            title="Cấm khách hàng"
-                                            onclick="return confirm('Bạn có chắc muốn cấm khách hàng này?')">
-                                        <i class="fas fa-ban"></i>
+                                    <button type="submit" class="text-orange-600 hover:text-orange-900" 
+                                            title="Tạm dừng khách hàng"
+                                            onclick="return confirm('Bạn có chắc muốn tạm dừng khách hàng này?')">
+                                        <i class="fas fa-pause"></i>
                                     </button>
                                 </form>
                             @else
-                                <form method="POST" action="{{ route('admin.customers.unban', $customer) }}" class="inline">
+                                <form method="POST" action="{{ route('admin.customers.activate', $customer) }}" class="inline">
                                     @csrf
                                     <button type="submit" class="text-green-600 hover:text-green-900" 
-                                            title="Bỏ cấm khách hàng"
-                                            onclick="return confirm('Bạn có chắc muốn bỏ cấm khách hàng này?')">
-                                        <i class="fas fa-check-circle"></i>
+                                            title="Kích hoạt khách hàng"
+                                            onclick="return confirm('Bạn có chắc muốn kích hoạt khách hàng này?')">
+                                        <i class="fas fa-play"></i>
                                     </button>
                                 </form>
+                            @endif
+                            @if($customer->status !== 'banned')
+                                <button type="button" class="text-red-600 hover:text-red-900" 
+                                        title="Cấm khách hàng"
+                                        onclick="banCustomer({{ $customer->id }})">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            @else
+                                <button type="button" class="text-green-600 hover:text-green-900" 
+                                        title="Bỏ cấm khách hàng"
+                                        onclick="unbanCustomer({{ $customer->id }})">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
                             @endif
                         </td>
                     </tr>
@@ -180,4 +204,60 @@
         @endif
     </div>
 </div>
+
+<script>
+function banCustomer(customerId) {
+    if (!confirm('Bạn có chắc muốn cấm khách hàng này?')) {
+        return;
+    }
+    
+    fetch(`/admin/customers/${customerId}/ban`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Có lỗi xảy ra: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi cấm khách hàng');
+    });
+}
+
+function unbanCustomer(customerId) {
+    if (!confirm('Bạn có chắc muốn bỏ cấm khách hàng này?')) {
+        return;
+    }
+    
+    fetch(`/admin/customers/${customerId}/unban`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Có lỗi xảy ra: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi bỏ cấm khách hàng');
+    });
+}
+</script>
 @endsection 

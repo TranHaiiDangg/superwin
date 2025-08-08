@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Chi tiết đơn hàng #{{ $order->order_number }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Chi tiết đơn hàng #{{ $order->order_code }}</h1>
         <div class="flex space-x-2">
             <a href="{{ route('admin.orders.printInvoice', $order) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg" target="_blank">
                 <i class="fas fa-print mr-2"></i>In hóa đơn
@@ -29,6 +29,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái mới</label>
                 <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                    <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
                     <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang xử lý</option>
                     <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Đã gửi hàng</option>
                     <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
@@ -55,7 +56,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Mã đơn hàng</label>
-                        <p class="text-sm text-gray-900 font-medium">#{{ $order->order_number }}</p>
+                        <p class="text-sm text-gray-900 font-medium">#{{ $order->order_code }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Ngày đặt</label>
@@ -68,6 +69,11 @@
                                 @case('pending')
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         <i class="fas fa-clock mr-1"></i>Chờ xử lý
+                                    </span>
+                                    @break
+                                @case('confirmed')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-check mr-1"></i>Đã xác nhận
                                     </span>
                                     @break
                                 @case('processing')
@@ -95,7 +101,13 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Phương thức thanh toán</label>
-                        <p class="text-sm text-gray-900">{{ $order->payment_method ?? 'Chưa xác định' }}</p>
+                        <p class="text-sm text-gray-900">
+                            @if($order->payment_method == 'cod')
+                                <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">Thanh toán khi nhận hàng (COD)</span>
+                            @else
+                                <span class="text-gray-500">Chưa xác định</span>
+                            @endif
+                        </p>
                     </div>
                     @if($order->admin_note)
                     <div class="md:col-span-2">
@@ -178,7 +190,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Số điện thoại</label>
-                        <p class="text-sm text-gray-900">{{ $order->phone ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900">{{ $order->customer_phone ?? 'N/A' }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Địa chỉ giao hàng</label>

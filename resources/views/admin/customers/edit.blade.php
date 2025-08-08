@@ -144,6 +144,18 @@
                         @error('status')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
+                        
+                        <div class="mt-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="is_active" value="1" 
+                                       {{ old('is_active', $customer->is_active) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    <i class="fas fa-check-circle mr-1 text-blue-500"></i>Kích hoạt tài khoản
+                                </span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1">Khách hàng có thể đăng nhập và sử dụng dịch vụ khi được kích hoạt</p>
+                        </div>
                     </div>
 
                     <div>

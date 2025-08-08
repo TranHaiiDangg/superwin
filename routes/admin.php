@@ -45,14 +45,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('products/{product}/variants', [ProductVariantController::class, 'index'])->name('products.variants.index')->middleware('permission:product_variants.view');
     Route::post('products/{product}/variants/bulk-update', [ProductVariantController::class, 'bulkUpdate'])->name('products.variants.bulk-update')->middleware('permission:product_variants.edit');
 
-    // Product Attributes
+    // Product Attributes - Đặt routes cụ thể trước routes có parameter
+    Route::get('product-attributes/create', [ProductAttributeController::class, 'create'])->name('product-attributes.create')->middleware('permission:product_attributes.create');
+    Route::post('product-attributes', [ProductAttributeController::class, 'store'])->name('product-attributes.store')->middleware('permission:product_attributes.create');
+    
     Route::middleware('permission:product_attributes.view')->group(function () {
         Route::get('product-attributes', [ProductAttributeController::class, 'index'])->name('product-attributes.index');
         Route::get('product-attributes/{productAttribute}', [ProductAttributeController::class, 'show'])->name('product-attributes.show');
         Route::get('products/{product}/attributes', [ProductAttributeController::class, 'getByProduct'])->name('products.attributes.get');
     });
-    Route::get('product-attributes/create', [ProductAttributeController::class, 'create'])->name('product-attributes.create')->middleware('permission:product_attributes.create');
-    Route::post('product-attributes', [ProductAttributeController::class, 'store'])->name('product-attributes.store')->middleware('permission:product_attributes.create');
+    
     Route::get('product-attributes/{productAttribute}/edit', [ProductAttributeController::class, 'edit'])->name('product-attributes.edit')->middleware('permission:product_attributes.edit');
     Route::put('product-attributes/{productAttribute}', [ProductAttributeController::class, 'update'])->name('product-attributes.update')->middleware('permission:product_attributes.edit');
     Route::delete('product-attributes/{productAttribute}', [ProductAttributeController::class, 'destroy'])->name('product-attributes.destroy')->middleware('permission:product_attributes.delete');
@@ -85,15 +87,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy')->middleware('permission:brands.delete');
     Route::post('brands/{brand}/restore', [BrandController::class, 'restore'])->name('brands.restore')->middleware('permission:brands.edit');
     
-    // Orders
+    // Orders - Đặt routes cụ thể trước routes có parameter
+    Route::get('orders/export', [OrderController::class, 'exportOrders'])->name('orders.exportOrders')->middleware('permission:orders.view');
+    
     Route::middleware('permission:orders.view')->group(function () {
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::get('orders/{order}/invoice', [OrderController::class, 'printInvoice'])->name('orders.printInvoice');
-        Route::get('orders/export', [OrderController::class, 'exportOrders'])->name('orders.exportOrders');
     });
-    Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create')->middleware('permission:orders.create');
-    Route::post('orders', [OrderController::class, 'store'])->name('orders.store')->middleware('permission:orders.create');
+    
     Route::get('orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit')->middleware('permission:orders.edit');
     Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update')->middleware('permission:orders.edit');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy')->middleware('permission:orders.delete');
@@ -121,6 +123,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('customers/{customer}', [CustomerController::class, 'update'])->name('customers.update')->middleware('permission:customers.edit');
     Route::post('customers/{customer}/ban', [CustomerController::class, 'ban'])->name('customers.ban')->middleware('permission:customers.edit');
     Route::post('customers/{customer}/unban', [CustomerController::class, 'unban'])->name('customers.unban')->middleware('permission:customers.edit');
+    Route::post('customers/{customer}/activate', [CustomerController::class, 'activate'])->name('customers.activate')->middleware('permission:customers.edit');
+    Route::post('customers/{customer}/deactivate', [CustomerController::class, 'deactivate'])->name('customers.deactivate')->middleware('permission:customers.edit');
     
         // Reports
         Route::get('reports/sales', [AdminController::class, 'salesReport'])->name('reports.sales')->middleware('permission:dashboard.reports');
