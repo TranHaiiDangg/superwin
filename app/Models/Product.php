@@ -209,6 +209,23 @@ class Product extends Model
     // Method to auto-generate SKU for current product
     public function generateUniqueSKU()
     {
-        return self::generateSKU($this->category_id, $this->brand_id);
+        $baseSKU = $this->generateSKU($this->category_id, $this->brand_id);
+        $counter = 1;
+        $uniqueSKU = $baseSKU;
+
+        while (static::where('sku', $uniqueSKU)->where('id', '!=', $this->id)->exists()) {
+            $uniqueSKU = $baseSKU . '-' . $counter;
+            $counter++;
+        }
+
+        return $uniqueSKU;
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
     }
 }

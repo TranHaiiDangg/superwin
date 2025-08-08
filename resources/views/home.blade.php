@@ -71,16 +71,16 @@
 @if($mainCategories->count() > 0)
 <div class="container-menu">
     <div class="container">
-        <div class="row g-3">
+        <div class="row g-3 d-flex justify-content-center">
             @foreach($mainCategories as $category)
             <div class="col-6 col-md-3 col-lg-2 d-flex align-items-stretch">
                 <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="menu-item">
                     <div class="icon-container">
                         @if($category->image)
-                            <!-- <img src="{{ $category->image }}" alt="{{ $category->name }}" class="menu-img" /> -->
-                            <img src="/image/bom.png" alt="Bơm Nước" class="menu-img" />
+                        <!-- <img src="{{ $category->image }}" alt="{{ $category->name }}" class="menu-img" /> -->
+                        <img src="/image/bom.png" alt="Bơm Nước" class="menu-img" />
                         @else
-                            <i class="fas fa-cog text-primary fa-2x"></i>
+                        <i class="fas fa-cog text-primary fa-2x"></i>
                         @endif
                     </div>
                     <p class="mb-0">{{ $category->name }}</p>
@@ -93,67 +93,71 @@
 @endif
 <!-- Flash Deals Section -->
 @if($saleProducts->count() > 0)
-<section class="flash-deals-section container py-3">
+<section class="flash-deals-section py-4">
     <div class="container">
         <div class="flash-deals-header d-flex justify-content-between align-items-center mb-4">
             <div class="d-flex align-items-center">
                 <h2 class="fw-bold text-white mb-0 me-3">
-                    <i class="fas fa-bolt me-2"></i>Flash Deals
+                    Flash Deal
                 </h2>
                 <div class="countdown-timer">
+                    <span class="timer-label text-white me-2">Kết thúc trong:</span>
                     <div class="timer-display">
-                        <span class="hours">06</span> :
-                        <span class="minutes">50</span> :
-                        <span class="seconds">00</span>
+                        <span class="time-unit" id="hours">02</span>
+                        <span class="time-unit" id="minutes">52</span>
+                        <span class="time-unit" id="seconds">52</span>
                     </div>
                 </div>
             </div>
-            <a href="{{ route('deals') }}" class="text-white text-decoration-none fw-bold">
-                Xem tất cả <i class="fas fa-arrow-right ms-1"></i>
+            <a href="{{ route('deals') }}" class="btn btn-outline-light btn-sm">
+                Xem tất cả
             </a>
         </div>
 
         <div class="flash-deals-slider">
+            <button class="slider-nav prev" id="flashDealsPrev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
             <div class="slider-container">
-                <div class="slider-track">
-                    @foreach($saleProducts->take(10) as $product)
+                <div class="slider-track" id="flashDealsTrack">
+                    @foreach($saleProducts->take(10) as $index => $product)
                     <div class="deal-item">
                         <div class="deal-card">
-                            <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="deal-image-container">
-                                @if($product->baseImage)
-                                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="deal-image">
-                                @else
-                                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="deal-image">
-                                @endif
-                                <div class="discount-badge">
-                                    -{{ $product->discount_percentage }}%
-                                </div>
-                                @if($product->brand)
-                                    <div class="brand-badge">
-                                        {{ $product->brand->name }}
-                                    </div>
-                                @endif
-                            </a>
+                            <div class="discount-badge">
+                                -{{ $product->discount_percentage }}%
+                            </div>
+
+                            <div class="product-image">
+                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                    @if($product->baseImage)
+                                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                    @else
+                                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                    @endif
+                                </a>
+                            </div>
 
                             <div class="deal-content">
-                                <h6 class="deal-title">{{ $product->name }}</h6>
+                                <h6 class="product-name">{{ $product->name }}</h6>
 
-                                <div class="deal-prices d-flex justify-content-between align-items-center">
-                                <span class="sale-price">{{ number_format($product->sale_price) }}₫</span>
-                                    <span class="original-price">{{ number_format($product->price) }}₫</span>
-
+                                <div class="price-section text-center">
+                                    <div class="sale-price">{{ number_format($product->sale_price) }}đ</div>
+                                    <div class="original-price">{{ number_format($product->price) }}đ</div>
                                 </div>
 
                                 @php
-                                    $progress = rand(60, 90);
+                                $soldCount = $product->sold_count ?? rand(20, 80);
+                                $totalStock = $product->stock_quantity + $soldCount;
+                                $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
                                 @endphp
 
-                                <div class="deal-progress">
+                                <div class="progress-section text-center">
+                                    <div class="sold-info">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {{ $progress }}%; position: relative; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: white; font-weight: bold; font-size: 0.7rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $progress }}%</span>
-                                        </div>
+                                        <div class="progress-fill" style="width: {{ $progress }}%"></div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -162,9 +166,6 @@
                 </div>
             </div>
 
-            <button class="slider-nav prev" id="flashDealsPrev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
             <button class="slider-nav next" id="flashDealsNext">
                 <i class="fas fa-chevron-right"></i>
             </button>
@@ -172,150 +173,152 @@
     </div>
 </section>
 @endif
-<!-- Categories Section -->
-@if($mainCategories->count() > 0)
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Danh mục sản phẩm</h2>
-            <p class="text-muted">Khám phá các sản phẩm chất lượng của chúng tôi</p>
-        </div>
 
-        <div class="row g-4">
-            @foreach($mainCategories as $category)
-            <div class="col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm hover-lift">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-cog text-primary fa-3x"></i>
-                        </div>
-                        <h5 class="card-title">{{ $category->name }}</h5>
-                        <p class="card-text text-muted small">{{ $category->description }}</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Xem sản phẩm</a>
-                    </div>
-                </div>
+<!-- Category Products Sections -->
+@if(count($categoryProducts) > 0)
+@foreach($categoryProducts as $categoryData)
+<section class="py-4">
+    <div class="container">
+        <div class="category-section-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-primary mb-0">{{ $categoryData['category']->name }}</h3>
+                <p class="text-muted small mb-0">Khám phá sản phẩm chất lượng cao</p>
             </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-
-
-<!-- Featured Products -->
-@if($featuredProducts->count() > 0)
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Sản phẩm nổi bật</h2>
-            <p class="text-muted">Những sản phẩm được khách hàng tin tưởng lựa chọn</p>
+            <a href="{{ route('categories.show', $categoryData['category']->id) }}" class="btn btn-outline-primary btn-sm">
+                Xem tất cả
+            </a>
         </div>
 
-        <div class="row g-4">
-            @foreach($featuredProducts as $product)
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        @if($product->baseImage)
-                            <img src="{{ $product->baseImage->url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
-                        @else
-                            <img src="/image/sp1.png" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
-                        @endif
+        <div class="category-products-slider" data-category="{{ $categoryData['category']->id }}">
+            <button class="category-slider-nav prev" data-direction="prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
 
-                        @if($product->isOnSale)
-                            <span class="badge bg-danger position-absolute top-0 end-0 m-2">
-                                -{{ $product->discount_percentage }}%
-                            </span>
-                        @endif
+            <div class="category-slider-container">
+                <div class="category-slider-track">
+                    @foreach($categoryData['products'] as $product)
+                    <div class="category-product-item">
+                        <div class="category-product-card">
+                            <div class="category-product-image">
+                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                    @if($product->baseImage)
+                                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                    @else
+                                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                    @endif
+                                </a>
 
-                        @if($product->is_featured)
-                            <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                <i class="fas fa-star"></i> Nổi bật
-                            </span>
-                        @endif
-                    </div>
-
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="card-title">{{ $product->name }}</h6>
-                        <p class="card-text text-muted small">{{ Str::limit($product->short_description, 80) }}</p>
-
-                        <div class="mt-auto">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 @if($product->isOnSale)
-                                    <span class="text-danger fw-bold">{{ number_format($product->sale_price) }}đ</span>
-                                    <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }}đ</span>
-                                @else
-                                    <span class="text-primary fw-bold">{{ number_format($product->price) }}đ</span>
+                                <span class="category-discount-badge">
+                                    -{{ $product->discount_percentage }}%
+                                </span>
                                 @endif
                             </div>
 
-                            <div class="d-grid">
-                                <a href="#" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-shopping-cart me-1"></i>Thêm vào giỏ
-                                </a>
+                            <div class="category-product-content">
+                                <h6 class="category-product-name">{{ $product->name }}</h6>
+
+                                <div class="category-price-section text-center">
+                                    @if($product->isOnSale)
+                                    <div class="category-sale-price">{{ number_format($product->sale_price) }}đ</div>
+                                    <div class="category-original-price">{{ number_format($product->price) }}đ</div>
+                                    @else
+                                    <div class="category-regular-price">{{ number_format($product->price) }}đ</div>
+                                    @endif
+                                </div>
+
+                                <div class="category-stock-info text-center">
+                                    @if($product->stock_quantity > 0)
+                                    <span class="text-success small">
+                                        <i class="fas fa-check-circle"></i> Còn hàng
+                                    </span>
+                                    @else
+                                    <span class="text-danger small">
+                                        <i class="fas fa-times-circle"></i> Hết hàng
+                                    </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
-            @endforeach
-        </div>
 
-        <div class="text-center mt-4">
-            <a href="{{ route('products.index') }}" class="btn btn-outline-primary">
-                Xem tất cả sản phẩm <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+            <button class="category-slider-nav next" data-direction="next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
         </div>
     </div>
 </section>
+@endforeach
 @endif
 
-<!-- Sale Products -->
-@if($saleProducts->count() > 0)
+<!-- Suggested Products Section -->
+@if(isset($suggestedProducts) && $suggestedProducts->count() > 0)
 <section class="py-5">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Khuyến mãi hot</h2>
-            <p class="text-muted">Giảm giá sốc, mua ngay kẻo lỡ!</p>
-        </div>
+        <div class="suggested-section-wrapper">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-primary mb-2">Gợi Ý Cho Bạn</h3>
+                <p class="text-muted small mb-0">Sản phẩm được chọn lọc dành riêng cho bạn</p>
+            </div>
 
-        <div class="row g-4">
-            @foreach($saleProducts as $product)
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card">
-                    <div class="position-relative">
-                        @if($product->baseImage)
-                            <img src="{{ $product->baseImage->url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
-                        @else
-                            <img src="/image/sp1.png" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
-                        @endif
+            <div class="suggested-products-grid">
+                @foreach($suggestedProducts->take(10) as $product)
+                <div class="suggested-product-item">
+                    <div class="suggested-product-card">
+                        <div class="suggested-product-image">
+                            <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                @if($product->baseImage)
+                                <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                @else
+                                <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                @endif
+                            </a>
 
-                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">
-                            -{{ $product->discount_percentage }}%
-                        </span>
-                    </div>
+                            @if($product->isOnSale)
+                            <span class="suggested-discount-badge">
+                                -{{ $product->discount_percentage }}%
+                            </span>
+                            @endif
+                        </div>
 
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="card-title">{{ $product->name }}</h6>
-                        <p class="card-text text-muted small">{{ Str::limit($product->short_description, 80) }}</p>
+                        <div class="suggested-product-content">
+                            <h6 class="suggested-product-name">{{ $product->name }}</h6>
 
-                        <div class="mt-auto">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-danger fw-bold">{{ number_format($product->sale_price) }}đ</span>
-                                <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }}đ</span>
+                            <div class="suggested-price-section">
+                                @if($product->isOnSale)
+                                <div class="suggested-sale-price">{{ number_format($product->sale_price) }}đ</div>
+                                <div class="suggested-original-price">{{ number_format($product->price) }}đ</div>
+                                @else
+                                <div class="suggested-regular-price">{{ number_format($product->price) }}đ</div>
+                                @endif
                             </div>
 
-                            <div class="d-grid">
-                                <a href="#" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-fire me-1"></i>Mua ngay
-                                </a>
+                            <div class="suggested-rating">
+                                @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star {{ $i <= ($product->average_rating ?? 4) ? 'text-warning' : 'text-muted' }}"></i>
+                                @endfor
+                                <span class="suggested-rating-count">({{ $product->reviews_count ?? rand(10, 100) }})</span>
                             </div>
+
+                            <button class="suggested-buy-btn">
+                                Xem Ngay
+                            </button>
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
+
+            <div class="text-center mt-4">
+                <button class="suggested-view-more-btn">
+                    Xem thêm
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -335,11 +338,11 @@
             <div class="col-md-3 col-6">
                 <div class="text-center p-3">
                     @if($brand->image)
-                        <img src="{{ $brand->image }}" alt="{{ $brand->name }}" class="img-fluid" style="max-height: 60px;">
+                    <img src="{{ $brand->image }}" alt="{{ $brand->name }}" class="img-fluid" style="max-height: 60px;">
                     @else
-                        <div class="bg-white p-3 rounded shadow-sm">
-                            <h6 class="mb-0">{{ $brand->name }}</h6>
-                        </div>
+                    <div class="bg-white p-3 rounded shadow-sm">
+                        <h6 class="mb-0">{{ $brand->name }}</h6>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -390,139 +393,349 @@
 <script src="/js/trang_chu/banner_slider.js"></script>
 <script src="/js/trang_chu/flass_deal.js"></script>
 <script>
-// Banner Slider Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const slideContainer = document.querySelector('.slide-container');
-    const slides = document.querySelectorAll('.slide');
-    const prevBtn = document.querySelector('.slider-nav.prev');
-    const nextBtn = document.querySelector('.slider-nav.next');
-    const paginationDots = document.querySelector('.pagination-dots');
+    // Banner Slider Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Flash Deal Countdown Timer
+        function startCountdown() {
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
 
-    if (!slideContainer || slides.length === 0) return;
+            if (!hoursEl || !minutesEl || !secondsEl) return;
 
-    let currentSlide = 1; // Start from first real slide (index 1)
-    const totalSlides = slides.length - 2; // Exclude clone slides
-    let autoplayInterval;
+            // Set countdown to 6 hours from now (you can modify this)
+            let endTime = new Date().getTime() + (6 * 60 * 60 * 1000);
 
-    // Create pagination dots
-    for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.setAttribute('data-slide', i + 1);
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(i + 1));
-        paginationDots.appendChild(dot);
-    }
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = endTime - now;
 
-    // Initialize slider
-    updateSlider();
-    startAutoplay();
+                if (distance < 0) {
+                    // Reset countdown to 6 hours
+                    endTime = new Date().getTime() + (6 * 60 * 60 * 1000);
+                    return;
+                }
 
-    // Navigation buttons
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
-            updateSlider();
-            resetAutoplay();
-        });
-    }
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
-            updateSlider();
-            resetAutoplay();
-        });
-    }
-
-    // Touch/swipe support for mobile
-    let startX = 0;
-    let endX = 0;
-
-    slideContainer.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-
-    slideContainer.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        handleSwipe();
-    });
-
-    function handleSwipe() {
-        const swipeThreshold = 50;
-        const diff = startX - endX;
-
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
-                // Swipe left - next slide
-                currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
-            } else {
-                // Swipe right - previous slide
-                currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+                hoursEl.textContent = hours.toString().padStart(2, '0');
+                minutesEl.textContent = minutes.toString().padStart(2, '0');
+                secondsEl.textContent = seconds.toString().padStart(2, '0');
             }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        startCountdown();
+        const slideContainer = document.querySelector('.slide-container');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.querySelector('.slider-nav.prev');
+        const nextBtn = document.querySelector('.slider-nav.next');
+        const paginationDots = document.querySelector('.pagination-dots');
+
+        if (!slideContainer || slides.length === 0) return;
+
+        let currentSlide = 1; // Start from first real slide (index 1)
+        const totalSlides = slides.length - 2; // Exclude clone slides
+        let autoplayInterval;
+
+        // Create pagination dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.setAttribute('data-slide', i + 1);
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i + 1));
+            paginationDots.appendChild(dot);
+        }
+
+        // Initialize slider
+        updateSlider();
+        startAutoplay();
+
+        // Navigation buttons
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+                updateSlider();
+                resetAutoplay();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+                updateSlider();
+                resetAutoplay();
+            });
+        }
+
+        // Touch/swipe support for mobile
+        let startX = 0;
+        let endX = 0;
+
+        slideContainer.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        slideContainer.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+                } else {
+                    // Swipe right - previous slide
+                    currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+                }
+                updateSlider();
+                resetAutoplay();
+            }
+        }
+
+        function updateSlider() {
+            const translateX = -currentSlide * 100;
+            slideContainer.style.transform = `translateX(${translateX}%)`;
+
+            // Update pagination dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide - 1);
+            });
+
+            // Handle infinite loop
+            if (currentSlide === 0) {
+                setTimeout(() => {
+                    slideContainer.style.transition = 'none';
+                    currentSlide = totalSlides;
+                    slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    setTimeout(() => {
+                        slideContainer.style.transition = 'transform 0.5s ease-in-out';
+                    }, 10);
+                }, 500);
+            } else if (currentSlide === totalSlides + 1) {
+                setTimeout(() => {
+                    slideContainer.style.transition = 'none';
+                    currentSlide = 1;
+                    slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    setTimeout(() => {
+                        slideContainer.style.transition = 'transform 0.5s ease-in-out';
+                    }, 10);
+                }, 500);
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            currentSlide = slideNumber;
             updateSlider();
             resetAutoplay();
         }
-    }
 
-    function updateSlider() {
-        const translateX = -currentSlide * 100;
-        slideContainer.style.transform = `translateX(${translateX}%)`;
+        function startAutoplay() {
+            autoplayInterval = setInterval(() => {
+                currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+                updateSlider();
+            }, 5000); // Change slide every 5 seconds
+        }
 
-        // Update pagination dots
-        document.querySelectorAll('.dot').forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentSlide - 1);
+        function resetAutoplay() {
+            clearInterval(autoplayInterval);
+            startAutoplay();
+        }
+
+        // Pause autoplay on hover
+        slideContainer.addEventListener('mouseenter', () => {
+            clearInterval(autoplayInterval);
         });
 
-        // Handle infinite loop
-        if (currentSlide === 0) {
-            setTimeout(() => {
-                slideContainer.style.transition = 'none';
-                currentSlide = totalSlides;
-                slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-                setTimeout(() => {
-                    slideContainer.style.transition = 'transform 0.5s ease-in-out';
-                }, 10);
-            }, 500);
-        } else if (currentSlide === totalSlides + 1) {
-            setTimeout(() => {
-                slideContainer.style.transition = 'none';
-                currentSlide = 1;
-                slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-                setTimeout(() => {
-                    slideContainer.style.transition = 'transform 0.5s ease-in-out';
-                }, 10);
-            }, 500);
+        slideContainer.addEventListener('mouseleave', () => {
+            startAutoplay();
+        });
+
+        // Flash Deals Slider Functionality
+        const flashDealsTrack = document.getElementById('flashDealsTrack');
+        const flashDealsPrev = document.getElementById('flashDealsPrev');
+        const flashDealsNext = document.getElementById('flashDealsNext');
+        const flashDealsItems = document.querySelectorAll('.deal-item');
+
+        if (flashDealsTrack && flashDealsItems.length > 0) {
+            let currentIndex = 0;
+            const itemsPerView = window.innerWidth <= 768 ? 1 : (window.innerWidth <= 1024 ? 2 : 4);
+            const maxIndex = Math.max(0, flashDealsItems.length - itemsPerView);
+
+            function updateFlashDealsSlider() {
+                const translateX = -currentIndex * (250 + 15); // item width + gap
+                flashDealsTrack.style.transform = `translateX(${translateX}px)`;
+
+                // Update button states
+                flashDealsPrev.disabled = currentIndex === 0;
+                flashDealsNext.disabled = currentIndex >= maxIndex;
+            }
+
+            function nextFlashDeal() {
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                    updateFlashDealsSlider();
+                }
+            }
+
+            function prevFlashDeal() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateFlashDealsSlider();
+                }
+            }
+
+            // Event listeners
+            flashDealsNext.addEventListener('click', nextFlashDeal);
+            flashDealsPrev.addEventListener('click', prevFlashDeal);
+
+            // Initialize
+            updateFlashDealsSlider();
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const newItemsPerView = window.innerWidth <= 768 ? 1 : (window.innerWidth <= 1024 ? 2 : 4);
+                const newMaxIndex = Math.max(0, flashDealsItems.length - newItemsPerView);
+
+                if (currentIndex > newMaxIndex) {
+                    currentIndex = newMaxIndex;
+                }
+                updateFlashDealsSlider();
+            });
+
+            // Auto-scroll for flash deals (optional)
+            let flashDealsAutoplay = setInterval(function() {
+                if (currentIndex >= maxIndex) {
+                    currentIndex = 0;
+                } else {
+                    currentIndex++;
+                }
+                updateFlashDealsSlider();
+            }, 4000);
+
+            // Pause autoplay on hover
+            flashDealsTrack.addEventListener('mouseenter', function() {
+                clearInterval(flashDealsAutoplay);
+            });
+
+            flashDealsTrack.addEventListener('mouseleave', function() {
+                flashDealsAutoplay = setInterval(function() {
+                    if (currentIndex >= maxIndex) {
+                        currentIndex = 0;
+                    } else {
+                        currentIndex++;
+                    }
+                    updateFlashDealsSlider();
+                }, 4000);
+            });
         }
-    }
 
-    function goToSlide(slideNumber) {
-        currentSlide = slideNumber;
-        updateSlider();
-        resetAutoplay();
-    }
+        // Category Products Sliders Functionality
+        const categorySliders = document.querySelectorAll('.category-products-slider');
 
-    function startAutoplay() {
-        autoplayInterval = setInterval(() => {
-            currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
-            updateSlider();
-        }, 5000); // Change slide every 5 seconds
-    }
+        categorySliders.forEach(slider => {
+            const track = slider.querySelector('.category-slider-track');
+            const items = slider.querySelectorAll('.category-product-item');
+            const prevBtn = slider.querySelector('.category-slider-nav.prev');
+            const nextBtn = slider.querySelector('.category-slider-nav.next');
 
-    function resetAutoplay() {
-        clearInterval(autoplayInterval);
-        startAutoplay();
-    }
+            if (!track || !items.length || !prevBtn || !nextBtn) return;
 
-    // Pause autoplay on hover
-    slideContainer.addEventListener('mouseenter', () => {
-        clearInterval(autoplayInterval);
+            let currentIndex = 0;
+            let itemsPerView = 4; // Mặc định 4 sản phẩm trên desktop
+
+            function getItemsPerView() {
+                if (window.innerWidth <= 576) return 1;      // Mobile
+                if (window.innerWidth <= 768) return 2;      // Small tablet
+                if (window.innerWidth <= 1024) return 3;     // Tablet
+                return 4;                                     // Desktop: 4 sản phẩm
+            }
+
+            itemsPerView = getItemsPerView();
+            let maxIndex = Math.max(0, items.length - itemsPerView);
+
+            function updateCategorySlider() {
+                // Cập nhật itemsPerView và maxIndex
+                itemsPerView = getItemsPerView();
+                maxIndex = Math.max(0, items.length - itemsPerView);
+
+                // Đảm bảo currentIndex không vượt quá maxIndex
+                if (currentIndex > maxIndex) currentIndex = maxIndex;
+
+                // Sử dụng transform với % thay vì px để responsive tốt hơn
+                const translatePercent = -(currentIndex * (100 / itemsPerView));
+                track.style.transform = `translateX(${translatePercent}%)`;
+
+                // Update button states
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex >= maxIndex;
+            }
+
+            function nextCategory() {
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                    updateCategorySlider();
+                }
+            }
+
+            function prevCategory() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCategorySlider();
+                }
+            }
+
+            // Event listeners
+            nextBtn.addEventListener('click', nextCategory);
+            prevBtn.addEventListener('click', prevCategory);
+
+            // Initialize
+            updateCategorySlider();
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                updateCategorySlider(); // Function này đã tự cập nhật itemsPerView và maxIndex
+            });
+
+            // Touch/swipe support for mobile
+            let startX = 0;
+            let endX = 0;
+
+            track.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+
+            track.addEventListener('touchend', (e) => {
+                endX = e.changedTouches[0].clientX;
+                handleCategorySwipe();
+            });
+
+            function handleCategorySwipe() {
+                const swipeThreshold = 50;
+                const diff = startX - endX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe left - next slide
+                        nextCategory();
+                    } else {
+                        // Swipe right - previous slide
+                        prevCategory();
+                    }
+                }
+            }
+        });
     });
-
-    slideContainer.addEventListener('mouseleave', () => {
-        startAutoplay();
-    });
-});
 </script>
 @endpush
 
@@ -531,518 +744,327 @@ document.addEventListener('DOMContentLoaded', function() {
 <link rel="stylesheet" href="/css/trang_chu/container-menu.css">
 
 <style>
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
 
-.hover-lift {
-    transition: transform 0.3s ease;
-}
+    .hover-lift {
+        transition: transform 0.3s ease;
+    }
 
-.hover-lift:hover {
-    transform: translateY(-5px);
-}
+    .hover-lift:hover {
+        transform: translateY(-5px);
+    }
 
-.product-card {
-    transition: all 0.3s ease;
-}
+    .product-card {
+        transition: all 0.3s ease;
+    }
 
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-}
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
 
-.badge {
-    font-size: 0.75rem;
-}
+    .badge {
+        font-size: 0.75rem;
+    }
 
-/* Banner Slider Styles */
-.banner-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
-}
+    /* Banner Slider Styles */
+    .banner-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
 
-.banner-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 15px;
-    height: 400px;
-}
-
-.main-banner {
-    grid-row: 1 / 3;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-}
-
-.slider-column {
-    height: 100%;
-    position: relative;
-}
-
-.main-slider {
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-.slide-container {
-    display: flex;
-    height: 100%;
-    transition: transform 0.5s ease-in-out;
-}
-
-.slide {
-    min-width: 100%;
-    height: 100%;
-}
-
-.slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.slider-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-}
-
-.slider-nav:hover {
-    background: rgba(255, 255, 255, 1);
-}
-
-.slider-nav.prev {
-    left: 15px;
-}
-
-.slider-nav.next {
-    right: 15px;
-}
-
-.pagination-dots {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
-
-.dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.dot.active {
-    background: rgba(255, 255, 255, 1);
-}
-
-.side-banner-1, .side-banner-2 {
-    overflow: hidden;
-    border-radius: 12px;
-}
-
-.image-box {
-    height: 100%;
-}
-
-.image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.image-box:hover img {
-    transform: scale(1.05);
-}
-
-/* Container Menu Styles */
-.container-menu {
-    background: white;
-    padding: 20px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.menu-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: #333;
-    padding: 15px 10px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    text-align: center;
-    min-height: 100px;
-    width: 100%;
-    height: 100%;
-}
-
-.menu-item:hover {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
-}
-
-.icon-container {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-    background: rgba(79, 172, 254, 0.1);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.menu-item:hover .icon-container {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.menu-img {
-    max-width: 100%;
-    max-height: 100%;
-    transition: all 0.3s ease;
-}
-
-.menu-item p {
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.2;
-}
-
-/* Đảm bảo các menu items có chiều cao đồng đều và căn giữa */
-.col-6.col-md-3.col-lg-2 {
-    display: flex;
-    align-items: stretch;
-    min-height: 120px;
-}
-
-.col-6.col-md-3.col-lg-2 > a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
     .banner-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        height: auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 15px;
+        height: 400px;
     }
 
     .main-banner {
-        grid-row: 1;
-        height: 250px;
+        grid-row: 1 / 3;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
     }
 
-    .side-banner-1, .side-banner-2 {
-        height: 150px;
+    .slider-column {
+        height: 100%;
+        position: relative;
     }
 
-    /* Mobile menu items */
-    .col-6.col-md-3.col-lg-2 {
-        min-height: 100px;
+    .main-slider {
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slide-container {
+        display: flex;
+        height: 100%;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+        min-width: 100%;
+        height: 100%;
+    }
+
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s ease;
+    }
+
+    .slider-nav:hover {
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .slider-nav.prev {
+        left: 15px;
+    }
+
+    .slider-nav.next {
+        right: 15px;
+    }
+
+    .pagination-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dot.active {
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .side-banner-1,
+    .side-banner-2 {
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .image-box {
+        height: 100%;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .image-box:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Container Menu Styles */
+    .container-menu {
+        background: white;
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
     }
 
     .menu-item {
-        min-height: 80px;
-        padding: 10px 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #333;
+        padding: 15px 10px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-height: 100px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .menu-item:hover {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
     }
 
     .icon-container {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 8px;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        background: rgba(79, 172, 254, 0.1);
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .menu-item:hover .icon-container {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .menu-img {
+        max-width: 100%;
+        max-height: 100%;
+        transition: all 0.3s ease;
     }
 
     .menu-item p {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 0;
+        line-height: 1.2;
     }
-}
 
-/* Flash Deals Section Styles */
-.flash-deals-section {
-    border-radius: 32px;
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    position: relative;
-    overflow: hidden;
-}
+    /* Đảm bảo các menu items có chiều cao đồng đều và căn giữa */
+    .col-6.col-md-3.col-lg-2 {
+        display: flex;
+        align-items: stretch;
+        min-height: 120px;
+    }
 
-.flash-deals-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-    opacity: 0.3;
-}
-
-.flash-deals-header {
-    position: relative;
-    z-index: 2;
-}
-
-.countdown-timer {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 8px 16px;
-    backdrop-filter: blur(10px);
-}
-
-.timer-display {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: white;
-    font-family: 'Courier New', monospace;
-}
-
-.flash-deals-slider {
-    position: relative;
-    z-index: 2;
-}
-
-.slider-container {
-    overflow: hidden;
-    position: relative;
-}
-
-.slider-track {
-    display: flex;
-    transition: transform 0.5s ease;
-    gap: 20px;
-}
-
-.deal-item {
-    flex: 0 0 280px;
-    min-width: 280px;
-}
-
-.deal-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.deal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.deal-image-container {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-
-.deal-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.deal-card:hover .deal-image {
-    transform: scale(1.05);
-}
-
-.discount-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff4757;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.brand-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-}
-
-.deal-content {
-    padding: 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.deal-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    line-height: 1.3;
-    color: #2c3e50;
-}
-
-.deal-description {
-    font-size: 0.8rem;
-    color: #7f8c8d;
-    margin-bottom: 12px;
-    line-height: 1.4;
-}
-
-.deal-prices {
-    margin-bottom: 12px;
-}
-
-.original-price {
-    text-decoration: line-through;
-    color: #95a5a6;
-    font-size: 0.8rem;
-    margin-right: 8px;
-}
-
-.sale-price {
-    color: #e74c3c;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.deal-progress {
-    margin-bottom: 16px;
-}
-
-.progress-bar {
-    background: #ecf0f1;
-    height: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 4px;
-    position: relative;
-}
-
-.progress-fill {
-    background: linear-gradient(90deg, #ff6b35, #f7931e);
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.3s ease;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.progress-fill .progress-text {
-    font-size: 0.7rem;
-    color: white;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-}
-
-.deal-button {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: auto;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.deal-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-}
-
-.flash-deals-slider .slider-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.flash-deals-slider .slider-nav:hover {
-    background: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.flash-deals-slider .slider-nav.prev {
-    left: -20px;
-}
-
-.flash-deals-slider .slider-nav.next {
-    right: -20px;
-}
-
-/* Flash Deals Responsive */
-@media (max-width: 768px) {
-    .flash-deals-header {
+    .col-6.col-md-3.col-lg-2>a {
+        display: flex;
         flex-direction: column;
-        gap: 15px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
         text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .banner-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+            height: auto;
+        }
+
+        .main-banner {
+            grid-row: 1;
+            height: 250px;
+        }
+
+        .side-banner-1,
+        .side-banner-2 {
+            height: 150px;
+        }
+
+        /* Mobile menu items */
+        .col-6.col-md-3.col-lg-2 {
+            min-height: 100px;
+        }
+
+        .menu-item {
+            min-height: 80px;
+            padding: 10px 5px;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
+        }
+
+        .menu-item p {
+            font-size: 0.8rem;
+        }
+    }
+
+         /* Flash Deals Section Styles */
+     .flash-deals-section {
+         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+         border-radius: 16px;
+         margin: 20px 0;
+     }
+
+    .flash-deals-header {
+        position: relative;
+        z-index: 2;
+    }
+
+    .countdown-timer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .timer-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .timer-display {
+        display: flex;
+        gap: 4px;
+    }
+
+    .time-unit {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    .flash-deals-slider {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .slider-container {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        margin: 0 10px;
+    }
+
+    .slider-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 15px;
     }
 
     .deal-item {
@@ -1050,18 +1072,735 @@ document.addEventListener('DOMContentLoaded', function() {
         min-width: 250px;
     }
 
+    .deal-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+    }
+
+    .deal-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .discount-badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: #ff4757;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        z-index: 3;
+    }
+
+    .product-image {
+        position: relative;
+        height: 160px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+
+    .product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .deal-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .deal-content {
+        padding: 12px;
+    }
+
+    .product-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        color: #2c3e50;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        overflow: hidden;
+        height: 2.34em; /* Cố định chiều cao cho 2 dòng (0.9rem * 1.3 line-height * 2 dòng) */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .price-section {
+        margin-bottom: 12px;
+    }
+
+    .sale-price {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: block;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #95a5a6;
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+
+    .progress-section {
+        margin-top: 10px;
+    }
+
+    .progress-bar {
+        background: #ecf0f1;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 6px;
+        position: relative;
+    }
+
+         .progress-fill {
+         background: linear-gradient(90deg, #ff6b35, #f7931e);
+         height: 100%;
+         border-radius: 3px;
+         transition: width 0.3s ease;
+     }
+
+    .sold-info {
+        font-size: 0.75rem;
+        color: #666;
+        text-align: center;
+    }
+
+         .deal-button {
+         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+         color: white;
+         border: none;
+         padding: 10px 16px;
+         border-radius: 8px;
+         font-weight: 600;
+         font-size: 0.9rem;
+         cursor: pointer;
+         transition: all 0.3s ease;
+         margin-top: auto;
+         text-decoration: none;
+         display: inline-block;
+         text-align: center;
+     }
+
+     .deal-button:hover {
+         transform: translateY(-2px);
+         box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+     }
+
     .flash-deals-slider .slider-nav {
-        width: 35px;
-        height: 35px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        color: #333;
+        flex-shrink: 0;
     }
 
-    .flash-deals-slider .slider-nav.prev {
-        left: -15px;
+    .flash-deals-slider .slider-nav:hover {
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
     }
 
-    .flash-deals-slider .slider-nav.next {
-        right: -15px;
+    .flash-deals-slider .slider-nav:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
-}
+
+    .flash-deals-slider .slider-nav:disabled:hover {
+        transform: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Flash Deals Responsive */
+    @media (max-width: 768px) {
+        .flash-deals-header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .countdown-timer {
+            justify-content: center;
+        }
+
+        .deal-item {
+            flex: 0 0 220px;
+            min-width: 220px;
+        }
+
+        .flash-deals-slider .slider-nav {
+            width: 35px;
+            height: 35px;
+        }
+
+        .flash-deals-slider {
+            gap: 10px;
+        }
+
+        .slider-container {
+            margin: 0 5px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .deal-item {
+            flex: 0 0 200px;
+            min-width: 200px;
+        }
+
+        .product-image {
+            height: 140px;
+        }
+
+                 .product-name {
+             font-size: 0.8rem;
+             height: 2.08em; /* Điều chỉnh chiều cao cho mobile (0.8rem * 1.3 line-height * 2 dòng) */
+         }
+
+        .sale-price {
+            font-size: 1rem;
+        }
+    }
+
+    /* Category Products Sections Styles */
+    .category-section-wrapper {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .category-section-wrapper:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .category-products-slider {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .category-slider-container {
+        flex: 1;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .category-slider-track {
+        display: flex;
+        gap: 20px;
+        transition: transform 0.3s ease;
+        padding: 5px 0;
+    }
+
+    .category-product-item {
+        min-width: calc(25% - 15px); /* 4 sản phẩm mỗi hàng với gap 20px */
+        flex-shrink: 0;
+        width: calc(25% - 15px);
+    }
+
+    .category-product-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 1px solid #f0f0f0;
+    }
+
+    .category-product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .category-product-image {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .category-product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .category-product-card:hover .category-product-image img {
+        transform: scale(1.05);
+    }
+
+    .category-discount-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .category-product-content {
+        padding: 15px;
+    }
+
+    .category-product-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1.3;
+        color: #2c3e50;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        overflow: hidden;
+        height: 2.34em;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .category-price-section {
+        margin-bottom: 10px;
+    }
+
+    .category-sale-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #e74c3c;
+        margin-bottom: 2px;
+    }
+
+    .category-original-price {
+        font-size: 0.85rem;
+        color: #95a5a6;
+        text-decoration: line-through;
+    }
+
+    .category-regular-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #3498db;
+    }
+
+    .category-stock-info {
+        font-size: 0.8rem;
+    }
+
+    .category-slider-nav {
+        background: white;
+        border: 1px solid #e0e6ed;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: #6c757d;
+        font-size: 1rem;
+        z-index: 2;
+        flex-shrink: 0;
+    }
+
+    .category-slider-nav:hover {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        transform: scale(1.05);
+    }
+
+    .category-slider-nav:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        background: #f8f9fa;
+        color: #ced4da;
+    }
+
+    .category-slider-nav:disabled:hover {
+        background: #f8f9fa;
+        color: #ced4da;
+        border-color: #e0e6ed;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive for Category Sections */
+    @media (max-width: 1024px) {
+        .category-product-item {
+            min-width: calc(33.333% - 14px); /* 3 sản phẩm trên tablet */
+            width: calc(33.333% - 14px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .category-section-wrapper {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .category-product-item {
+            min-width: calc(50% - 10px); /* 2 sản phẩm trên mobile nhỏ */
+            width: calc(50% - 10px);
+        }
+
+        .category-product-image {
+            height: 150px;
+        }
+
+        .category-product-name {
+            font-size: 0.8rem;
+            height: 2.08em;
+        }
+
+        .category-sale-price,
+        .category-regular-price {
+            font-size: 1rem;
+        }
+
+        .category-slider-nav {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .category-section-wrapper {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .category-products-slider {
+            gap: 10px;
+        }
+
+        .category-product-item {
+            min-width: 100%; /* 1 sản phẩm trên mobile rất nhỏ */
+            width: 100%;
+        }
+
+        .category-product-image {
+            height: 130px;
+        }
+
+        .category-product-content {
+            padding: 12px;
+        }
+
+        .category-slider-nav {
+            width: 35px;
+            height: 35px;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Suggested Products Section Styles */
+    .suggested-section-wrapper {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .suggested-section-wrapper:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .suggested-products-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .suggested-product-item {
+        position: relative;
+    }
+
+    .suggested-product-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 1px solid #f0f0f0;
+    }
+
+    .suggested-product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .suggested-product-image {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .suggested-product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .suggested-product-card:hover .suggested-product-image img {
+        transform: scale(1.05);
+    }
+
+    .suggested-discount-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .suggested-product-content {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .suggested-product-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        color: #2c3e50;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-clamp: 2;
+        overflow: hidden;
+        height: 2.34em;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+    }
+
+    .suggested-price-section {
+        margin-bottom: 8px;
+    }
+
+    .suggested-sale-price {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #e74c3c;
+        margin-bottom: 2px;
+    }
+
+    .suggested-original-price {
+        font-size: 0.8rem;
+        color: #95a5a6;
+        text-decoration: line-through;
+    }
+
+    .suggested-regular-price {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #3498db;
+    }
+
+    .suggested-rating {
+        margin-bottom: 12px;
+        font-size: 0.8rem;
+    }
+
+    .suggested-rating-count {
+        color: #95a5a6;
+        margin-left: 4px;
+        font-size: 0.75rem;
+    }
+
+    .suggested-buy-btn {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .suggested-buy-btn:hover {
+        background: linear-gradient(135deg, #2980b9, #1f5f88);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .suggested-view-more-btn {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .suggested-view-more-btn:hover {
+        background: linear-gradient(135deg, #00f2fe, #4facfe);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+    }
+
+    /* Responsive for Suggested Products */
+    @media (max-width: 1200px) {
+        .suggested-products-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .suggested-products-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .suggested-section-wrapper {
+            padding: 25px;
+        }
+
+        .suggested-product-image {
+            height: 160px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .suggested-products-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .suggested-section-wrapper {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .suggested-product-image {
+            height: 140px;
+        }
+
+        .suggested-product-name {
+            font-size: 0.8rem;
+            height: 2.08em;
+        }
+
+        .suggested-sale-price,
+        .suggested-regular-price {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .suggested-products-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .suggested-section-wrapper {
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .suggested-product-image {
+            height: 120px;
+        }
+
+        .suggested-product-content {
+            padding: 10px;
+        }
+
+        .suggested-product-name {
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+
+        .suggested-sale-price,
+        .suggested-regular-price {
+            font-size: 0.8rem;
+        }
+
+        .suggested-buy-btn {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+
+        .suggested-view-more-btn {
+            padding: 10px 20px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .suggested-products-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endpush

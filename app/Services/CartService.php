@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Cart;
+use App\Models\CartItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -13,6 +15,7 @@ class CartService
     public function __construct()
     {
         $this->cart = Session::get('cart', []);
+        $this->loadFromDatabase();
     }
 
     public function add(Product $product, $quantity = 1, $attributes = [])
@@ -23,7 +26,9 @@ class CartService
             'price' => $product->isOnSale ? $product->sale_price : $product->price,
             'quantity' => $quantity,
             'attributes' => $attributes,
-            'image' => $product->baseImage ? $product->baseImage->url : '/image/default.png',
+            'image' => $product->baseImage ? $product->baseImage->url : '/images/default.png',
+            'slug' => $product->slug,
+            'sku' => $product->sku ?? '',
         ];
 
         $itemKey = $this->generateItemKey($product->id, $attributes);
@@ -48,7 +53,24 @@ class CartService
                 $this->cart[$itemKey]['quantity'] = $quantity;
             }
             $this->save();
+            return true;
         }
+        return false;
+    }
+
+    public function updateQuantity($itemKey, $change)
+    {
+        if (isset($this->cart[$itemKey])) {
+            $newQuantity = $this->cart[$itemKey]['quantity'] + $change;
+            if ($newQuantity <= 0) {
+                return $this->remove($itemKey);
+            } else {
+                $this->cart[$itemKey]['quantity'] = $newQuantity;
+                $this->save();
+                return true;
+            }
+        }
+        return false;
     }
 
     public function remove($itemKey)
@@ -56,13 +78,20 @@ class CartService
         if (isset($this->cart[$itemKey])) {
             unset($this->cart[$itemKey]);
             $this->save();
+            return true;
         }
+        return false;
     }
 
     public function clear()
     {
         $this->cart = [];
         $this->save();
+
+        // Xóa cả trong database nếu user đã đăng nhập
+        if (Auth::guard('customer')->check()) {
+            $this->clearDatabase();
+        }
     }
 
     public function content()
@@ -82,12 +111,65 @@ class CartService
         });
     }
 
+    public function subtotal()
+    {
+        return $this->total();
+    }
+
+    public function getItemByKey($itemKey)
+    {
+        return $this->cart[$itemKey] ?? null;
+    }
+
+    public function hasItems()
+    {
+        return count($this->cart) > 0;
+    }
+
+    public function getCartData()
+    {
+        return [
+            'items' => $this->content(),
+            'count' => $this->count(),
+            'total' => $this->total(),
+            'subtotal' => $this->subtotal(),
+        ];
+    }
+
+    public function updateByProductId($productId, $quantity)
+    {
+        foreach ($this->cart as $itemKey => $item) {
+            if ($item['id'] == $productId) {
+                if ($quantity <= 0) {
+                    unset($this->cart[$itemKey]);
+                } else {
+                    $this->cart[$itemKey]['quantity'] = $quantity;
+                }
+                $this->save();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function removeByProductId($productId)
+    {
+        foreach ($this->cart as $itemKey => $item) {
+            if ($item['id'] == $productId) {
+                unset($this->cart[$itemKey]);
+                $this->save();
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected function save()
     {
         Session::put('cart', $this->cart);
 
         // Nếu user đã đăng nhập, lưu giỏ hàng vào database
-        if (Auth::check()) {
+        if (Auth::guard('customer')->check()) {
             $this->syncToDatabase();
         }
     }
@@ -97,9 +179,71 @@ class CartService
         return $productId . '_' . md5(serialize($attributes));
     }
 
+    protected function loadFromDatabase()
+    {
+        if (Auth::guard('customer')->check()) {
+            $customer = Auth::guard('customer')->user();
+            $cart = Cart::where('user_id', $customer->id)->first();
+
+            if ($cart && $cart->items->count() > 0) {
+                $dbCart = [];
+                foreach ($cart->items as $item) {
+                    $itemKey = $this->generateItemKey($item->product_id, $item->attributes ?: []);
+                    $dbCart[$itemKey] = [
+                        'id' => $item->product_id,
+                        'name' => $item->product->name,
+                        'price' => $item->price,
+                        'quantity' => $item->quantity,
+                        'attributes' => $item->attributes ?: [],
+                        'image' => $item->product->baseImage ? $item->product->baseImage->url : '/images/default.png',
+                        'slug' => $item->product->slug,
+                        'sku' => $item->product->sku ?? '',
+                    ];
+                }
+
+                // Merge với cart trong session, ưu tiên session cart
+                $this->cart = array_merge($dbCart, $this->cart);
+                Session::put('cart', $this->cart);
+            }
+        }
+    }
+
     protected function syncToDatabase()
     {
-        // TODO: Implement database sync
-        // Sẽ thêm logic này sau khi tạo migration và model
+        if (!Auth::guard('customer')->check()) {
+            return;
+        }
+
+        $customer = Auth::guard('customer')->user();
+        $cart = Cart::firstOrCreate(['user_id' => $customer->id]);
+
+        // Xóa các item cũ
+        $cart->items()->delete();
+
+        // Thêm các item mới
+        foreach ($this->cart as $itemKey => $item) {
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'attributes' => $item['attributes'],
+            ]);
+        }
+    }
+
+    protected function clearDatabase()
+    {
+        if (!Auth::guard('customer')->check()) {
+            return;
+        }
+
+        $customer = Auth::guard('customer')->user();
+        $cart = Cart::where('user_id', $customer->id)->first();
+
+        if ($cart) {
+            $cart->items()->delete();
+            $cart->delete();
+        }
     }
 }

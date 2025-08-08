@@ -105,6 +105,29 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/cart-manager.js"></script>
+
+    <!-- Initialize cart count on page load -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize cart count from localStorage
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement) {
+                const storedCount = localStorage.getItem('cartCount');
+                if (storedCount) {
+                    cartCountElement.textContent = storedCount;
+                    cartCountElement.style.display = parseInt(storedCount) > 0 ? 'inline-block' : 'none';
+                }
+            }
+
+            // Check if cartManager is available
+            if (typeof cartManager === 'undefined') {
+                console.error('CartManager not loaded properly');
+            } else {
+                console.log('CartManager loaded successfully');
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>
