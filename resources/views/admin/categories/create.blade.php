@@ -12,7 +12,7 @@
     </div>
 
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form action="{{ route('admin.categories.store') }}" method="POST">
+        <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
