@@ -63,7 +63,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Logo hiện tại</label>
                         <div class="flex items-center space-x-4">
-                            <img src="{{ $brand->image }}" alt="{{ $brand->name }}" class="h-20 w-auto object-contain rounded-lg border">
+                            <img src="{{ asset($brand->image) }}" alt="{{ $brand->name }}" class="h-20 w-auto object-contain rounded-lg border">
                             <div>
                                 <button type="button" onclick="removeCurrentImage()" class="text-red-600 hover:text-red-800 text-sm">
                                     <i class="fas fa-trash mr-1"></i>Xóa logo

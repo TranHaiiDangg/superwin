@@ -45,7 +45,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Hình ảnh</label>
                         <div class="mt-1">
-                            <img src="{{ $category->image }}" alt="{{ $category->name }}" 
+                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" 
                                  class="h-24 w-auto object-contain rounded-lg border">
                         </div>
                     </div>

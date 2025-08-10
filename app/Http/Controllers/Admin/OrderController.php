@@ -100,7 +100,7 @@ class OrderController extends Controller
         ]);
 
         $order->update($validated);
-        
+
         // Refresh model để đảm bảo dữ liệu mới nhất
         $order->refresh();
 

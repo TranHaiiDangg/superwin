@@ -64,7 +64,6 @@
             <!-- Row 2 -->
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
 
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nổi bật</label>
                     <select name="is_featured" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -133,12 +132,18 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
-                                    @if($product->images->first())
+                                    @if($product->displayImage && $product->displayImage->url)
                                         <img class="h-10 w-10 rounded-lg object-cover" 
-                                             src="{{ $product->images->first()->url }}" 
-                                             alt="{{ $product->name }}">
+                                             src="{{ asset($product->displayImage->url) }}" 
+                                             alt="{{ $product->name }}"
+                                             title="Images count: {{ $product->images->count() }} | Base image: {{ $product->baseImage ? 'YES' : 'NO' }} | Type: {{ $product->displayImage->is_base ? 'BASE' : 'FIRST' }} | URL: {{ asset($product->displayImage->url) }}"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center" style="display:none;">
+                                            <i class="fas fa-image text-gray-400"></i>
+                                        </div>
                                     @else
-                                        <div class="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
+                                        <div class="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center"
+                                             title="No images found. Images count: {{ $product->images->count() }}">
                                             <i class="fas fa-image text-gray-400"></i>
                                         </div>
                                     @endif

@@ -70,7 +70,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 @if($category->image)
-                                    <img src="{{ $category->image }}" alt="{{ $category->name }}" 
+                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" 
                                          class="h-10 w-10 rounded-lg object-cover mr-3">
                                 @else
                                     <div class="h-10 w-10 bg-gray-200 rounded-lg flex items-center justify-center mr-3">

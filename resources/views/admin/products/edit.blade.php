@@ -222,7 +222,7 @@
                             <div id="existing-images-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 @foreach($product->images as $image)
                                 <div class="relative group" data-image-id="{{ $image->id }}">
-                                    <img src="{{ $image->url }}" 
+                                    <img src="{{ asset($image->url) }}" 
                                          alt="{{ $image->alt_text }}" 
                                          class="w-full h-24 object-cover rounded-lg border border-gray-200 {{ $image->is_base ? 'ring-2 ring-blue-500' : '' }}">
                                     

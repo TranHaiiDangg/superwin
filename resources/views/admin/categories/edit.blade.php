@@ -69,7 +69,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Hình ảnh hiện tại</label>
                         <div class="flex items-start space-x-4">
-                            <img src="{{ $category->image }}" alt="{{ $category->name }}" 
+                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" 
                                  class="h-32 w-auto object-contain rounded-lg border">
                             <div class="flex-1">
                                 <label class="flex items-center">

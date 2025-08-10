@@ -14,7 +14,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'brand', 'images']);
+        $query = Product::with([
+            'category', 
+            'brand', 
+            'images' => function($query) {
+                $query->orderBy('sort_order')->orderBy('id');
+            }, 
+            'baseImage'
+        ]);
 
         // Search filter
         if ($request->filled('search')) {
@@ -28,7 +35,8 @@ class ProductController extends Controller
 
         // Category filter
         if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $categoryId = (int) $request->category_id;
+            $query->where('category_id', $categoryId);
         }
 
         // Brand filter
@@ -128,10 +136,17 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('products', $filename, 'public');
+                
+                // Save directly to public/images/products/
+                $destinationPath = public_path('images/products');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                
+                $image->move($destinationPath, $filename);
                 
                 $product->images()->create([
-                    'url' => '/storage/' . $path,
+                    'url' => '/images/products/' . $filename,
                     'alt_text' => $product->name,
                     'sort_order' => $index + 1,
                     'is_base' => $index === 0 // First image becomes base
@@ -229,10 +244,17 @@ class ProductController extends Controller
             $currentImageCount = $product->images()->count();
             foreach ($request->file('images') as $index => $image) {
                 $filename = time() . '_' . ($currentImageCount + $index) . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('products', $filename, 'public');
+                
+                // Save directly to public/images/products/
+                $destinationPath = public_path('images/products');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                
+                $image->move($destinationPath, $filename);
                 
                 $product->images()->create([
-                    'url' => '/storage/' . $path,
+                    'url' => '/images/products/' . $filename,
                     'alt_text' => $product->name,
                     'sort_order' => $currentImageCount + $index + 1,
                     'is_base' => $currentImageCount === 0 && $index === 0 // First image becomes base if no existing images
@@ -288,10 +310,17 @@ class ProductController extends Controller
             
             foreach ($request->file('images') as $image) {
                 $filename = time() . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('products', $filename, 'public');
+                
+                // Save directly to public/images/products/
+                $destinationPath = public_path('images/products');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                
+                $image->move($destinationPath, $filename);
                 
                 $productImage = $product->images()->create([
-                    'url' => '/storage/' . $path,
+                    'url' => '/images/products/' . $filename,
                     'alt_text' => $product->name,
                     'sort_order' => $product->images()->count() + 1,
                     'is_base' => $product->images()->count() === 0 // First image becomes base
