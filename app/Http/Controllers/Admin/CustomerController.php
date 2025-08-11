@@ -63,8 +63,6 @@ class CustomerController extends Controller
     {
         $customer->load(['orders' => function ($query) {
             $query->latest()->limit(10);
-        }, 'reviews' => function ($query) {
-            $query->latest()->limit(5);
         }]);
 
         return view('admin.customers.show', compact('customer'));
@@ -109,22 +107,36 @@ class CustomerController extends Controller
                         ->with('success', 'Thông tin khách hàng đã được cập nhật thành công!');
     }
 
-    public function ban(Customer $customer)
+    public function ban(Customer $customer, Request $request)
     {
         $customer->ban();
-        return response()->json([
-            'success' => true,
-            'message' => 'Khách hàng đã bị cấm!'
-        ]);
+        
+        // If AJAX request, return JSON
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Khách hàng đã bị cấm!'
+            ]);
+        }
+        
+        // If regular form submission, redirect with flash message
+        return redirect()->back()->with('success', 'Khách hàng đã bị cấm thành công!');
     }
 
-    public function unban(Customer $customer)
+    public function unban(Customer $customer, Request $request)
     {
         $customer->unban();
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã bỏ cấm khách hàng!'
-        ]);
+        
+        // If AJAX request, return JSON
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã bỏ cấm khách hàng!'
+            ]);
+        }
+        
+        // If regular form submission, redirect with flash message
+        return redirect()->back()->with('success', 'Đã bỏ cấm khách hàng thành công!');
     }
 
     public function addLoyaltyPoints(Request $request, Customer $customer)

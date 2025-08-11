@@ -13,27 +13,63 @@
 
             <!-- Search container -->
             <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
+                <form action="{{ route('search') }}" method="GET" id="mainSearchForm">
                 <span class="search-icon">
                     <i class="fas fa-search"></i>
                 </span>
-                <input type="text" class="form-control search-input main-search-input" id="mainSearchInput" placeholder="Tìm kiếm sản phẩm...">
+                    <input type="text" class="form-control search-input main-search-input" id="mainSearchInput" name="q" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                </form>
 
-                <!-- Desktop Search Overlay -->
+                <!-- AJAX Search Suggestions Dropdown -->
+                <div class="main-search-suggestions" id="mainSearchSuggestions" style="display: none;">
+                    <div class="suggestions-content">
+                        <!-- Search keyword section -->
+                        <div class="suggestion-keyword" id="mainSuggestionKeyword" style="display: none;">
+                            <div class="suggestion-item keyword-item">
+                                <i class="fas fa-search me-2"></i>
+                                <span class="keyword-text"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Products suggestions -->
+                        <div class="suggestions-products" id="mainSuggestionsProducts">
+                            <!-- Dynamic content will be loaded here -->
+                        </div>
+                        
+                        <!-- Loading state -->
+                        <div class="suggestion-loading" id="mainSuggestionLoading" style="display: none;">
+                            <div class="text-center py-3">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                <span>Đang tìm kiếm...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- No results -->
+                        <div class="suggestion-no-results" id="mainSuggestionNoResults" style="display: none;">
+                            <div class="text-center py-3 text-muted">
+                                <i class="fas fa-search me-2"></i>
+                                <span>Không tìm thấy sản phẩm nào</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Search Overlay (Static for click) -->
                 <div id="desktopSearchOverlay" class="desktop-search-overlay">
                     <div class="desktop-search-box">
                         <div class="desktop-search-suggestions">
                             <div class="suggest-title">Từ khóa HOT</div>
-                            <div class="suggest-tags">
-                                <span class="suggest-tag">Máy bơm nước</span>
-                                <span class="suggest-tag">Máy bơm chìm</span>
-                                <span class="suggest-tag">Quạt công nghiệp</span>
-                                <span class="suggest-tag">Máy bơm</span>
-                                <span class="suggest-tag">SuperWin</span>
+                            <div class="suggest-tags" id="hotKeywordTags">
+                                <span class="suggest-tag" onclick="searchKeyword('Máy bơm nước')">Máy bơm nước</span>
+                                <span class="suggest-tag" onclick="searchKeyword('Máy bơm chìm')">Máy bơm chìm</span>
+                                <span class="suggest-tag" onclick="searchKeyword('Quạt công nghiệp')">Quạt công nghiệp</span>
+                                <span class="suggest-tag" onclick="searchKeyword('Máy bơm')">Máy bơm</span>
+                                <span class="suggest-tag" onclick="searchKeyword('SuperWin')">SuperWin</span>
                             </div>
                             <div class="suggest-title mt-3">Gợi ý nổi bật</div>
                             <div class="suggest-campaign">
-                                <div class="suggest-campaign-item">Deal sốc hôm nay!</div>
-                                <div class="suggest-campaign-item">Miễn phí vận chuyển toàn quốc</div>
+                                <div class="suggest-campaign-item" onclick="window.location.href='{{ route('deals') }}'">Deal sốc hôm nay!</div>
+                                <div class="suggest-campaign-item" onclick="window.location.href='{{ route('products.featured') }}'">Miễn phí vận chuyển toàn quốc</div>
                             </div>
                         </div>
                     </div>
@@ -477,6 +513,250 @@
 .alert.fade-out {
     animation: slideOutRight 0.5s ease-in forwards;
 }
+
+/* Main Search Suggestions Styles */
+.main-search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 8px;
+    border: 2px solid rgba(59, 130, 246, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+
+.main-search-suggestions .suggestions-content {
+    padding: 4px 0;
+}
+
+.main-search-suggestions .suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    margin: 2px 8px;
+}
+
+.main-search-suggestions .suggestion-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(4px);
+}
+
+.main-search-suggestions .keyword-item {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    padding: 12px 20px;
+    margin: 8px 12px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.main-search-suggestions .keyword-item::before {
+    content: '🔍';
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.main-search-suggestions .keyword-item:hover {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
+}
+
+.main-search-suggestions .product-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    margin: 8px 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.main-search-suggestions .product-suggestion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.main-search-suggestions .product-suggestion:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.main-search-suggestions .product-suggestion:hover::before {
+    transform: scaleY(1);
+}
+
+.main-search-suggestions .product-suggestion img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    max-width: 50px;
+    max-height: 50px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.main-search-suggestions .product-suggestion:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.main-search-suggestions .product-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.main-search-suggestions .product-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.main-search-suggestions .product-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.main-search-suggestions .product-brand {
+    font-size: 11px;
+    color: #6366f1;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.main-search-suggestions .product-price {
+    font-size: 16px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+    text-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.main-search-suggestions .suggestion-loading,
+.main-search-suggestions .suggestion-no-results {
+    color: #666;
+    font-size: 13px;
+    padding: 16px;
+    text-align: center;
+}
+
+/* Responsive for main search */
+@media (max-width: 768px) {
+    .main-search-suggestions {
+        left: -15px;
+        right: -15px;
+        border-radius: 8px;
+    }
+    
+    .main-search-suggestions .product-suggestion {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+    
+    .main-search-suggestions .product-suggestion img {
+        width: 28px;
+        height: 28px;
+        max-width: 28px;
+        max-height: 28px;
+    }
+    
+    .main-search-suggestions .product-name {
+        font-size: 11px;
+        -webkit-line-clamp: 1;
+    }
+    
+    .main-search-suggestions .product-price {
+        font-size: 11px;
+    }
+    
+    .main-search-suggestions .product-brand {
+        font-size: 8px;
+        padding: 1px 4px;
+    }
+    
+    .main-search-suggestions .keyword-item {
+        font-size: 12px;
+        padding: 6px 10px;
+        margin: 2px 4px;
+    }
+    
+    .main-search-suggestions .product-details {
+        font-size: 10px;
+    }
+    
+    .main-search-suggestions .product-brand {
+        font-size: 9px;
+        padding: 1px 3px;
+    }
+    
+    .main-search-suggestions .product-price {
+        font-size: 11px;
+    }
+    
+    .main-search-suggestions .keyword-item {
+        font-size: 12px;
+        padding: 6px 10px;
+        padding-left: 10px;
+        border-left-width: 2px;
+    }
+}
 </style>
 @endpush
 
@@ -561,6 +841,205 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cập nhật giỏ hàng khi trang được tải
     updateCartFromLocalStorage();
+    
+    // Initialize main search AJAX
+    initMainSearchAjax();
 });
+
+// Main Search AJAX functionality
+function initMainSearchAjax() {
+    const mainSearchInput = document.getElementById('mainSearchInput');
+    const mainSearchSuggestions = document.getElementById('mainSearchSuggestions');
+    const mainSuggestionKeyword = document.getElementById('mainSuggestionKeyword');
+    const mainSuggestionsProducts = document.getElementById('mainSuggestionsProducts');
+    const mainSuggestionLoading = document.getElementById('mainSuggestionLoading');
+    const mainSuggestionNoResults = document.getElementById('mainSuggestionNoResults');
+    const mainSearchForm = document.getElementById('mainSearchForm');
+    
+    if (!mainSearchInput) return; // Exit if elements don't exist
+    
+    let mainSearchTimeout;
+    let currentMainQuery = '';
+    
+    // Search input event listener
+    mainSearchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        currentMainQuery = query;
+        
+        // Clear previous timeout
+        clearTimeout(mainSearchTimeout);
+        
+        if (query.length < 2) {
+            hideMainSuggestions();
+            return;
+        }
+        
+        // Show loading state
+        showMainLoading();
+        
+        // Debounce search requests
+        mainSearchTimeout = setTimeout(() => {
+            fetchMainSuggestions(query);
+        }, 300);
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            hideMainSuggestions();
+        }
+    });
+    
+    // Show suggestions when focusing on input (if there's content)
+    mainSearchInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2) {
+            mainSearchSuggestions.style.display = 'block';
+        }
+    });
+    
+    // Handle keyboard navigation
+    mainSearchInput.addEventListener('keydown', function(e) {
+        const suggestions = mainSearchSuggestions.querySelectorAll('.suggestion-item');
+        const activeItem = mainSearchSuggestions.querySelector('.suggestion-item.active');
+        let activeIndex = -1;
+        
+        if (activeItem) {
+            activeIndex = Array.from(suggestions).indexOf(activeItem);
+        }
+        
+        switch(e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                if (activeIndex < suggestions.length - 1) {
+                    if (activeItem) activeItem.classList.remove('active');
+                    suggestions[activeIndex + 1].classList.add('active');
+                }
+                break;
+                
+            case 'ArrowUp':
+                e.preventDefault();
+                if (activeIndex > 0) {
+                    if (activeItem) activeItem.classList.remove('active');
+                    suggestions[activeIndex - 1].classList.add('active');
+                }
+                break;
+                
+            case 'Enter':
+                if (activeItem) {
+                    e.preventDefault();
+                    activeItem.click();
+                }
+                break;
+                
+            case 'Escape':
+                hideMainSuggestions();
+                break;
+        }
+    });
+    
+    function fetchMainSuggestions(query) {
+        fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Only update if this is still the current query
+            if (query === currentMainQuery) {
+                displayMainSuggestions(data);
+            }
+        })
+        .catch(error => {
+            console.error('Main search suggestions error:', error);
+            hideMainSuggestions();
+        });
+    }
+    
+    function displayMainSuggestions(data) {
+        hideMainLoading();
+        
+        // Clear previous suggestions
+        mainSuggestionsProducts.innerHTML = '';
+        
+        // Show keyword suggestion
+        if (data.keyword && data.keyword.length >= 2) {
+            mainSuggestionKeyword.querySelector('.keyword-text').textContent = `Tìm kiếm "${data.keyword}"`;
+            mainSuggestionKeyword.style.display = 'block';
+            
+            // Add click handler for keyword
+            const keywordItem = mainSuggestionKeyword.querySelector('.keyword-item');
+            keywordItem.onclick = function() {
+                window.location.href = data.search_url;
+            };
+        } else {
+            mainSuggestionKeyword.style.display = 'none';
+        }
+        
+        // Show product suggestions
+        if (data.products && data.products.length > 0) {
+            data.products.forEach(product => {
+                const productElement = createMainProductSuggestion(product);
+                mainSuggestionsProducts.appendChild(productElement);
+            });
+            
+            mainSuggestionNoResults.style.display = 'none';
+            mainSearchSuggestions.style.display = 'block';
+        } else if (data.keyword && data.keyword.length >= 2) {
+            // Show no results if we have a keyword but no products
+            mainSuggestionNoResults.style.display = 'block';
+            mainSearchSuggestions.style.display = 'block';
+        } else {
+            hideMainSuggestions();
+        }
+    }
+    
+    function createMainProductSuggestion(product) {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item product-suggestion';
+        div.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" onerror="this.src='/image/sp1.png'">
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-details">
+                    <span class="product-brand">${product.brand}</span>
+                    <span class="product-price">${product.formatted_price}</span>
+                </div>
+            </div>
+        `;
+        
+        div.onclick = function() {
+            window.location.href = product.url;
+        };
+        
+        return div;
+    }
+    
+    function showMainLoading() {
+        mainSuggestionLoading.style.display = 'block';
+        mainSuggestionNoResults.style.display = 'none';
+        mainSuggestionKeyword.style.display = 'none';
+        mainSuggestionsProducts.innerHTML = '';
+        mainSearchSuggestions.style.display = 'block';
+    }
+    
+    function hideMainLoading() {
+        mainSuggestionLoading.style.display = 'none';
+    }
+    
+    function hideMainSuggestions() {
+        mainSearchSuggestions.style.display = 'none';
+        // Remove active states
+        const activeItems = mainSearchSuggestions.querySelectorAll('.suggestion-item.active');
+        activeItems.forEach(item => item.classList.remove('active'));
+    }
+}
+
+// Function to search by keyword (for hot keyword tags)
+function searchKeyword(keyword) {
+    window.location.href = `/search?q=${encodeURIComponent(keyword)}`;
+}
 </script>
 @endpush

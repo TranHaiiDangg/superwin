@@ -173,13 +173,15 @@
                             @if($customer->status !== 'banned')
                                 <button type="button" class="text-red-600 hover:text-red-900" 
                                         title="Cấm khách hàng"
-                                        onclick="banCustomer({{ $customer->id }})">
+                                        data-customer-id="{{ $customer->id }}"
+                                        onclick="banCustomer(this.getAttribute('data-customer-id'))">
                                     <i class="fas fa-ban"></i>
                                 </button>
                             @else
                                 <button type="button" class="text-green-600 hover:text-green-900" 
                                         title="Bỏ cấm khách hàng"
-                                        onclick="unbanCustomer({{ $customer->id }})">
+                                        data-customer-id="{{ $customer->id }}"
+                                        onclick="unbanCustomer(this.getAttribute('data-customer-id'))">
                                     <i class="fas fa-check-circle"></i>
                                 </button>
                             @endif
@@ -215,21 +217,47 @@ function banCustomer(customerId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
+        
         if (data.success) {
-            alert(data.message);
-            location.reload();
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            alertDiv.textContent = data.message;
+            document.body.appendChild(alertDiv);
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+            
+            // Reload page after short delay
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         } else {
             alert('Có lỗi xảy ra: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Có lỗi xảy ra khi cấm khách hàng');
+        alert('Có lỗi xảy ra khi cấm khách hàng: ' + error.message);
     });
 }
 
@@ -242,21 +270,47 @@ function unbanCustomer(customerId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
+        
         if (data.success) {
-            alert(data.message);
-            location.reload();
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            alertDiv.textContent = data.message;
+            document.body.appendChild(alertDiv);
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+            
+            // Reload page after short delay
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         } else {
             alert('Có lỗi xảy ra: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Có lỗi xảy ra khi bỏ cấm khách hàng');
+        alert('Có lỗi xảy ra khi bỏ cấm khách hàng: ' + error.message);
     });
 }
 </script>
