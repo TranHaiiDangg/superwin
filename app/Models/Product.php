@@ -180,6 +180,33 @@ class Product extends Model
         return $this->baseImage ?? $this->images->first() ?? null;
     }
 
+    public function getAverageRatingAttribute()
+    {
+        // Return cached rating_average if available
+        if ($this->rating_average !== null) {
+            return $this->rating_average;
+        }
+
+        // Calculate from reviews if not cached
+        $approvedReviews = $this->reviews()->where('is_approved', true)->get();
+        if ($approvedReviews->count() > 0) {
+            return round($approvedReviews->avg('rating'), 1);
+        }
+
+        return 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        // Return cached rating_count if available
+        if ($this->rating_count !== null) {
+            return $this->rating_count;
+        }
+
+        // Calculate from reviews if not cached
+        return $this->reviews()->where('is_approved', true)->count();
+    }
+
     // Static method to generate unique SKU
     public static function generateSKU($categoryId = null, $brandId = null)
     {
