@@ -6,7 +6,156 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel') - SuperWin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- Custom Select2 Styling -->
+    <style>
+        /* Select2 Container */
+        .select2-container {
+            width: 100% !important;
+        }
+        
+        /* Select2 Selection */
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 2px solid #d1d5db !important;
+            border-radius: 8px !important;
+            padding: 8px 12px !important;
+            min-height: 48px !important;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .select2-container--default .select2-selection--multiple:focus,
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+            outline: none !important;
+        }
+        
+        /* Selected Items (Tags) */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #3b82f6 !important;
+            border: 1px solid #3b82f6 !important;
+            border-radius: 6px !important;
+            color: white !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 4px 8px !important;
+            margin: 2px 4px 2px 0 !important;
+            line-height: 1.4 !important;
+        }
+        
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            margin-right: 6px !important;
+            border-right: 1px solid rgba(255,255,255,0.3) !important;
+            padding-right: 6px !important;
+        }
+        
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            background-color: rgba(255,255,255,0.2) !important;
+            color: white !important;
+        }
+        
+        /* Dropdown */
+        .select2-container--default .select2-dropdown {
+            border: 2px solid #d1d5db !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+            margin-top: 4px;
+        }
+        
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #e5e7eb !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important;
+            font-size: 14px;
+            margin: 8px !important;
+            width: calc(100% - 16px) !important;
+        }
+        
+        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            outline: none !important;
+        }
+        
+        /* Dropdown Results */
+        .select2-container--default .select2-results__option {
+            padding: 12px 16px !important;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #eff6ff !important;
+            color: #1e40af !important;
+            font-weight: 500;
+        }
+        
+        /* Placeholder */
+        .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+            color: #9ca3af !important;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        /* Clear button */
+        .select2-container--default .select2-selection__clear {
+            color: #6b7280 !important;
+            font-size: 18px !important;
+            font-weight: bold !important;
+            margin-right: 8px !important;
+        }
+        
+        .select2-container--default .select2-selection__clear:hover {
+            color: #ef4444 !important;
+        }
+        
+        /* No results */
+        .select2-container--default .select2-results__option--noResults {
+            color: #6b7280 !important;
+            font-style: italic;
+            text-align: center;
+            padding: 20px !important;
+        }
+        
+        /* Loading */
+        .select2-container--default .select2-results__option--loading {
+            color: #3b82f6 !important;
+            text-align: center;
+            padding: 20px !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .select2-container--default .select2-selection--multiple {
+                min-height: 44px !important;
+                padding: 6px 10px !important;
+            }
+            
+            .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                font-size: 12px !important;
+                padding: 3px 6px !important;
+            }
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -83,6 +232,19 @@
                         <!-- <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
                             <i class="fas fa-chart-line"></i>
                         </span> -->
+                    </a>
+                    @endif
+                    
+                    @if(auth()->user()->hasPermission('hot_searches.view'))
+                    <a href="{{ route('admin.hot-searches.index') }}" 
+                       class="flex items-center justify-between px-4 py-2 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.hot-searches.*') ? 'bg-primary text-white' : '' }}">
+                        <div class="flex items-center">
+                            <i class="fas fa-fire mr-3"></i>
+                            Hot Search
+                        </div>
+                        <span class="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                            {{ \App\Models\HotSearch::where('is_active', true)->count() }}
+                        </span>
                     </a>
                     @endif
                     

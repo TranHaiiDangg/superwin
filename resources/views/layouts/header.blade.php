@@ -13,17 +13,17 @@
 
             <!-- Search container -->
             <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
-                <form action="{{ route('search') }}" method="GET" id="mainSearchForm">
-                <span class="search-icon">
+                <form action="{{ route('search') }}" method="GET" id="mainSearchForm" class="position-relative">
+                    <span class="search-icon position-absolute">
                     <i class="fas fa-search"></i>
                 </span>
-                    <input type="text" class="form-control search-input main-search-input" id="mainSearchInput" name="q" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                    <input type="text" class="form-control search-input main-search-input ps-5" id="mainSearchInput" name="q" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
                 </form>
 
                 <!-- AJAX Search Suggestions Dropdown -->
                 <div class="main-search-suggestions" id="mainSearchSuggestions" style="display: none;">
                     <div class="suggestions-content">
-                        <!-- Search keyword section -->
+                        <!-- Block 1: Search keyword section -->
                         <div class="suggestion-keyword" id="mainSuggestionKeyword" style="display: none;">
                             <div class="suggestion-item keyword-item">
                                 <i class="fas fa-search me-2"></i>
@@ -31,9 +31,89 @@
                             </div>
                         </div>
                         
-                        <!-- Products suggestions -->
-                        <div class="suggestions-products" id="mainSuggestionsProducts">
-                            <!-- Dynamic content will be loaded here -->
+                                                <!-- Block 2: Product suggestions from search -->
+                        <div class="suggestions-section" id="searchProductsSection">
+                            <div class="section-header">
+                                <i class="fas fa-box me-2"></i>
+                                <span>Sản phẩm</span>
+                            </div>
+                            <div class="suggestions-products" id="mainSuggestionsProducts">
+                                <!-- Dynamic content will be loaded here -->
+                            </div>
+                            <div class="block-loading" id="searchProductsLoading" style="display: none;">
+                                <div class="loading-content">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải sản phẩm...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Block 3: Hot Categories -->
+                        <div class="suggestions-section" id="hotCategoriesSection">
+                            <div class="section-header">
+                                <i class="fas fa-tags me-2"></i>
+                                <span>Danh mục nổi bật</span>
+                            </div>
+                            <div class="suggestions-grid" id="hotCategoriesGrid">
+                                <!-- Dynamic content will be loaded here -->
+                            </div>
+                            <div class="block-loading" id="hotCategoriesLoading" style="display: none;">
+                                <div class="loading-content">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải danh mục...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Block 4: Hot Brands -->
+                        <div class="suggestions-section" id="hotBrandsSection">
+                            <div class="section-header">
+                                <i class="fas fa-star me-2"></i>
+                                <span>Thương hiệu nổi bật</span>
+                            </div>
+                            <div class="suggestions-grid" id="hotBrandsGrid">
+                                <!-- Dynamic content will be loaded here -->
+                            </div>
+                            <div class="block-loading" id="hotBrandsLoading" style="display: none;">
+                                <div class="loading-content">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải thương hiệu...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Block 5: Hot Products -->
+                        <div class="suggestions-section" id="hotProductsSection">
+                            <div class="section-header">
+                                <i class="fas fa-fire me-2"></i>
+                                <span>Sản phẩm hot</span>
+                            </div>
+                            <div class="suggestions-products" id="hotProductsGrid">
+                                <!-- Dynamic content will be loaded here -->
+                            </div>
+                            <div class="block-loading" id="hotProductsLoading" style="display: none;">
+                                <div class="loading-content">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải sản phẩm hot...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Block 6: Hot Keywords -->
+                        <div class="suggestions-section" id="hotKeywordsSection">
+                            <div class="section-header">
+                                <i class="fas fa-keyboard me-2"></i>
+                                <span>Từ khóa hot</span>
+                            </div>
+                            <div class="suggestions-keywords" id="hotKeywordsGrid">
+                                <!-- Dynamic content will be loaded here -->
+                            </div>
+                            <div class="block-loading" id="hotKeywordsLoading" style="display: none;">
+                                <div class="loading-content">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span>Đang tải từ khóa...</span>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Loading state -->
@@ -54,8 +134,8 @@
                     </div>
                 </div>
 
-                <!-- Desktop Search Overlay (Static for click) -->
-                <div id="desktopSearchOverlay" class="desktop-search-overlay">
+                <!-- Desktop Search Overlay (Hidden for now) -->
+                <div id="desktopSearchOverlay" class="desktop-search-overlay" style="display: none;">
                     <div class="desktop-search-box">
                         <div class="desktop-search-suggestions">
                             <div class="suggest-title">Từ khóa HOT</div>
@@ -346,6 +426,7 @@
 
 @push('styles')
 <style>
+
 /* CSS cho giỏ hàng */
 .cart-count {
     transition: all 0.3s ease;
@@ -514,249 +595,7 @@
     animation: slideOutRight 0.5s ease-in forwards;
 }
 
-/* Main Search Suggestions Styles */
-.main-search-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 1050;
-    max-height: 320px;
-    overflow-y: auto;
-    margin-top: 8px;
-    border: 2px solid rgba(59, 130, 246, 0.1);
-    width: 100%;
-    box-sizing: border-box;
-    backdrop-filter: blur(10px);
-}
 
-.main-search-suggestions .suggestions-content {
-    padding: 4px 0;
-}
-
-.main-search-suggestions .suggestion-item {
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    border-radius: 8px;
-    margin: 2px 8px;
-}
-
-.main-search-suggestions .suggestion-item:hover {
-    background-color: #f8f9fa;
-    transform: translateX(4px);
-}
-
-.main-search-suggestions .keyword-item {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    font-weight: 700;
-    font-size: 14px;
-    color: white;
-    padding: 12px 20px;
-    margin: 8px 12px;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.main-search-suggestions .keyword-item::before {
-    content: '🔍';
-    margin-right: 8px;
-    font-size: 16px;
-}
-
-.main-search-suggestions .keyword-item:hover {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
-}
-
-.main-search-suggestions .product-suggestion {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    margin: 8px 12px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.main-search-suggestions .product-suggestion::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-}
-
-.main-search-suggestions .product-suggestion:hover {
-    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(245, 158, 11, 0.3);
-}
-
-.main-search-suggestions .product-suggestion:hover::before {
-    transform: scaleY(1);
-}
-
-.main-search-suggestions .product-suggestion img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 12px;
-    flex-shrink: 0;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    max-width: 50px;
-    max-height: 50px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-}
-
-.main-search-suggestions .product-suggestion:hover img {
-    transform: scale(1.05);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-}
-
-.main-search-suggestions .product-info {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.main-search-suggestions .product-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.main-search-suggestions .product-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.main-search-suggestions .product-brand {
-    font-size: 11px;
-    color: #6366f1;
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-    padding: 4px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-    font-weight: 600;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.main-search-suggestions .product-price {
-    font-size: 16px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    white-space: nowrap;
-    text-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
-}
-
-.main-search-suggestions .suggestion-loading,
-.main-search-suggestions .suggestion-no-results {
-    color: #666;
-    font-size: 13px;
-    padding: 16px;
-    text-align: center;
-}
-
-/* Responsive for main search */
-@media (max-width: 768px) {
-    .main-search-suggestions {
-        left: -15px;
-        right: -15px;
-        border-radius: 8px;
-    }
-    
-    .main-search-suggestions .product-suggestion {
-        padding: 6px 8px;
-        gap: 6px;
-    }
-    
-    .main-search-suggestions .product-suggestion img {
-        width: 28px;
-        height: 28px;
-        max-width: 28px;
-        max-height: 28px;
-    }
-    
-    .main-search-suggestions .product-name {
-        font-size: 11px;
-        -webkit-line-clamp: 1;
-    }
-    
-    .main-search-suggestions .product-price {
-        font-size: 11px;
-    }
-    
-    .main-search-suggestions .product-brand {
-        font-size: 8px;
-        padding: 1px 4px;
-    }
-    
-    .main-search-suggestions .keyword-item {
-        font-size: 12px;
-        padding: 6px 10px;
-        margin: 2px 4px;
-    }
-    
-    .main-search-suggestions .product-details {
-        font-size: 10px;
-    }
-    
-    .main-search-suggestions .product-brand {
-        font-size: 9px;
-        padding: 1px 3px;
-    }
-    
-    .main-search-suggestions .product-price {
-        font-size: 11px;
-    }
-    
-    .main-search-suggestions .keyword-item {
-        font-size: 12px;
-        padding: 6px 10px;
-        padding-left: 10px;
-        border-left-width: 2px;
-    }
-}
 </style>
 @endpush
 
@@ -938,7 +777,8 @@ function initMainSearchAjax() {
     });
     
     function fetchMainSuggestions(query) {
-        fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`, {
+        // Use new hot suggestions API
+        fetch(`/api/search/hot-suggestions?q=${encodeURIComponent(query)}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -949,80 +789,290 @@ function initMainSearchAjax() {
         .then(data => {
             // Only update if this is still the current query
             if (query === currentMainQuery) {
-                displayMainSuggestions(data);
+                displayHotSuggestions(data);
             }
         })
         .catch(error => {
-            console.error('Main search suggestions error:', error);
+            console.error('Hot search suggestions error:', error);
             hideMainSuggestions();
         });
     }
     
-    function displayMainSuggestions(data) {
+    function displayHotSuggestions(data) {
         hideMainLoading();
+        hideAllBlockLoading();
         
         // Clear previous suggestions
-        mainSuggestionsProducts.innerHTML = '';
+        document.getElementById('mainSuggestionsProducts').innerHTML = '';
+        document.getElementById('hotCategoriesGrid').innerHTML = '';
+        document.getElementById('hotBrandsGrid').innerHTML = '';
+        document.getElementById('hotProductsGrid').innerHTML = '';
+        document.getElementById('hotKeywordsGrid').innerHTML = '';
         
-        // Show keyword suggestion
-        if (data.keyword && data.keyword.length >= 2) {
-            mainSuggestionKeyword.querySelector('.keyword-text').textContent = `Tìm kiếm "${data.keyword}"`;
+        // Block 1: Show keyword suggestion
+        if (data.query && data.query.length >= 2) {
+            mainSuggestionKeyword.querySelector('.keyword-text').textContent = `Tìm kiếm "${data.query}"`;
             mainSuggestionKeyword.style.display = 'block';
             
             // Add click handler for keyword
             const keywordItem = mainSuggestionKeyword.querySelector('.keyword-item');
-            keywordItem.onclick = function() {
-                window.location.href = data.search_url;
+            keywordItem.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = `/search?q=${encodeURIComponent(data.query)}`;
             };
         } else {
             mainSuggestionKeyword.style.display = 'none';
         }
         
-        // Show product suggestions
-        if (data.products && data.products.length > 0) {
-            data.products.forEach(product => {
+        let hasAnyResults = false;
+        
+        // Block 2: Show product suggestions from search
+        hideBlockLoading('searchProductsLoading');
+        if (data.suggestions?.products && data.suggestions.products.length > 0) {
+            data.suggestions.products.forEach(product => {
                 const productElement = createMainProductSuggestion(product);
-                mainSuggestionsProducts.appendChild(productElement);
+                document.getElementById('mainSuggestionsProducts').appendChild(productElement);
             });
-            
+            document.getElementById('searchProductsSection').style.display = 'block';
+            hasAnyResults = true;
+        } else {
+            document.getElementById('searchProductsSection').style.display = 'none';
+        }
+        
+        // Block 3: Show hot categories
+        hideBlockLoading('hotCategoriesLoading');
+        if (data.suggestions?.hot_categories && data.suggestions.hot_categories.length > 0) {
+            data.suggestions.hot_categories.forEach(category => {
+                const categoryElement = createHotCategoryItem(category);
+                document.getElementById('hotCategoriesGrid').appendChild(categoryElement);
+            });
+            document.getElementById('hotCategoriesSection').style.display = 'block';
+            hasAnyResults = true;
+        } else {
+            document.getElementById('hotCategoriesSection').style.display = 'none';
+        }
+        
+        // Block 4: Show hot brands
+        hideBlockLoading('hotBrandsLoading');
+        if (data.suggestions?.hot_brands && data.suggestions.hot_brands.length > 0) {
+            data.suggestions.hot_brands.forEach(brand => {
+                const brandElement = createHotBrandItem(brand);
+                document.getElementById('hotBrandsGrid').appendChild(brandElement);
+            });
+            document.getElementById('hotBrandsSection').style.display = 'block';
+            hasAnyResults = true;
+        } else {
+            document.getElementById('hotBrandsSection').style.display = 'none';
+        }
+        
+        // Block 5: Show hot products
+        hideBlockLoading('hotProductsLoading');
+        if (data.suggestions?.hot_products && data.suggestions.hot_products.length > 0) {
+            data.suggestions.hot_products.forEach(product => {
+                const productElement = createHotProductItem(product);
+                document.getElementById('hotProductsGrid').appendChild(productElement);
+            });
+            document.getElementById('hotProductsSection').style.display = 'block';
+            hasAnyResults = true;
+        } else {
+            document.getElementById('hotProductsSection').style.display = 'none';
+        }
+        
+        // Block 6: Show hot keywords
+        hideBlockLoading('hotKeywordsLoading');
+        if (data.suggestions?.hot_keywords && data.suggestions.hot_keywords.length > 0) {
+            data.suggestions.hot_keywords.forEach(keyword => {
+                const keywordElement = createHotKeywordItem(keyword);
+                document.getElementById('hotKeywordsGrid').appendChild(keywordElement);
+            });
+            document.getElementById('hotKeywordsSection').style.display = 'block';
+            hasAnyResults = true;
+        } else {
+            document.getElementById('hotKeywordsSection').style.display = 'none';
+        }
+        
+        // Show/hide suggestions dropdown
+        if (hasAnyResults || (data.query && data.query.length >= 2)) {
             mainSuggestionNoResults.style.display = 'none';
             mainSearchSuggestions.style.display = 'block';
-        } else if (data.keyword && data.keyword.length >= 2) {
-            // Show no results if we have a keyword but no products
+        } else {
             mainSuggestionNoResults.style.display = 'block';
             mainSearchSuggestions.style.display = 'block';
-        } else {
-            hideMainSuggestions();
         }
     }
     
     function createMainProductSuggestion(product) {
         const div = document.createElement('div');
         div.className = 'suggestion-item product-suggestion';
+        
+        const priceDisplay = product.sale_price && product.sale_price < product.price 
+            ? `<span class="product-price-sale">${formatPrice(product.sale_price)}</span> <span class="product-price-old">${formatPrice(product.price)}</span>`
+            : `<span class="product-price">${formatPrice(product.price)}</span>`;
+            
         div.innerHTML = `
             <img src="${product.image}" alt="${product.name}" onerror="this.src='/image/sp1.png'">
             <div class="product-info">
                 <div class="product-name">${product.name}</div>
                 <div class="product-details">
-                    <span class="product-brand">${product.brand}</span>
-                    <span class="product-price">${product.formatted_price}</span>
+                    <span class="product-brand">${product.brand || ''}</span>
+                    ${priceDisplay}
                 </div>
             </div>
         `;
         
-        div.onclick = function() {
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             window.location.href = product.url;
         };
         
         return div;
     }
     
+    function createHotCategoryItem(category) {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item hot-category-item';
+        div.innerHTML = `
+            <img src="${category.image || '/image/sp1.png'}" alt="${category.name}" onerror="this.src='/image/sp1.png'">
+            <div class="item-info">
+                <div class="item-name">${category.name}</div>
+                <div class="item-type">Danh mục</div>
+            </div>
+        `;
+        
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = category.url;
+        };
+        
+        return div;
+    }
+    
+    function createHotBrandItem(brand) {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item hot-brand-item';
+        div.innerHTML = `
+            <img src="${brand.image || '/image/sp1.png'}" alt="${brand.name}" onerror="this.src='/image/sp1.png'">
+            <div class="item-info">
+                <div class="item-name">${brand.name}</div>
+                <div class="item-type">Thương hiệu</div>
+            </div>
+        `;
+        
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = brand.url;
+        };
+        
+        return div;
+    }
+    
+    function createHotProductItem(product) {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item hot-product-item';
+        
+        const priceDisplay = product.sale_price && product.sale_price < product.price 
+            ? `<span class="product-price-sale">${formatPrice(product.sale_price)}</span> <span class="product-price-old">${formatPrice(product.price)}</span>`
+            : `<span class="product-price">${formatPrice(product.price)}</span>`;
+            
+        div.innerHTML = `
+            <img src="${product.image || '/image/sp1.png'}" alt="${product.name}" onerror="this.src='/image/sp1.png'">
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-details">
+                    <span class="hot-badge">🔥 HOT</span>
+                    ${priceDisplay}
+                </div>
+            </div>
+        `;
+        
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = product.url;
+        };
+        
+        return div;
+    }
+    
+    function createHotKeywordItem(keyword) {
+        const div = document.createElement('div');
+        div.className = 'suggestion-item hot-keyword-item';
+        div.innerHTML = `
+            <div class="keyword-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="keyword-info">
+                <div class="keyword-text">${keyword.title || keyword.keyword}</div>
+                <div class="keyword-type">Từ khóa hot</div>
+            </div>
+        `;
+        
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = keyword.url;
+        };
+        
+        return div;
+    }
+    
+    function formatPrice(price) {
+        return new Intl.NumberFormat('vi-VN').format(price) + 'đ';
+    }
+    
     function showMainLoading() {
         mainSuggestionLoading.style.display = 'block';
         mainSuggestionNoResults.style.display = 'none';
         mainSuggestionKeyword.style.display = 'none';
-        mainSuggestionsProducts.innerHTML = '';
+        
+        // Clear content and show individual block loadings
+        document.getElementById('mainSuggestionsProducts').innerHTML = '';
+        document.getElementById('hotCategoriesGrid').innerHTML = '';
+        document.getElementById('hotBrandsGrid').innerHTML = '';
+        document.getElementById('hotProductsGrid').innerHTML = '';
+        document.getElementById('hotKeywordsGrid').innerHTML = '';
+        
+        // Show individual block loadings with a slight delay for better UX
+        setTimeout(() => showBlockLoading('searchProductsLoading'), 100);
+        setTimeout(() => showBlockLoading('hotCategoriesLoading'), 200);
+        setTimeout(() => showBlockLoading('hotBrandsLoading'), 300);
+        setTimeout(() => showBlockLoading('hotProductsLoading'), 400);
+        setTimeout(() => showBlockLoading('hotKeywordsLoading'), 500);
+        
+        // Show all sections
+        document.getElementById('searchProductsSection').style.display = 'block';
+        document.getElementById('hotCategoriesSection').style.display = 'block';
+        document.getElementById('hotBrandsSection').style.display = 'block';
+        document.getElementById('hotProductsSection').style.display = 'block';
+        document.getElementById('hotKeywordsSection').style.display = 'block';
+        
         mainSearchSuggestions.style.display = 'block';
+    }
+    
+    function showBlockLoading(loadingId) {
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+    }
+    
+    function hideBlockLoading(loadingId) {
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+    }
+    
+    function hideAllBlockLoading() {
+        hideBlockLoading('searchProductsLoading');
+        hideBlockLoading('hotCategoriesLoading');
+        hideBlockLoading('hotBrandsLoading');
+        hideBlockLoading('hotProductsLoading');
+        hideBlockLoading('hotKeywordsLoading');
     }
     
     function hideMainLoading() {

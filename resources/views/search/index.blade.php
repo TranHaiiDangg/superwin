@@ -124,10 +124,10 @@
 
                 <!-- Quick Filters -->
                 <div class="quick-filters mb-4">
-                    <button class="quick-filter-btn active" data-filter="all">Tất cả</button>
-                    <button class="quick-filter-btn" data-filter="sale">Đang giảm giá</button>
-                    <button class="quick-filter-btn" data-filter="featured">Nổi bật</button>
-                    <button class="quick-filter-btn" data-filter="bestseller">Bán chạy</button>
+                    <button class="quick-filter-btn {{ !request('filter') && request('sort_by') != 'bestseller' ? 'active' : '' }}" data-filter="all">Tất cả</button>
+                    <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
+                    <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
+                    <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
                 </div>
             </div>
 

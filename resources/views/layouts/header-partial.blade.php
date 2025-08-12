@@ -546,7 +546,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add click handler for keyword
             const keywordItem = suggestionKeyword.querySelector('.keyword-item');
-            keywordItem.onclick = function() {
+            keywordItem.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 window.location.href = data.search_url;
             };
         } else {
@@ -585,7 +587,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        div.onclick = function() {
+        div.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             window.location.href = product.url;
         };
         

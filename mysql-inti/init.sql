@@ -854,4 +854,43 @@ CREATE TABLE `users` (
   KEY `idx_is_active` (`is_active`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
+-- Tạo bảng hot_searches để quản lý các mục hot search
+CREATE TABLE IF NOT EXISTS `hot_searches` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `type` enum('product','keyword','brand','category') NOT NULL COMMENT 'Loại hot search: product, keyword, brand, category',
+  `title` varchar(255) NOT NULL COMMENT 'Tiêu đề hiển thị',
+  `reference_id` bigint(20) UNSIGNED NULL COMMENT 'ID tham chiếu đến product_id, brand_id, category_id (null với keyword)',
+  `keyword` varchar(255) NULL COMMENT 'Từ khóa search (chỉ dùng với type=keyword)',
+  `image_url` varchar(500) NULL COMMENT 'URL hình ảnh (tùy chọn)',
+  `description` text NULL COMMENT 'Mô tả ngắn',
+  `sort_order` int(11) NOT NULL DEFAULT 0 COMMENT 'Thứ tự sắp xếp',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Trạng thái kích hoạt',
+  `click_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Số lượt click',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_is_active` (`is_active`),
+  KEY `idx_sort_order` (`sort_order`),
+  KEY `idx_reference_id` (`reference_id`),
+  KEY `idx_click_count` (`click_count`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng quản lý hot search items';
+
+-- Tạo bảng hot_search_items để lưu nhiều items cho 1 hot search
+CREATE TABLE IF NOT EXISTS `hot_search_items` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `hot_search_id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID của hot search',
+  `item_type` enum('product','brand','category') NOT NULL COMMENT 'Loại item',
+  `item_id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID của item (product_id, brand_id, category_id)',
+  `sort_order` int(11) NOT NULL DEFAULT 0 COMMENT 'Thứ tự sắp xếp trong group',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_hot_search_id` (`hot_search_id`),
+  KEY `idx_item_type` (`item_type`),
+  KEY `idx_item_id` (`item_id`),
+  KEY `idx_sort_order` (`sort_order`),
+  FOREIGN KEY (`hot_search_id`) REFERENCES `hot_searches` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bảng lưu các items của hot search';
+
 SET FOREIGN_KEY_CHECKS = 1;

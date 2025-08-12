@@ -202,6 +202,7 @@ Route::prefix('api')->group(function () {
     Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('api.search.suggestions');
     Route::get('/search-suggestions', [SearchController::class, 'suggestions'])->name('api.search.suggestions.old'); // Backward compatibility
     Route::get('/hot-keywords', [SearchController::class, 'hotKeywords'])->name('api.hot-keywords');
+    Route::get('/search/hot-suggestions', [SearchController::class, 'hotSuggestions'])->name('api.search.hot-suggestions');
     Route::get('/brands-list', [BrandController::class, 'apiList'])->name('api.brands');
 });
 

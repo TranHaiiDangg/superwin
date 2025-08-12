@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\HotSearch;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $query = trim($request->get('q', ''));
+        $query = trim(urldecode($request->get('q', '')));
         $categoryId = $request->get('category_id');
         $brandId = $request->get('brand_id');
         $sortBy = $request->get('sort_by', 'newest');
         $perPage = $request->get('per_page', 12);
         $priceRange = $request->get('price_range');
+        $filter = $request->get('filter');
         
         if (empty($query)) {
             return redirect()->route('home');
@@ -60,14 +62,19 @@ class SearchController extends Controller
             $this->applyPriceFilter($productsQuery, $priceRange);
         }
 
+        // Apply additional filters
+        if ($filter) {
+            $this->applyAdditionalFilter($productsQuery, $filter);
+        }
+
         // Apply sorting
         $this->applySorting($productsQuery, $sortBy);
 
         $products = $productsQuery->paginate($perPage)->withQueryString();
 
         // Get filter data
-        $categories = Category::where('status', true)->get();
-        $brands = Brand::where('status', true)->get();
+        $categories = Category::where('is_active', true)->get();
+        $brands = Brand::where('is_active', true)->get();
 
         // Get suggested products (related products)
         $suggestedProducts = $this->getSuggestedProducts($query, $products->pluck('id')->toArray());
@@ -77,7 +84,7 @@ class SearchController extends Controller
 
     public function suggestions(Request $request)
     {
-        $query = trim($request->get('q', ''));
+        $query = trim(urldecode($request->get('q', '')));
         
         if (strlen($query) < 2) {
             return response()->json([
@@ -173,6 +180,18 @@ class SearchController extends Controller
         }
     }
 
+    private function applyAdditionalFilter($query, $filter)
+    {
+        switch ($filter) {
+            case 'sale':
+                $query->where('is_sale', true);
+                break;
+            case 'featured':
+                $query->where('is_featured', true);
+                break;
+        }
+    }
+
     private function applySorting($query, $sortBy)
     {
         switch ($sortBy) {
@@ -209,5 +228,134 @@ class SearchController extends Controller
             ->inRandomOrder()
             ->limit(10)
             ->get();
+    }
+
+    public function hotSuggestions(Request $request)
+    {
+        $query = trim($request->get('q', ''));
+        
+        // Get regular search suggestions (existing products)
+        $productSuggestions = $this->getProductSuggestions($query);
+        
+        // Get Hot Search data
+        $hotSearchData = $this->getHotSearchSuggestions($query);
+        
+        return response()->json([
+            'success' => true,
+            'query' => $query,
+            'suggestions' => [
+                'products' => $productSuggestions,
+                'hot_categories' => $hotSearchData['categories'],
+                'hot_brands' => $hotSearchData['brands'],
+                'hot_products' => $hotSearchData['products'],
+                'hot_keywords' => $hotSearchData['keywords']
+            ]
+        ]);
+    }
+    
+    private function getProductSuggestions($query, $limit = 5)
+    {
+        if (empty($query)) {
+            return [];
+        }
+        
+        return Product::with(['baseImage', 'category', 'brand'])
+            ->where('status', true)
+            ->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('sku', 'like', "%{$query}%");
+            })
+            ->limit($limit)
+            ->get()
+            ->map(function($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'sku' => $product->sku,
+                    'price' => $product->price,
+                    'sale_price' => $product->sale_price,
+                    'image' => $product->baseImage?->url ? asset($product->baseImage->url) : asset('/image/sp1.png'),
+                    'category' => $product->category?->name,
+                    'brand' => $product->brand?->name,
+                    'url' => route('products.show', $product->slug ?? $product->id)
+                ];
+            });
+    }
+    
+    private function getHotSearchSuggestions($query)
+    {
+        // Get active Hot Search entries
+        $hotSearches = HotSearch::with(['items.product.baseImage', 'items.brand', 'items.category'])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('click_count', 'desc')
+            ->get();
+            
+        $categories = [];
+        $brands = [];
+        $products = [];
+        $keywords = [];
+        
+        foreach ($hotSearches as $hotSearch) {
+            switch ($hotSearch->type) {
+                case HotSearch::TYPE_CATEGORY:
+                    $item = $hotSearch->items->first();
+                    if ($item && $item->category) {
+                        $categories[] = [
+                            'id' => $item->category->id,
+                            'name' => $item->category->name,
+                            'image' => $hotSearch->display_image,
+                            'url' => route('categories.show', $item->category->id),
+                            'hot_search_id' => $hotSearch->id
+                        ];
+                    }
+                    break;
+                    
+                case HotSearch::TYPE_BRAND:
+                    $item = $hotSearch->items->first();
+                    if ($item && $item->brand) {
+                        $brands[] = [
+                            'id' => $item->brand->id,
+                            'name' => $item->brand->name,
+                            'image' => $hotSearch->display_image,
+                            'url' => route('search', ['brand_id' => $item->brand->id]),
+                            'hot_search_id' => $hotSearch->id
+                        ];
+                    }
+                    break;
+                    
+                case HotSearch::TYPE_PRODUCT:
+                    $item = $hotSearch->items->first();
+                    if ($item && $item->product) {
+                        $products[] = [
+                            'id' => $item->product->id,
+                            'name' => $item->product->name,
+                            'price' => $item->product->price,
+                            'sale_price' => $item->product->sale_price,
+                            'image' => $hotSearch->display_image,
+                            'url' => route('products.show', $item->product->slug ?? $item->product->id),
+                            'hot_search_id' => $hotSearch->id
+                        ];
+                    }
+                    break;
+                    
+                case HotSearch::TYPE_KEYWORD:
+                    $keywords[] = [
+                        'keyword' => $hotSearch->keyword,
+                        'title' => $hotSearch->display_title,
+                        'image' => $hotSearch->display_image,
+                        'url' => route('search', ['q' => $hotSearch->keyword]),
+                        'hot_search_id' => $hotSearch->id
+                    ];
+                    break;
+            }
+        }
+        
+        return [
+            'categories' => array_slice($categories, 0, 4),
+            'brands' => array_slice($brands, 0, 4),
+            'products' => array_slice($products, 0, 6),
+            'keywords' => array_slice($keywords, 0, 5)
+        ];
     }
 } 
