@@ -174,6 +174,12 @@ class Product extends Model
         return $this->sale_price && $this->sale_price < $this->price;
     }
 
+    // Get display image (base image first, then first image)
+    public function getDisplayImageAttribute()
+    {
+        return $this->baseImage ?? $this->images->first() ?? null;
+    }
+
     // Static method to generate unique SKU
     public static function generateSKU($categoryId = null, $brandId = null)
     {

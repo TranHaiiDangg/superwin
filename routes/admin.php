@@ -143,5 +143,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('revenue/monthly-data', [\App\Http\Controllers\Admin\RevenueController::class, 'getMonthlyData'])->name('revenue.monthlyData')->middleware('permission:revenue.stats');
         Route::get('revenue/date-range-data', [\App\Http\Controllers\Admin\RevenueController::class, 'getDateRangeData'])->name('revenue.dateRangeData')->middleware('permission:revenue.stats');
         Route::get('revenue/export', [\App\Http\Controllers\Admin\RevenueController::class, 'exportExcel'])->name('revenue.export')->middleware('permission:revenue.export');
+        
+        // Hot Search Management
+        Route::get('hot-searches', [\App\Http\Controllers\Admin\HotSearchController::class, 'index'])->name('hot-searches.index')->middleware('permission:hot_searches.view');
+        Route::get('hot-searches/create', [\App\Http\Controllers\Admin\HotSearchController::class, 'create'])->name('hot-searches.create')->middleware('permission:hot_searches.create');
+        Route::get('hot-searches/api/reference-options', [\App\Http\Controllers\Admin\HotSearchController::class, 'getReferenceOptions'])->name('hot-searches.reference-options')->middleware('permission:hot_searches.view');
+        Route::post('hot-searches', [\App\Http\Controllers\Admin\HotSearchController::class, 'store'])->name('hot-searches.store')->middleware('permission:hot_searches.create');
+        Route::get('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'show'])->name('hot-searches.show')->middleware('permission:hot_searches.view');
+        Route::get('hot-searches/{hotSearch}/edit', [\App\Http\Controllers\Admin\HotSearchController::class, 'edit'])->name('hot-searches.edit')->middleware('permission:hot_searches.edit');
+        Route::put('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'update'])->name('hot-searches.update')->middleware('permission:hot_searches.edit');
+        Route::delete('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'destroy'])->name('hot-searches.destroy')->middleware('permission:hot_searches.delete');
+        Route::patch('hot-searches/{hotSearch}/toggle-status', [\App\Http\Controllers\Admin\HotSearchController::class, 'toggleStatus'])->name('hot-searches.toggle-status')->middleware('permission:hot_searches.edit');
     });
 }); 

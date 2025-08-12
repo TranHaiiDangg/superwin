@@ -10,7 +10,7 @@ class BrandController extends Controller
 {
     public function index()
     {
-        $brands = Brand::where('status', true)
+        $brands = Brand::where('is_active', true)
             ->withCount('products')
             ->orderBy('products_count', 'desc')
             ->paginate(12);
@@ -111,7 +111,7 @@ class BrandController extends Controller
 
     public function apiList()
     {
-        $brands = Brand::where('status', true)
+        $brands = Brand::where('is_active', true)
             ->select('id', 'name', 'slug', 'image')
             ->get();
 
