@@ -14,6 +14,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -196,6 +197,12 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/warranty', [WarrantyController::class, 'index'])->name('warranty');
 
 // ===== ADDITIONAL ROUTES =====
+
+// ===== REVIEW ROUTES =====
+
+// Review routes
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/products/{product}/reviews', [ReviewController::class, 'getProductReviews'])->name('reviews.product');
 
 // API routes cho search suggestions (nếu cần)
 Route::prefix('api')->group(function () {

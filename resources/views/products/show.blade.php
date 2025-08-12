@@ -69,12 +69,12 @@
                             <div class="product-rating mb-3">
                                 <div class="stars">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star {{ $i <= ($product->average_rating ?? 0) ? 'text-warning' : 'text-muted' }}"></i>
+                                        <i class="fas fa-star {{ $i <= $product->average_rating ? 'text-warning' : 'text-muted' }}"></i>
                                         @endfor
                                 </div>
                                 <span class="rating-text">
-                                    {{ number_format($product->average_rating ?? 0, 1) }}
-                                    ({{ $product->reviews->count() }} đánh giá)
+                                    {{ number_format($product->average_rating, 1) }}
+                                    ({{ $product->reviews_count }} đánh giá)
                                 </span>
                                 @if($product->sold_count)
                                 <span class="sold-count">• Đã bán {{ $product->sold_count }}</span>
@@ -298,7 +298,7 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
-                                Đánh giá ({{ $product->reviews->count() }})
+                                Đánh giá ({{ $product->reviews_count }})
                             </button>
                         </li>
                     </ul>
@@ -391,26 +391,27 @@
                         <div class="rating-summary text-center">
                             <h3 class="rating-title">Đánh giá trung bình</h3>
                             <div class="average-rating">
-                                <span class="rating-number">{{ number_format($product->average_rating ?? 0, 1) }}</span>
+                                <span class="rating-number">{{ number_format($product->average_rating, 1) }}</span>
                                 <div class="rating-stars">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star {{ $i <= ($product->average_rating ?? 0) ? 'text-warning' : 'text-muted' }}"></i>
+                                        <i class="fas fa-star {{ $i <= $product->average_rating ? 'text-warning' : 'text-muted' }}"></i>
                                         @endfor
                                 </div>
-                                <div class="total-reviews">{{ $product->reviews->count() }} nhận xét</div>
+                                <div class="total-reviews">{{ $product->reviews_count }} nhận xét</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="rating-bars">
                             @php
-                            $totalReviews = $product->reviews->count();
+                            $totalReviews = $product->reviews_count;
+                            $approvedReviews = $product->reviews->where('is_approved', true);
                             $ratingCounts = [
-                            5 => $product->reviews->where('rating', 5)->count(),
-                            4 => $product->reviews->where('rating', 4)->count(),
-                            3 => $product->reviews->where('rating', 3)->count(),
-                            2 => $product->reviews->where('rating', 2)->count(),
-                            1 => $product->reviews->where('rating', 1)->count(),
+                            5 => $approvedReviews->where('rating', 5)->count(),
+                            4 => $approvedReviews->where('rating', 4)->count(),
+                            3 => $approvedReviews->where('rating', 3)->count(),
+                            2 => $approvedReviews->where('rating', 2)->count(),
+                            1 => $approvedReviews->where('rating', 1)->count(),
                             ];
                             @endphp
                             @foreach($ratingCounts as $stars => $count)
@@ -433,34 +434,50 @@
                     <div class="col-md-4">
                         <div class="review-action text-center">
                             <p>Chia sẻ nhận xét của bạn về sản phẩm này</p>
+                            @auth('customer')
                             <button class="btn btn-primary" onclick="openReviewForm()">
-                                Viết Bình luận
+                                <i class="fas fa-edit me-2"></i>Viết Bình luận
                             </button>
+                            @else
+                            <button class="btn btn-primary" onclick="redirectToLogin()">
+                                <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập để đánh giá
+                            </button>
+                            @endauth
                         </div>
                     </div>
                 </div>
 
-                @if($product->reviews->count() > 0)
-                <div class="reviews-section mt-4">
-                    <h4 class="mb-3">{{ $product->reviews->count() }} bình luận cho sản phẩm này</h4>
-                    @foreach($product->reviews as $review)
+                @if($product->reviews_count > 0)
+                <div class="reviews-section mt-4" id="reviewsList">
+                    <h4 class="mb-3">{{ $product->reviews_count }} bình luận cho sản phẩm này</h4>
+                    @foreach($product->reviews->where('is_approved', true) as $review)
                     <div class="review-item">
                         <div class="review-header">
                             <div class="reviewer-info">
                                 <div class="reviewer-name">{{ $review->customer_name }}</div>
-                                <div class="review-date">{{ $review->created_at->format('d/m/Y') }}</div>
+                                <div class="review-date">{{ $review->created_at->format('d/m/Y H:i') }}</div>
                             </div>
                             <div class="review-rating">
                                 @for($i = 1; $i <= 5; $i++)
                                     <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
-                                    @endfor
+                                @endfor
                             </div>
                         </div>
+                        @if($review->title)
+                        <div class="review-title">
+                            <strong>{{ $review->title }}</strong>
+                        </div>
+                        @endif
                         <div class="review-content">
                             {{ $review->comment }}
                         </div>
                     </div>
                     @endforeach
+                </div>
+                @else
+                <div class="no-reviews text-center mt-4">
+                    <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+                    <p class="text-muted">Hãy là người đầu tiên đánh giá!</p>
                 </div>
                 @endif
             </div>
@@ -504,8 +521,8 @@
             'sale_price' => $product->sale_price,
             'is_on_sale' => $product->isOnSale,
             'discount_percentage' => $product->discount_percentage,
-            'rating' => number_format($product->average_rating ?? 0, 1),
-            'review_count' => $product->reviews->count(),
+            'rating' => number_format($product->average_rating, 1),
+            'review_count' => $product->reviews_count,
             'sold_count' => $product->sold_count,
             'coupon' => $product->coupon
             ];
@@ -561,6 +578,104 @@
     </div>
 </section>
 @endif
+
+<!-- Review Modal -->
+@auth('customer')
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">
+                    <i class="fas fa-star text-warning me-2"></i>Đánh giá sản phẩm
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="reviewForm" action="{{ route('reviews.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                
+                <div class="modal-body">
+                    <!-- Product Info -->
+                    <div class="product-review-info mb-4">
+                        <div class="d-flex align-items-center">
+                            @if($product->baseImage)
+                            <img src="{{ asset($product->baseImage->url) }}" alt="{{ $product->name }}" class="review-product-image me-3">
+                            @else
+                            <img src="/image/sp1.png" alt="{{ $product->name }}" class="review-product-image me-3">
+                            @endif
+                            <div>
+                                <h6 class="mb-1">{{ $product->name }}</h6>
+                                <p class="text-muted mb-0">{{ $product->sku ?? 'SW-' . $product->id }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-star text-warning me-1"></i>Đánh giá của bạn <span class="text-danger">*</span>
+                        </label>
+                        <div class="rating-input d-flex align-items-center">
+                            <div class="star-rating me-3">
+                                @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star star-item" data-rating="{{ $i }}"></i>
+                                @endfor
+                            </div>
+                            <span class="rating-text text-muted">Chọn số sao</span>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" required>
+                        <div class="invalid-feedback" id="ratingError"></div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="mb-4">
+                        <label for="reviewTitle" class="form-label fw-bold">
+                            <i class="fas fa-heading me-1"></i>Tiêu đề (tùy chọn)
+                        </label>
+                        <input type="text" class="form-control" id="reviewTitle" name="title" placeholder="Nhập tiêu đề cho đánh giá của bạn..." maxlength="255">
+                        <div class="form-text">Tối đa 255 ký tự</div>
+                        <div class="invalid-feedback" id="titleError"></div>
+                    </div>
+
+                    <!-- Comment -->
+                    <div class="mb-4">
+                        <label for="reviewComment" class="form-label fw-bold">
+                            <i class="fas fa-comment me-1"></i>Nội dung đánh giá <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="reviewComment" name="comment" rows="5" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." required minlength="10" maxlength="1000"></textarea>
+                        <div class="form-text">
+                            <span id="commentCount">0</span>/1000 ký tự (tối thiểu 10 ký tự)
+                        </div>
+                        <div class="invalid-feedback" id="commentError"></div>
+                    </div>
+
+                    <!-- Review Guidelines -->
+                    <div class="review-guidelines">
+                        <h6 class="text-primary">
+                            <i class="fas fa-info-circle me-1"></i>Hướng dẫn viết đánh giá
+                        </h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Chia sẻ trải nghiệm thực tế của bạn với sản phẩm</li>
+                            <li>Tránh sử dụng ngôn ngữ không phù hợp</li>
+                            <li>Đánh giá sẽ được duyệt trước khi hiển thị</li>
+                            <li>Mỗi khách hàng chỉ có thể đánh giá một lần cho mỗi sản phẩm</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitReviewBtn">
+                        <i class="fas fa-paper-plane me-1"></i>Gửi đánh giá
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endauth
 @endsection
 
 @push('styles')
@@ -1319,6 +1434,117 @@
         font-size: 0.9rem;
     }
 
+    /* Review Styles */
+    .review-title {
+        margin-bottom: 8px;
+        color: #2c3e50;
+    }
+
+    .review-title strong {
+        font-size: 1rem;
+    }
+
+    .no-reviews {
+        padding: 40px 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    /* Review Modal Styles */
+    .review-product-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .star-rating {
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .star-rating .star-item {
+        color: #e9ecef;
+        transition: all 0.2s ease;
+        margin-right: 4px;
+    }
+
+    .star-rating .star-item:hover,
+    .star-rating .star-item.active {
+        color: #ffc107;
+        transform: scale(1.1);
+    }
+
+    .star-rating .star-item:hover ~ .star-item {
+        color: #e9ecef;
+        transform: scale(1);
+    }
+
+    .rating-input {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .rating-text {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .review-guidelines {
+        background: #e7f3ff;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+
+    .review-guidelines ul {
+        padding-left: 20px;
+    }
+
+    .review-guidelines li {
+        margin-bottom: 4px;
+    }
+
+    #commentCount {
+        font-weight: 600;
+        color: #007bff;
+    }
+
+    /* Form validation styles */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Loading state for submit button */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
     /* Responsive */
     /* Power Attribute */
     .power-attribute {
@@ -1397,6 +1623,39 @@
     @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
+    }
+
+    /* Notification Animations */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    /* Custom notification styles */
+    .custom-notification {
+        font-family: 'Inter', sans-serif;
+        border: none !important;
+    }
+
+    .custom-notification .btn-close {
+        filter: brightness(0) invert(1);
     }
 </style>
 @endpush
@@ -1651,23 +1910,573 @@
     }
 
     function showNotification(message, type = 'info') {
+        // Remove existing notifications first
+        document.querySelectorAll('.custom-notification').forEach(notif => notif.remove());
+        
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show`;
-        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.className = `custom-notification alert alert-${type} alert-dismissible fade show`;
+        
+        // Enhanced styling for better visibility
+        const bgColors = {
+            'success': 'linear-gradient(135deg, #28a745, #20c997)',
+            'error': 'linear-gradient(135deg, #dc3545, #fd7e14)',
+            'info': 'linear-gradient(135deg, #17a2b8, #6f42c1)',
+            'warning': 'linear-gradient(135deg, #ffc107, #fd7e14)'
+        };
+        
+        notification.style.cssText = `
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            z-index: 99999; 
+            min-width: 350px;
+            max-width: 500px;
+            background: ${bgColors[type] || bgColors['info']};
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
+            font-weight: 600;
+            padding: 16px 20px;
+            backdrop-filter: blur(10px);
+            animation: slideInRight 0.3s ease-out;
+        `;
+
+        const icons = {
+            'success': 'check-circle',
+            'error': 'exclamation-triangle',
+            'info': 'info-circle',
+            'warning': 'exclamation-circle'
+        };
 
         notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-${icons[type] || icons['info']}" style="font-size: 20px; flex-shrink: 0;"></i>
+                <div style="flex: 1; line-height: 1.4;">${message}</div>
+                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.parentElement.remove()" 
+                        style="margin: 0; padding: 8px; opacity: 0.8;" aria-label="Close">
+                </button>
+            </div>
+        `;
 
         document.body.appendChild(notification);
 
-        // Auto remove after 3 seconds
+        // Auto remove after 5 seconds for error, 3 for others
+        const timeout = type === 'error' ? 5000 : 3000;
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, timeout);
+    }
+
+    // ===== REVIEW FUNCTIONS =====
+
+    function redirectToLogin() {
+        showNotification('Đang chuyển đến trang đăng nhập...', 'info');
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
+    }
+
+    function openReviewForm() {
+        const reviewModalElement = document.getElementById('reviewModal');
+        if (!reviewModalElement) {
+            console.warn('Review modal not found - user may not be logged in');
+            return;
+        }
+        
+        // Reset form
+        resetReviewForm();
+        
+        // Show modal
+        const reviewModal = new bootstrap.Modal(reviewModalElement);
+        reviewModal.show();
+    }
+
+    function resetReviewForm() {
+        const form = document.getElementById('reviewForm');
+        if (!form) return;
+        
+        form.reset();
+        
+        // Reset rating
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('ratingInput');
+        const ratingText = document.querySelector('.rating-text');
+        
+        if (stars.length) {
+            stars.forEach(star => {
+                star.classList.remove('active');
+            });
+        }
+        
+        if (ratingInput) {
+            ratingInput.value = '';
+        }
+        
+        if (ratingText) {
+            ratingText.textContent = 'Chọn số sao';
+        }
+        
+        // Reset comment count
+        const commentCount = document.getElementById('commentCount');
+        if (commentCount) {
+            commentCount.textContent = '0';
+        }
+        
+        // Clear validation errors
+        clearValidationErrors();
+    }
+
+    function clearValidationErrors() {
+        document.querySelectorAll('.is-invalid').forEach(element => {
+            element.classList.remove('is-invalid');
+        });
+        document.querySelectorAll('.invalid-feedback').forEach(element => {
+            element.textContent = '';
+        });
+    }
+
+    // Initialize review functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only initialize if review modal exists (user is logged in)
+        if (document.getElementById('reviewModal')) {
+            initializeReviewForm();
+        }
+    });
+
+    function initializeReviewForm() {
+        // Star rating functionality
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('ratingInput');
+        const ratingText = document.querySelector('.rating-text');
+
+        // Check if elements exist before adding event listeners
+        if (!stars.length || !ratingInput || !ratingText) {
+            console.warn('Review form elements not found, skipping initialization');
+            return;
+        }
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                
+                // Update hidden input
+                ratingInput.value = rating;
+                
+                // Update visual stars
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+                
+                // Update rating text
+                const ratingTexts = ['', 'Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Rất tốt'];
+                ratingText.textContent = ratingTexts[rating];
+                
+                // Clear rating error
+                document.getElementById('ratingError').textContent = '';
+                document.querySelector('.rating-input').classList.remove('is-invalid');
+            });
+
+            // Hover effect
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.dataset.rating);
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.style.color = '#e9ecef';
+                    }
+                });
+            });
+        });
+
+        // Reset hover effect when mouse leaves star container
+        const starRatingContainer = document.querySelector('.star-rating');
+        if (starRatingContainer) {
+            starRatingContainer.addEventListener('mouseleave', function() {
+                const currentRating = parseInt(ratingInput.value) || 0;
+                stars.forEach((s, i) => {
+                    if (i < currentRating) {
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.style.color = '#e9ecef';
+                    }
+                });
+            });
+        }
+
+        // Comment character count
+        const commentTextarea = document.getElementById('reviewComment');
+        const commentCount = document.getElementById('commentCount');
+        
+        if (commentTextarea && commentCount) {
+            commentTextarea.addEventListener('input', function() {
+                const length = this.value.length;
+                commentCount.textContent = length;
+                
+                // Color coding
+                if (length < 10) {
+                    commentCount.style.color = '#dc3545';
+                } else if (length > 900) {
+                    commentCount.style.color = '#ffc107';
+                } else {
+                    commentCount.style.color = '#007bff';
+                }
+            });
+        }
+
+        // Form submission
+        const reviewForm = document.getElementById('reviewForm');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitReview();
+            });
+        }
+    }
+
+    function submitReview() {
+        const form = document.getElementById('reviewForm');
+        const submitBtn = document.getElementById('submitReviewBtn');
+        
+        // Clear previous errors
+        clearValidationErrors();
+        
+        // Validate form
+        if (!validateReviewForm()) {
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add('btn-loading');
+        submitBtn.innerHTML = '<span style="opacity: 0;">Đang gửi...</span>';
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        console.log('CSRF Token found:', csrfToken ? 'Yes' : 'No');
+        console.log('CSRF Token value:', csrfToken);
+        
+        if (!csrfToken) {
+            console.error('CSRF token not found in meta tag');
+            showNotification('Lỗi bảo mật. Vui lòng tải lại trang và thử lại.', 'error');
+            return;
+        }
+
+        // Prepare form data
+        const formData = new FormData(form);
+        formData.append('_token', csrfToken);
+        
+        // Debug: Log form data
+        console.log('Form data being sent:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        // Submit via AJAX
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (!response.ok) {
+                // Try to get error message from response
+                return response.text().then(text => {
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    
+                    // Try to parse JSON error message
+                    try {
+                        const errorData = JSON.parse(text);
+                        console.log('Error response data:', errorData);
+                        
+                        if (errorData.message) {
+                            errorMessage = errorData.message;
+                        }
+                        
+                        // Handle validation errors specifically
+                        if (errorData.errors && response.status === 422) {
+                            const firstError = Object.values(errorData.errors)[0];
+                            if (firstError && firstError[0]) {
+                                errorMessage = firstError[0];
+                            }
+                        }
+                    } catch (e) {
+                        // If not JSON, use status-based message
+                        if (response.status === 419) {
+                            errorMessage = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.';
+                        } else if (response.status === 422) {
+                            errorMessage = 'Dữ liệu không hợp lệ.';
+                        } else if (response.status === 401) {
+                            errorMessage = 'Bạn cần đăng nhập để thực hiện thao tác này.';
+                        } else if (response.status === 500) {
+                            errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
+                        }
+                    }
+                    
+                    throw new Error(errorMessage);
+                });
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                // Close modal
+                const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+                reviewModal.hide();
+                
+                // Show success message
+                showNotification(data.message, 'success');
+                
+                // Add new review to the list
+                if (data.review) {
+                    addNewReviewToList(data.review);
+                    // Update rating display if provided
+                    if (data.updated_rating) {
+                        updateRatingDisplay(data.updated_rating);
+                    }
+                }
+                
+                // Reset form
+                resetReviewForm();
+                
+            } else {
+                console.log('Review submission failed:', data);
+                
+                // Show error message
+                let errorMessage = data.message || 'Có lỗi xảy ra khi gửi đánh giá';
+                
+                // If there are specific validation errors, show the first one
+                if (data.errors && Object.keys(data.errors).length > 0) {
+                    const firstErrorField = Object.keys(data.errors)[0];
+                    const firstErrorMessage = data.errors[firstErrorField][0];
+                    errorMessage = firstErrorMessage;
+                    
+                    // Also show field-specific errors
+                    showValidationErrors(data.errors);
+                }
+                
+                showNotification(errorMessage, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting review:', error);
+            
+            // Use error message if available, otherwise default
+            const errorMessage = error.message || 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.';
+            showNotification(errorMessage, 'error');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Gửi đánh giá';
+        });
+    }
+
+    function validateReviewForm() {
+        let isValid = true;
+        
+        // Validate rating
+        const ratingInput = document.getElementById('ratingInput');
+        const ratingContainer = document.querySelector('.rating-input');
+        const ratingError = document.getElementById('ratingError');
+        
+        if (ratingInput) {
+            const rating = ratingInput.value;
+            if (!rating || rating < 1 || rating > 5) {
+                if (ratingContainer) ratingContainer.classList.add('is-invalid');
+                if (ratingError) ratingError.textContent = 'Vui lòng chọn số sao đánh giá.';
+                isValid = false;
+            }
+        }
+        
+        // Validate comment
+        const commentInput = document.getElementById('reviewComment');
+        const commentError = document.getElementById('commentError');
+        
+        if (commentInput) {
+            const comment = commentInput.value.trim();
+            if (!comment) {
+                commentInput.classList.add('is-invalid');
+                if (commentError) commentError.textContent = 'Vui lòng nhập nội dung bình luận.';
+                isValid = false;
+            } else if (comment.length < 10) {
+                commentInput.classList.add('is-invalid');
+                if (commentError) commentError.textContent = 'Bình luận phải có ít nhất 10 ký tự.';
+                isValid = false;
+            } else if (comment.length > 1000) {
+                commentInput.classList.add('is-invalid');
+                if (commentError) commentError.textContent = 'Bình luận không được vượt quá 1000 ký tự.';
+                isValid = false;
+            }
+        }
+        
+        return isValid;
+    }
+
+    function showValidationErrors(errors) {
+        Object.keys(errors).forEach(field => {
+            const errorElement = document.getElementById(field + 'Error');
+            const inputElement = document.getElementById('review' + field.charAt(0).toUpperCase() + field.slice(1));
+            
+            if (errorElement && errors[field][0]) {
+                errorElement.textContent = errors[field][0];
+            }
+            
+            if (inputElement) {
+                inputElement.classList.add('is-invalid');
+            }
+            
+            // Special handling for rating
+            if (field === 'rating') {
+                document.querySelector('.rating-input').classList.add('is-invalid');
+            }
+        });
+    }
+
+    function addNewReviewToList(review) {
+        const reviewsList = document.getElementById('reviewsList');
+        const noReviews = document.querySelector('.no-reviews');
+        
+        // Hide no reviews message if exists
+        if (noReviews) {
+            noReviews.style.display = 'none';
+        }
+        
+        // Create new review element
+        const reviewElement = document.createElement('div');
+        reviewElement.className = 'review-item';
+        reviewElement.innerHTML = `
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-name">${review.customer_name}</div>
+                    <div class="review-date">${review.created_at}</div>
+                </div>
+                <div class="review-rating">
+                    ${generateStarRating(review.rating)}
+                </div>
+            </div>
+            ${review.title ? `<div class="review-title"><strong>${review.title}</strong></div>` : ''}
+            <div class="review-content">${review.comment}</div>
+        `;
+        
+        // Add to top of reviews list
+        if (reviewsList) {
+            const firstReview = reviewsList.querySelector('.review-item');
+            if (firstReview) {
+                reviewsList.insertBefore(reviewElement, firstReview);
+            } else {
+                reviewsList.appendChild(reviewElement);
+            }
+        } else {
+            // Create reviews section if it doesn't exist
+            const reviewsTab = document.getElementById('reviews');
+            const newReviewsSection = document.createElement('div');
+            newReviewsSection.className = 'reviews-section mt-4';
+            newReviewsSection.id = 'reviewsList';
+            newReviewsSection.innerHTML = `
+                <h4 class="mb-3">1 bình luận cho sản phẩm này</h4>
+            `;
+            newReviewsSection.appendChild(reviewElement);
+            reviewsTab.querySelector('.tab-content-wrapper').appendChild(newReviewsSection);
+        }
+        
+        // Update review count
+        updateReviewCount();
+    }
+
+    function generateStarRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars += '<i class="fas fa-star text-warning"></i>';
+            } else {
+                stars += '<i class="fas fa-star text-muted"></i>';
+            }
+        }
+        return stars;
+    }
+
+    function updateReviewCount() {
+        const reviewItems = document.querySelectorAll('.review-item').length;
+        const reviewCountElement = document.querySelector('#reviewsList h4');
+        if (reviewCountElement) {
+            reviewCountElement.textContent = `${reviewItems} bình luận cho sản phẩm này`;
+        }
+        
+        // Update tab title
+        const reviewTab = document.querySelector('#reviews-tab');
+        if (reviewTab) {
+            reviewTab.textContent = `Đánh giá (${reviewItems})`;
+        }
+    }
+
+    function updateRatingDisplay(ratingData) {
+        // Update main product rating
+        const mainRatingText = document.querySelector('.product-rating .rating-text');
+        if (mainRatingText && ratingData.average && ratingData.count !== undefined) {
+            mainRatingText.innerHTML = `
+                ${parseFloat(ratingData.average).toFixed(1)}
+                (${ratingData.count} đánh giá)
+            `;
+        }
+
+        // Update main rating stars
+        const mainStars = document.querySelectorAll('.product-rating .stars i');
+        if (mainStars.length && ratingData.average) {
+            const avgRating = parseFloat(ratingData.average);
+            mainStars.forEach((star, index) => {
+                if (index + 1 <= avgRating) {
+                    star.classList.remove('text-muted');
+                    star.classList.add('text-warning');
+                } else {
+                    star.classList.remove('text-warning');
+                    star.classList.add('text-muted');
+                }
+            });
+        }
+
+        // Update reviews tab rating display
+        const ratingNumber = document.querySelector('.rating-number');
+        if (ratingNumber && ratingData.average) {
+            ratingNumber.textContent = parseFloat(ratingData.average).toFixed(1);
+        }
+
+        const totalReviews = document.querySelector('.total-reviews');
+        if (totalReviews && ratingData.count !== undefined) {
+            totalReviews.textContent = `${ratingData.count} nhận xét`;
+        }
+
+        // Update reviews tab stars
+        const tabStars = document.querySelectorAll('.rating-stars i');
+        if (tabStars.length && ratingData.average) {
+            const avgRating = parseFloat(ratingData.average);
+            tabStars.forEach((star, index) => {
+                if (index + 1 <= avgRating) {
+                    star.classList.remove('text-muted');
+                    star.classList.add('text-warning');
+                } else {
+                    star.classList.remove('text-warning');
+                    star.classList.add('text-muted');
+                }
+            });
+        }
     }
 </script>
 @endpush
