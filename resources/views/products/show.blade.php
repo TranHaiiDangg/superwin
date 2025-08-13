@@ -102,6 +102,49 @@
                             </div>
                             @endif
 
+                            <!-- Product Variants -->
+                            @if($product->activeVariants && $product->activeVariants->count() > 0)
+                            <div class="variants-section mb-4">
+                                <label class="variants-label">Phiên bản:</label>
+                                <div class="variants-container">
+                                    <!-- Option to deselect variants -->
+                                    <div class="variant-item variant-none"
+                                         data-variant-id="none"
+                                         data-variant-price="{{ $product->sale_price ?? $product->price }}"
+                                         data-variant-stock="{{ $product->stock_quantity ?? 999 }}"
+                                         data-variant-name="{{ $product->name }}"
+                                         data-variant-code="{{ $product->sku ?? '' }}">
+                                        <input type="radio" name="selected_variant" id="variant_none" value="none" class="variant-radio" checked>
+                                        <label for="variant_none" class="variant-label">
+                                            <div class="variant-info">
+                                                <div class="variant-name">
+                                                    <i class="fas fa-home me-2"></i>{{ $product->name }}
+                                                </div>
+                                                <div class="variant-code">{{ $product->sku ?? 'Sản phẩm gốc' }}</div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    @foreach($product->activeVariants as $variant)
+                                    <div class="variant-item"
+                                         data-variant-id="{{ $variant->id }}"
+                                         data-variant-price="{{ $variant->final_price }}"
+                                         data-variant-stock="{{ $variant->quantity }}"
+                                         data-variant-name="{{ $variant->name }}"
+                                         data-variant-code="{{ $variant->code }}">
+                                        <input type="radio" name="selected_variant" id="variant_{{ $variant->id }}" value="{{ $variant->id }}" class="variant-radio">
+                                        <label for="variant_{{ $variant->id }}" class="variant-label">
+                                            <div class="variant-info">
+                                                <div class="variant-name">{{ $variant->name }}</div>
+                                                <div class="variant-code">{{ $variant->code }}</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
                             <!-- Quantity -->
                             <div class="quantity-section mb-4">
                                 <label class="quantity-label">Số lượng:</label>
@@ -118,7 +161,7 @@
                             <!-- Action Buttons -->
                             <div class="action-buttons mb-4">
                                 <div class="d-grid gap-2 d-md-flex">
-                                    <button class="btn btn-primary btn-lg flex-fill me-md-2" onclick="addToCart({{ $product->id }})">
+                                    <button class="btn btn-primary btn-lg flex-fill me-md-2" onclick="addToCart({{ $product->id }}) ">
                                         <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ
                                     </button>
                                     <button class="btn btn-outline-primary btn-lg flex-fill me-md-2" onclick="buyNow()">
@@ -301,6 +344,13 @@
                                 Đánh giá ({{ $product->reviews->count() }})
                             </button>
                         </li>
+                        @if($product->activeVariants && $product->activeVariants->count() > 0)
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">
+                                Phiên bản ({{ $product->activeVariants->count() }})
+                            </button>
+                        </li>
+                        @endif
                     </ul>
 
                     <div class="tab-content" id="productTabsContent">
@@ -465,6 +515,62 @@
                 @endif
             </div>
         </div>
+
+        <!-- Variants Tab -->
+        @if($product->activeVariants && $product->activeVariants->count() > 0)
+        <div class="tab-pane fade" id="variants" role="tabpanel">
+            <div class="tab-content-wrapper">
+                <div class="variants-detail-section">
+                    <h4 class="mb-4">Chi tiết các phiên bản sản phẩm</h4>
+                    <div class="variants-table">
+                        <div class="variants-header">
+                            <div class="variant-col-name">Tên phiên bản</div>
+                            <div class="variant-col-code">Mã</div>
+                            <div class="variant-col-price">Giá</div>
+                            <div class="variant-col-stock">Tồn kho</div>
+                            <div class="variant-col-status">Trạng thái</div>
+                        </div>
+                        @foreach($product->activeVariants as $variant)
+                        <div class="variant-row">
+                            <div class="variant-col-name">
+                                <strong>{{ $variant->name }}</strong>
+                            </div>
+                            <div class="variant-col-code">
+                                <span class="badge bg-secondary">{{ $variant->code }}</span>
+                            </div>
+                            <div class="variant-col-price">
+                                @if($variant->isOnSale)
+                                    <div class="price-info">
+                                        <span class="sale-price">{{ number_format($variant->price_sale) }}₫</span>
+                                        <span class="original-price">{{ number_format($variant->price) }}₫</span>
+                                        <span class="discount-badge">-{{ $variant->discount_percentage }}%</span>
+                                    </div>
+                                @else
+                                    <span class="normal-price">{{ number_format($variant->price) }}₫</span>
+                                @endif
+                            </div>
+                            <div class="variant-col-stock">
+                                @if($variant->isInStock)
+                                    <span class="stock-available">{{ $variant->quantity }} sản phẩm</span>
+                                @else
+                                    <span class="stock-unavailable">Hết hàng</span>
+                                @endif
+                            </div>
+                            <div class="variant-col-status">
+                                @if($variant->is_active)
+                                    <span class="status-active">Đang bán</span>
+                                @else
+                                    <span class="status-inactive">Tạm ngưng</span>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
     </div>
     </div>
     </div>
@@ -693,6 +799,10 @@
         font-weight: bold;
         color: #2c3e50;
         margin-bottom: 10px;
+        transition: all 0.3s ease;
+        min-height: 2.5rem;
+        display: flex;
+        align-items: center;
     }
 
 
@@ -781,6 +891,139 @@
         color: white;
     }
 
+    /* Product Variants */
+    .variants-section {
+        margin-bottom: 20px;
+    }
+
+    .variants-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+
+    .variants-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .variant-item {
+        position: relative;
+    }
+
+    .variant-none .variant-label {
+        border-color: #28a745;
+        background: #f8fff9;
+    }
+
+    .variant-none .variant-label:hover {
+        border-color: #28a745;
+        background: #e8f5e8;
+    }
+
+    .variant-none .variant-radio:checked + .variant-label {
+        border-color: #28a745;
+        background: #d4edda;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+    }
+
+    .variant-radio {
+        display: none;
+    }
+
+    .variant-label {
+        display: block;
+        padding: 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .variant-label:hover {
+        border-color: #007bff;
+        background: #f8f9fa;
+    }
+
+    .variant-radio:checked + .variant-label {
+        border-color: #007bff;
+        background: #e3f2fd;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    }
+
+    .variant-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .variant-name {
+        font-weight: 600;
+        color: #2c3e50;
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .variant-code {
+        color: #6c757d;
+        font-size: 0.85rem;
+        background: #f8f9fa;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .variant-price-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .variant-sale-price {
+        font-weight: bold;
+        color: #dc3545;
+        font-size: 1.1rem;
+    }
+
+    .variant-original-price {
+        color: #6c757d;
+        text-decoration: line-through;
+        font-size: 0.9rem;
+    }
+
+    .variant-discount {
+        background: #dc3545;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .variant-price-normal {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1.1rem;
+    }
+
+    .variant-stock {
+        font-size: 0.85rem;
+    }
+
+    .in-stock {
+        color: #28a745;
+    }
+
+    .out-of-stock {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
     /* Quantity Controls */
     .quantity-section {
         display: flex;
@@ -846,23 +1089,23 @@
     }
 
     .action-buttons .btn-primary {
-        background: #ff6b00;
-        border-color: #ff6b00;
+        background: #007bff;
+        border-color: #007bff;
     }
 
     .action-buttons .btn-primary:hover {
-        background: #e66000;
-        border-color: #e66000;
+        /* background: #e66000; */
+        border-color: #007bff;
     }
 
     .action-buttons .btn-outline-primary {
-        color: #ff6b00;
-        border-color: #ff6b00;
+        color: #007bff;
+        border-color: #007bff;
     }
 
     .action-buttons .btn-outline-primary:hover {
-        background: #ff6b00;
-        border-color: #ff6b00;
+        /* background: #007bff; */
+        border-color: #007bff;
     }
 
     /* Delivery Info */
@@ -899,7 +1142,7 @@
     .delivery-item i,
     .brand-item i {
         font-size: 20px;
-        color: #ff6b00;
+        color: #007bff;
         width: 36px;
         height: 36px;
         display: flex;
@@ -1168,6 +1411,158 @@
     .review-content {
         color: #495057;
         line-height: 1.6;
+    }
+
+    /* Variants Tab Styles */
+    .variants-detail-section {
+        padding: 20px 0;
+    }
+
+    .variants-table {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .variants-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
+        gap: 15px;
+        background: #f8f9fa;
+        padding: 15px;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .variant-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .variant-row:hover {
+        background: #f8f9fa;
+    }
+
+    .variant-row:last-child {
+        border-bottom: none;
+    }
+
+    .variant-col-name {
+        font-weight: 500;
+    }
+
+    .variant-col-code .badge {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+
+    .price-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .sale-price {
+        font-weight: bold;
+        color: #dc3545;
+        font-size: 1rem;
+    }
+
+    .original-price {
+        color: #6c757d;
+        text-decoration: line-through;
+        font-size: 0.85rem;
+    }
+
+    .discount-badge {
+        background: #dc3545;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        align-self: flex-start;
+    }
+
+    .normal-price {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1rem;
+    }
+
+    .stock-available {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .stock-unavailable {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .status-active {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .status-inactive {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .variants-header,
+        .variant-row {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .variants-header {
+            display: none;
+        }
+
+        .variant-row {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 15px;
+        }
+
+        .variant-col-name::before {
+            content: "Tên phiên bản: ";
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .variant-col-code::before {
+            content: "Mã: ";
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .variant-col-price::before {
+            content: "Giá: ";
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .variant-col-stock::before {
+            content: "Tồn kho: ";
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .variant-col-status::before {
+            content: "Trạng thái: ";
+            font-weight: 600;
+            color: #495057;
+        }
     }
 
     /* Suggested Products */
@@ -1490,6 +1885,73 @@
                 updateProductPrice();
             });
         });
+
+        // Variant selection functionality
+        setupVariantSelection();
+    }
+
+    function setupVariantSelection() {
+        const variantRadios = document.querySelectorAll('.variant-radio');
+        if (variantRadios.length > 0) {
+            variantRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        updateProductPriceForVariant(this.value);
+                        updateQuantityMaxForVariant(this.value);
+                        updateProductTitle(); // Update product title when a variant is selected
+                    }
+                });
+            });
+
+            // Initialize product title with the first selected variant
+            updateProductTitle();
+        }
+    }
+
+    function updateProductPriceForVariant(variantId) {
+        const variantItem = document.querySelector(`[data-variant-id="${variantId}"]`);
+        if (variantItem) {
+            const variantPrice = variantItem.dataset.variantPrice;
+            const currentPriceElement = document.querySelector('.current-price');
+            const originalPriceElement = document.querySelector('.original-price');
+            const discountBadgeElement = document.querySelector('.discount-badge');
+
+            if (currentPriceElement) {
+                currentPriceElement.textContent = new Intl.NumberFormat('vi-VN').format(variantPrice) + '₫';
+            }
+
+            // Update product data for cart
+            const productElement = document.querySelector('[data-product-id]');
+            if (productElement) {
+                productElement.dataset.productPrice = variantPrice;
+            }
+        }
+    }
+
+    function updateQuantityMaxForVariant(variantId) {
+        const variantItem = document.querySelector(`[data-variant-id="${variantId}"]`);
+        if (variantItem) {
+            const variantStock = parseInt(variantItem.dataset.variantStock);
+            const quantityInput = document.getElementById('quantity');
+            const stockInfo = document.querySelector('.stock-info');
+
+            if (quantityInput) {
+                quantityInput.max = variantStock;
+                if (parseInt(quantityInput.value) > variantStock) {
+                    quantityInput.value = variantStock;
+                }
+            }
+
+            if (stockInfo) {
+                if (variantStock > 0) {
+                    stockInfo.textContent = `Còn ${variantStock} sản phẩm`;
+                    stockInfo.className = 'stock-info text-success';
+                } else {
+                    stockInfo.textContent = 'Hết hàng';
+                    stockInfo.className = 'stock-info text-danger';
+                }
+            }
+        }
     }
 
     function setupQuantityControls() {
@@ -1526,6 +1988,50 @@
         console.log('Price updated based on selected options');
     }
 
+    function updateProductTitle() {
+        const selectedVariant = document.querySelector('input[name="selected_variant"]:checked');
+        if (selectedVariant) {
+            const variantItem = document.querySelector(`[data-variant-id="${selectedVariant.value}"]`);
+            const productTitleElement = document.querySelector('.product-title');
+            const productSkuElement = document.querySelector('.product-sku');
+
+            if (variantItem && productTitleElement) {
+                const variantName = variantItem.dataset.variantName || '';
+                const variantCode = variantItem.dataset.variantCode || '';
+
+                // Add a subtle highlight effect
+                productTitleElement.style.backgroundColor = '#fff3cd';
+                productTitleElement.style.padding = '5px 10px';
+                productTitleElement.style.borderRadius = '5px';
+
+                // Update product title with variant name
+                productTitleElement.textContent = variantName;
+
+                // Update SKU with variant code
+                if (productSkuElement) {
+                    if (variantCode && variantCode !== 'Sản phẩm gốc') {
+                        productSkuElement.textContent = `Mã sản phẩm: ${variantCode}`;
+                    } else {
+                        // Show original product SKU or hide if none
+                        const originalSku = '{{ $product->sku ?? "" }}';
+                        if (originalSku) {
+                            productSkuElement.textContent = `Mã sản phẩm: ${originalSku}`;
+                        } else {
+                            productSkuElement.textContent = '';
+                        }
+                    }
+                }
+
+                // Remove highlight effect after animation
+                setTimeout(() => {
+                    productTitleElement.style.backgroundColor = '';
+                    productTitleElement.style.padding = '';
+                    productTitleElement.style.borderRadius = '';
+                }, 500);
+            }
+        }
+    }
+
     function addToCart(productId) {
         const quantity = document.getElementById('quantity') ? parseInt(document.getElementById('quantity').value) : 1;
 
@@ -1533,6 +2039,23 @@
         if (quantity < 1 || quantity > 99) {
             showNotification('Số lượng không hợp lệ', 'error');
             return;
+        }
+
+        // Get selected variant
+        const selectedVariant = document.querySelector('input[name="selected_variant"]:checked');
+        let variantId = null;
+        let variantName = '';
+        let variantCode = '';
+
+        if (selectedVariant && selectedVariant.value !== 'none') {
+            variantId = selectedVariant.value;
+            const variantItem = document.querySelector(`[data-variant-id="${variantId}"]`);
+            if (variantItem) {
+                const variantNameElement = variantItem.querySelector('.variant-name');
+                const variantCodeElement = variantItem.querySelector('.variant-code');
+                variantName = variantNameElement ? variantNameElement.textContent : '';
+                variantCode = variantCodeElement ? variantCodeElement.textContent : '';
+            }
         }
 
         // Disable button during request
@@ -1549,38 +2072,55 @@
         const productElement = document.querySelector(`[data-product-id="${productId}"]`);
         let product;
 
+        // Get the current product title (which may have been updated by variant selection)
+        const currentProductTitle = document.querySelector('.product-title');
+        const currentProductName = currentProductTitle ? currentProductTitle.textContent.trim() : `Sản phẩm ${productId}`;
+
         if (productElement) {
             product = {
                 id: parseInt(productId),
-                name: productElement.dataset.productName || `Sản phẩm ${productId}`,
+                name: currentProductName, // Use the current product title (may include variant name)
                 model: productElement.dataset.productModel || `SW-${productId}`,
                 price: parseInt(productElement.dataset.productPrice) || 1000000,
                 quantity: quantity,
-                image: productElement.dataset.productImage || '/image/sp1.png'
+                image: productElement.dataset.productImage || '/image/sp1.png',
+                variant_id: variantId,
+                variant_name: variantName,
+                variant_code: variantCode
             };
         } else {
             // Fallback to default product data
             product = {
                 id: parseInt(productId),
-                name: `Sản phẩm ${productId}`,
+                name: currentProductName, // Use the current product title
                 model: `SW-${productId}`,
                 price: 1000000,
                 quantity: quantity,
-                image: '/image/sp1.png'
+                image: '/image/sp1.png',
+                variant_id: variantId,
+                variant_name: variantName,
+                variant_code: variantCode
             };
         }
 
         // Use cartManager if available
         if (typeof cartManager !== 'undefined' && cartManager) {
             cartManager.addItem(product);
-            showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
+            // cartManager already shows notification, so we don't need to show another one
         } else {
             // Fallback to localStorage directly
             try {
                 const cartKey = 'superwin_cart';
                 const existingCart = JSON.parse(localStorage.getItem(cartKey) || '[]');
 
-                const existingItem = existingCart.find(item => item.id === product.id);
+                // Create unique key for cart item (product + variant)
+                const itemKey = variantId ? `${product.id}_${variantId}` : product.id.toString();
+
+                const existingItem = existingCart.find(item => {
+                    const existingKey = item.variant_id ? `${item.id}_${item.variant_id}` : item.id.toString();
+                    return existingKey === itemKey;
+                });
+
                 if (existingItem) {
                     existingItem.quantity += quantity;
                 } else {
@@ -1593,10 +2133,12 @@
                 const totalCount = existingCart.reduce((sum, item) => sum + item.quantity, 0);
                 updateCartCount(totalCount);
 
+                // Show success notification only for localStorage fallback
                 showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
             } catch (error) {
                 console.error('Error adding to cart:', error);
                 showNotification('Có lỗi xảy ra khi thêm vào giỏ hàng', 'error');
+                return; // Exit early if there's an error
             }
         }
 

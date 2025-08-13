@@ -116,9 +116,9 @@
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                     <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand', ['slug' => 'super-win']) }}">Máy bơm nước Super Win</a></li>
-                                        <li><a href="{{ route('products.brand', ['slug' => 'vina-pump']) }}">Máy bơm nước Vina Pump</a></li>
-                                        <li><a href="{{ route('products.brand', ['slug' => 'abc']) }}">Máy bơm nước ABC</a></li>
+                                        <li><a href="{{ route('products.brand.super-win') }}">Máy bơm nước Super Win</a></li>
+                                        <li><a href="{{ route('products.brand.vina-pump') }}">Máy bơm nước Vina Pump</a></li>
+                                        <li><a href="{{ route('products.brand.abc') }}">Máy bơm nước ABC</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-nuoc-bien') }}">Máy bơm nước biển</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-ho-boi') }}">Máy bơm hồ bơi</a></li>
                                         <li><a href="{{ route('products.category', 'may-bom-nhap-khau') }}">Máy bơm nhập khẩu</a></li>
@@ -130,10 +130,10 @@
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                     <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand', ['slug' => 'super-win-fan']) }}">Quạt Super Win</a></li>
-                                        <li><a href="{{ route('products.brand', ['slug' => 'deton']) }}">Quạt Deton</a></li>
-                                        <li><a href="{{ route('products.brand', ['slug' => 'sthc']) }}">Quạt STHC</a></li>
-                                        <li><a href="{{ route('products.brand', ['slug' => 'inverter']) }}">Quạt Inverter</a></li>
+                                        <li><a href="{{ route('products.brand.super-win-fan') }}">Quạt Super Win</a></li>
+                                        <li><a href="{{ route('products.brand.deton') }}">Quạt Deton</a></li>
+                                        <li><a href="{{ route('products.brand.sthc') }}">Quạt STHC</a></li>
+                                        <li><a href="{{ route('products.brand.inverter') }}">Quạt Inverter</a></li>
                                     </ul>
                                 </li>
                                 <li>

@@ -34,9 +34,10 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        // Lấy sản phẩm khuyến mãi cho Flash Deals
+        // Lấy sản phẩm khuyến mãi cho Flash Deals - chỉ lấy sản phẩm có is_sale = true
         $saleProducts = Product::with(['category', 'brand', 'baseImage'])
             ->where('status', true)
+            ->where('is_sale', true) // Chỉ lấy sản phẩm có is_sale = true
             ->whereNotNull('sale_price')
             ->where('sale_price', '>', 0)
             ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
@@ -81,12 +82,12 @@ class HomeController extends Controller
             }
         }
 
-        // Lấy sản phẩm gợi ý (mix của featured và best sellers)
+        // Lấy sản phẩm gợi ý (mix của featured và best sellers) - loại trừ sản phẩm flash sale
         $suggestedProducts = Product::with(['category', 'brand', 'baseImage'])
             ->where('status', true)
+            ->where('is_sale', false) // Loại trừ sản phẩm flash sale
             ->where(function($query) {
                 $query->where('is_featured', true)
-                      ->orWhereNotNull('sale_price')
                       ->orWhere('sold_count', '>', 0);
             })
             ->orderByRaw('RAND()')

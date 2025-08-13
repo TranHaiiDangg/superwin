@@ -3,105 +3,48 @@
 @section('title', 'Thanh toán - SuperWin')
 
 @section('content')
-<div class="checkout-page py-5">
+<div class="checkout-page py-4">
     <div class="container">
         <div class="row">
+            <!-- Left Side - Main Content -->
             <div class="col-lg-8">
                 <div class="checkout-form">
-                    <h2 class="checkout-title mb-4">Thông tin thanh toán</h2>
-
                     <form id="checkoutForm" method="POST" action="{{ route('orders.store') }}">
                         @csrf
+                        <!-- Hidden input để gửi dữ liệu giỏ hàng từ localStorage -->
+                        <input type="hidden" name="cart_data" id="cartDataInput">
 
-                        <!-- Thông tin khách hàng -->
-                        <div class="form-section mb-4">
-                            <h4 class="section-title">Thông tin khách hàng</h4>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="customer_name" class="form-label">Họ và tên *</label>
-                                        <input type="text" class="form-control" id="customer_name" name="customer_name"
-                                               value="{{ old('customer_name', $customer->name ?? '') }}" required>
-                                        @error('customer_name')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="customer_phone" class="form-label">Số điện thoại *</label>
-                                        <input type="tel" class="form-control" id="customer_phone" name="customer_phone"
-                                               value="{{ old('customer_phone', $customer->phone ?? '') }}" required>
-                                        @error('customer_phone')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-3">
-                                        <label for="customer_email" class="form-label">Email *</label>
-                                        <input type="email" class="form-control" id="customer_email" name="customer_email"
-                                               value="{{ old('customer_email', $customer->email ?? '') }}" required>
-                                        @error('customer_email')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Hidden inputs cho thông tin khách hàng và địa chỉ -->
+                        <input type="hidden" name="customer_name" value="{{ auth('customer')->user()->name ?? 'Khách hàng' }}">
+                        <input type="hidden" name="customer_phone" value="{{ auth('customer')->user()->phone ?? '0000000000' }}">
+                        <input type="hidden" name="customer_email" value="{{ auth('customer')->user()->email ?? 'customer@example.com' }}">
+                        <input type="hidden" name="shipping_address" value="{{ auth('customer')->user()->address ?? 'Địa chỉ mặc định' }}">
+                        <input type="hidden" name="shipping_city" value="{{ auth('customer')->user()->city ?? 'TP. Hồ Chí Minh' }}">
+                        <input type="hidden" name="shipping_district" value="{{ auth('customer')->user()->district ?? 'Quận 1' }}">
+                        <input type="hidden" name="shipping_ward" value="{{ auth('customer')->user()->ward ?? 'Phường 1' }}">
 
-                        <!-- Địa chỉ giao hàng -->
+                        <!-- Địa chỉ nhận hàng -->
                         <div class="form-section mb-4">
-                            <h4 class="section-title">Địa chỉ giao hàng</h4>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label for="shipping_city" class="form-label">Tỉnh/Thành phố *</label>
-                                        <select class="form-select" id="shipping_city" name="shipping_city" required>
-                                            <option value="">Chọn tỉnh/thành phố</option>
-                                            <option value="Hà Nội" {{ old('shipping_city') == 'Hà Nội' ? 'selected' : '' }}>Hà Nội</option>
-                                            <option value="TP. Hồ Chí Minh" {{ old('shipping_city') == 'TP. Hồ Chí Minh' ? 'selected' : '' }}>TP. Hồ Chí Minh</option>
-                                            <option value="Đà Nẵng" {{ old('shipping_city') == 'Đà Nẵng' ? 'selected' : '' }}>Đà Nẵng</option>
-                                            <option value="Hải Phòng" {{ old('shipping_city') == 'Hải Phòng' ? 'selected' : '' }}>Hải Phòng</option>
-                                            <option value="Cần Thơ" {{ old('shipping_city') == 'Cần Thơ' ? 'selected' : '' }}>Cần Thơ</option>
-                                            <!-- Thêm các tỉnh/thành khác -->
-                                        </select>
-                                        @error('shipping_city')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                            <h4 class="section-title">Địa chỉ nhận hàng</h4>
+                            <div class="shipping-address-box">
+                                <div class="address-content">
+                                    <div class="customer-info">
+                                        <strong>{{ auth('customer')->user()->name ?? 'Chưa có tên' }}</strong> -
+                                        <span>{{ auth('customer')->user()->phone ?? 'Chưa có số điện thoại' }}</span>
+                                    </div>
+                                    <div class="address-details">
+                                        {{ auth('customer')->user()->address ?? 'Chưa có địa chỉ' }},
+                                        {{ auth('customer')->user()->ward ?? 'Chưa có phường/xã' }},
+                                        {{ auth('customer')->user()->district ?? 'Chưa có quận/huyện' }},
+                                        {{ auth('customer')->user()->city ?? 'Chưa có tỉnh/thành phố' }}
+                                    </div>
+                                    <div class="address-tags">
+                                        <span class="tag tag-home">Nhà riêng</span>
+                                        <span class="tag tag-default">Địa chỉ mặc định</span>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label for="shipping_district" class="form-label">Quận/Huyện *</label>
-                                        <select class="form-select" id="shipping_district" name="shipping_district" required>
-                                            <option value="">Chọn quận/huyện</option>
-                                        </select>
-                                        @error('shipping_district')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label for="shipping_ward" class="form-label">Phường/Xã *</label>
-                                        <select class="form-select" id="shipping_ward" name="shipping_ward" required>
-                                            <option value="">Chọn phường/xã</option>
-                                        </select>
-                                        @error('shipping_ward')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-group mb-3">
-                                        <label for="shipping_address" class="form-label">Địa chỉ chi tiết *</label>
-                                        <input type="text" class="form-control" id="shipping_address" name="shipping_address"
-                                               placeholder="Số nhà, tên đường..." value="{{ old('shipping_address') }}" required>
-                                        @error('shipping_address')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div class="address-actions">
+                                    <a href="#" class="btn btn-link">Thay đổi</a>
                                 </div>
                             </div>
                         </div>
@@ -114,52 +57,50 @@
                                     <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
                                     <label class="form-check-label" for="cod">
                                         <i class="fas fa-truck me-2"></i>
-                                        <strong>Thanh toán khi giao hàng (COD)</strong>
+                                        <strong>Thanh toán khi nhận hàng (COD)</strong>
                                         <div class="text-muted">Thanh toán bằng tiền mặt khi nhận hàng</div>
                                     </label>
                                 </div>
                                 <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
-                                    <label class="form-check-label" for="bank_transfer">
-                                        <i class="fas fa-university me-2"></i>
-                                        <strong>Chuyển khoản ngân hàng</strong>
-                                        <div class="text-muted">Chuyển khoản qua tài khoản ngân hàng</div>
-                                    </label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="credit_card" value="credit_card">
-                                    <label class="form-check-label" for="credit_card">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="vnpay" value="vnpay">
+                                    <label class="form-check-label" for="vnpay">
                                         <i class="fas fa-credit-card me-2"></i>
-                                        <strong>Thẻ tín dụng/Ghi nợ</strong>
-                                        <div class="text-muted">Thanh toán online bằng thẻ</div>
+                                        <strong>Thanh toán trực tuyến (VNPAY)</strong>
+                                        <div class="text-muted">Thanh toán online qua VNPAY</div>
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Ghi chú -->
+                        <!-- Ghi chú đơn hàng -->
                         <div class="form-section mb-4">
                             <h4 class="section-title">Ghi chú đơn hàng</h4>
                             <div class="form-group">
                                 <textarea class="form-control" id="customer_note" name="customer_note" rows="4"
-                                          placeholder="Ghi chú về đơn hàng (không bắt buộc)">{{ old('customer_note') }}</textarea>
+                                          placeholder="Nhập ghi chú cho đơn hàng (không bắt buộc)">{{ old('customer_note') }}</textarea>
                             </div>
-                        </div>
-
-                        <div class="checkout-actions">
-                            <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
-                                <i class="fas fa-shopping-cart me-2"></i>Đặt hàng
-                            </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Order Summary -->
+            <!-- Right Side - Order Summary -->
             <div class="col-lg-4">
                 <div class="order-summary">
-                    <h4 class="summary-title">Tóm tắt đơn hàng</h4>
+                    <div class="summary-header">
+                        <h4 class="summary-title">Đơn hàng của bạn</h4>
+                        <a href="{{ route('cart.index') }}" class="change-link">Thay đổi</a>
+                    </div>
 
+                    <!-- Thông tin xuất hóa đơn -->
+                    <div class="invoice-info mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Thông tin xuất hóa đơn</span>
+                            <a href="#" class="enter-link">Nhập</a>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách sản phẩm -->
                     <div class="summary-items">
                         @foreach($cartData['items'] as $item)
                         <div class="summary-item">
@@ -167,44 +108,49 @@
                                 <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="item-image">
                                 <div class="item-details">
                                     <h6 class="item-name">{{ $item['name'] }}</h6>
-                                    <span class="item-quantity">Số lượng: {{ $item['quantity'] }}</span>
+                                    <span class="item-price">{{ number_format($item['price']) }}₫ x {{ $item['quantity'] }}</span>
                                 </div>
-                            </div>
-                            <div class="item-price">
-                                {{ number_format($item['price'] * $item['quantity']) }}đ
                             </div>
                         </div>
                         @endforeach
                     </div>
 
+                    <!-- Tóm tắt giá -->
                     <div class="summary-totals">
+                        @php
+                            $subtotal = $cartData['total'];
+                            $shippingFee = 30000;
+                            $discount = 50000;
+                            $vat = $subtotal * 0.08;
+                            $totalAmount = $subtotal + $shippingFee - $discount + $vat;
+                        @endphp
                         <div class="total-row">
                             <span>Tạm tính:</span>
-                            <span>{{ number_format($cartData['total']) }}đ</span>
+                            <span>{{ number_format($subtotal) }}₫</span>
                         </div>
                         <div class="total-row">
                             <span>Phí vận chuyển:</span>
-                            <span class="text-success">Miễn phí</span>
+                            <span>{{ number_format($shippingFee) }}₫</span>
+                        </div>
+                        <div class="total-row discount">
+                            <span>Giảm giá:</span>
+                            <span class="text-danger">-{{ number_format($discount) }}₫</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Thuế VAT (8%):</span>
+                            <span>{{ number_format($vat) }}₫</span>
                         </div>
                         <div class="total-row total-final">
-                            <span>Tổng cộng:</span>
-                            <span>{{ number_format($cartData['total']) }}đ</span>
+                            <span>Tổng cộng (Đã VAT):</span>
+                            <span>{{ number_format($totalAmount) }}₫</span>
                         </div>
                     </div>
 
-                    <div class="summary-info">
-                        <div class="info-item">
-                            <i class="fas fa-truck text-success"></i>
-                            <span>Giao hàng trong 2-3 ngày</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-shield-alt text-primary"></i>
-                            <span>Bảo hành chính hãng</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-undo text-info"></i>
-                            <span>Đổi trả trong 30 ngày</span>
-                        </div>
+                    <!-- Nút đặt hàng -->
+                    <div class="checkout-actions">
+                        <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                            <i class="fas fa-shopping-cart me-2"></i>Đặt hàng
+                        </button>
                     </div>
                 </div>
             </div>
@@ -216,11 +162,16 @@
 <style>
 .checkout-page {
     background: #f8f9fa;
+    min-height: 100vh;
 }
 
-.checkout-title {
-    color: #333;
+.section-title {
+    font-size: 1.2rem;
     font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #007bff;
 }
 
 .form-section {
@@ -228,50 +179,93 @@
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ff6b00;
 }
 
-.form-label {
+/* Shipping Address Box */
+.shipping-address-box {
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    background: #f8f9ff;
+    position: relative;
+}
+
+.address-content {
+    margin-bottom: 15px;
+}
+
+.customer-info {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.address-details {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.address-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
     font-weight: 500;
-    color: #555;
 }
 
-.form-control, .form-select {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px;
-    transition: border-color 0.3s;
+.tag-home {
+    background: #e3f2fd;
+    color: #1976d2;
 }
 
-.form-control:focus, .form-select:focus {
-    border-color: #ff6b00;
-    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+.tag-default {
+    background: #fff3cd;
+    color: #856404;
 }
 
+.address-actions {
+    text-align: right;
+}
+
+.btn-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Payment Methods */
 .payment-methods .form-check {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 15px;
     transition: all 0.3s;
+    margin-bottom: 10px;
 }
 
 .payment-methods .form-check:hover {
-    border-color: #ff6b00;
-    background: #fff8f3;
+    border-color: #007bff;
+    background: #f8f9ff;
 }
 
 .payment-methods .form-check-input:checked ~ .form-check-label {
-    color: #ff6b00;
+    color: #007bff;
 }
 
+.payment-methods .form-check-input:checked ~ .form-check-label strong {
+    color: #007bff;
+}
+
+/* Order Summary */
 .order-summary {
     background: white;
     padding: 25px;
@@ -281,19 +275,47 @@
     top: 20px;
 }
 
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
 .summary-title {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin: 0;
     color: #333;
+}
+
+.change-link, .enter-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.change-link:hover, .enter-link:hover {
+    text-decoration: underline;
+}
+
+.invoice-info {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-items {
+    margin: 20px 0;
 }
 
 .summary-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .item-info {
@@ -303,27 +325,28 @@
 }
 
 .item-image {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
     border-radius: 6px;
-    margin-right: 12px;
+    margin-right: 15px;
+}
+
+.item-details {
+    flex: 1;
 }
 
 .item-name {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     margin-bottom: 5px;
     color: #333;
-}
-
-.item-quantity {
-    font-size: 0.85rem;
-    color: #666;
+    line-height: 1.3;
 }
 
 .item-price {
-    font-weight: 600;
-    color: #ff6b00;
+    font-size: 0.9rem;
+    color: #666;
 }
 
 .summary-totals {
@@ -335,8 +358,13 @@
 .total-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     color: #666;
+    font-size: 0.95rem;
+}
+
+.total-row.discount {
+    color: #dc3545;
 }
 
 .total-final {
@@ -348,43 +376,22 @@
     margin-top: 10px;
 }
 
-.summary-info {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-}
-
-.info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.info-item i {
-    margin-right: 8px;
-    width: 16px;
-}
-
 .checkout-actions {
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-top: 25px;
 }
 
 .btn-primary {
-    background: #ff6b00;
-    border-color: #ff6b00;
+    background: #007bff;
+    border-color: #007bff;
     font-weight: 600;
     padding: 15px;
+    font-size: 1.1rem;
     transition: all 0.3s;
 }
 
 .btn-primary:hover {
-    background: #e66000;
-    border-color: #e66000;
+    background: #0056b3;
+    border-color: #0056b3;
 }
 
 .btn-primary:disabled {
@@ -392,13 +399,38 @@
     cursor: not-allowed;
 }
 
+/* Form Controls */
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .form-section, .order-summary, .checkout-actions {
-        margin-bottom: 20px;
+    .form-section, .order-summary {
+        margin-bottom: 15px;
     }
 
     .order-summary {
         position: static;
+    }
+
+    .summary-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .address-tags {
+        flex-direction: column;
+        gap: 5px;
     }
 }
 </style>
@@ -409,61 +441,43 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('checkoutForm');
     const submitBtn = document.getElementById('submitBtn');
+    const cartDataInput = document.getElementById('cartDataInput');
 
+    // Lấy dữ liệu giỏ hàng từ localStorage
+    function loadCartData() {
+        const cartData = localStorage.getItem('superwin_cart');
+        if (cartData) {
+            cartDataInput.value = cartData;
+        } else {
+            // Nếu không có dữ liệu giỏ hàng, redirect về trang giỏ hàng
+            window.location.href = '{{ route("cart.index") }}';
+        }
+    }
+
+    // Load dữ liệu giỏ hàng khi trang load
+    loadCartData();
+
+    // Form submit handler
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        console.log('Form submit event triggered');
+        console.log('Cart data:', cartDataInput.value);
 
-        // Disable submit button
+        // Kiểm tra dữ liệu giỏ hàng
+        if (!cartDataInput.value) {
+            e.preventDefault();
+            alert('Giỏ hàng trống! Vui lòng thêm sản phẩm trước khi đặt hàng.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Đặt hàng';
+            return;
+        }
+
+        // Disable submit button to prevent double submission
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
 
-        // Create FormData
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success message
-                showToast('Đặt hàng thành công!', 'success');
-
-                // Redirect to success page
-                setTimeout(() => {
-                    window.location.href = data.redirect;
-                }, 1000);
-            } else {
-                showToast(data.message || 'Có lỗi xảy ra', 'error');
-
-                // Show validation errors
-                if (data.errors) {
-                    Object.keys(data.errors).forEach(field => {
-                        const input = document.querySelector(`[name="${field}"]`);
-                        if (input) {
-                            const errorDiv = document.createElement('div');
-                            errorDiv.className = 'text-danger';
-                            errorDiv.textContent = data.errors[field][0];
-                            input.parentNode.appendChild(errorDiv);
-                        }
-                    });
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Có lỗi xảy ra khi đặt hàng', 'error');
-        })
-        .finally(() => {
-            // Re-enable submit button
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Đặt hàng';
-        });
+        console.log('Form will be submitted to:', form.action);
+        // Let the form submit naturally - no preventDefault()
+        // The form will handle the submission and redirect automatically
     });
 
     // Clear previous error messages on input

@@ -10,7 +10,7 @@
                 <img src="/image/logo.png" alt="SuperWin Logo" class="logo-responsive" style="height: 65px; margin-left:20px;">
             </a>
         </div>
-        
+
         <!-- Search container -->
         <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
             <div class="input-group">
@@ -72,10 +72,10 @@
                 <a class="nav-link" href="{{ route('products.index') }}">Sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('categories.index') }}">Danh mục</a>
+                <a class="nav-link" href="{{ route('products.index') }}">Danh mục</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('brands.index') }}">Thương hiệu</a>
+                <a class="nav-link" href="{{ route('brands') }}">Thương hiệu</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('support') }}">Hỗ trợ</a>
@@ -102,13 +102,13 @@
                 <div class="category-grid">
                     @if(isset($mainCategories))
                         @foreach($mainCategories as $category)
-                            <div class="category-item">{{ $category->name }}</div>
+                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="category-item">{{ $category->name }}</a>
                         @endforeach
                     @else
-                        <div class="category-item">Máy bơm nước</div>
-                        <div class="category-item">Quạt công nghiệp</div>
-                        <div class="category-item">Phụ kiện</div>
-                        <div class="category-item">Linh kiện</div>
+                        <a href="#" class="category-item">Máy bơm nước</a>
+                        <a href="#" class="category-item">Quạt công nghiệp</a>
+                        <a href="#" class="category-item">Phụ kiện</a>
+                        <a href="#" class="category-item">Linh kiện</a>
                     @endif
                 </div>
             </div>
@@ -117,14 +117,14 @@
                 <div class="brand-grid">
                     @if(isset($brands))
                         @foreach($brands as $brand)
-                            <div class="brand-item">{{ $brand->name }}</div>
+                            <a href="{{ route('products.brand', $brand->slug ?? $brand->id) }}" class="brand-item">{{ $brand->name }}</a>
                         @endforeach
                     @else
-                        <div class="brand-item">SuperWin</div>
-                        <div class="brand-item">VinaPump</div>
-                        <div class="brand-item">Deton</div>
-                        <div class="brand-item">Quạt Inverter</div>
-                        <div class="brand-item">STHC</div>
+                        <a href="#" class="brand-item">SuperWin</a>
+                        <a href="#" class="brand-item">VinaPump</a>
+                        <a href="#" class="brand-item">Deton</a>
+                        <a href="#" class="brand-item">Quạt Inverter</a>
+                        <a href="#" class="brand-item">STHC</a>
                     @endif
                 </div>
             </div>

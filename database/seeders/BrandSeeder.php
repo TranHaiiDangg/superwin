@@ -53,6 +53,22 @@ class BrandSeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 5,
             ],
+            [
+                'name' => 'Super Win Fan',
+                'slug' => 'super-win-fan',
+                'description' => 'Thương hiệu quạt công nghiệp Super Win',
+                'image' => '/image/logo.png',
+                'is_active' => true,
+                'sort_order' => 6,
+            ],
+            [
+                'name' => 'Inverter',
+                'slug' => 'inverter',
+                'description' => 'Quạt inverter tiết kiệm điện',
+                'image' => null,
+                'is_active' => true,
+                'sort_order' => 7,
+            ],
         ];
 
         foreach ($brands as $brandData) {

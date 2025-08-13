@@ -349,12 +349,16 @@
 
 @push('scripts')
 <script>
-// Auto redirect after successful order (optional)
 document.addEventListener('DOMContentLoaded', function() {
-    // Optional: Auto refresh order status
-    // setInterval(function() {
-    //     // Check order status via AJAX
-    // }, 30000);
+    // Xóa giỏ hàng khỏi localStorage sau khi đặt hàng thành công
+    localStorage.removeItem('superwin_cart');
+
+    // Cập nhật số lượng giỏ hàng trên header
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    cartCountElements.forEach(element => {
+        element.textContent = '0';
+        element.style.display = 'none';
+    });
 
     // Track order completion event for analytics
     if (typeof gtag !== 'undefined') {
