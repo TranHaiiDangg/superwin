@@ -62,11 +62,11 @@ Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::get('/count', [CartController::class, 'count'])->name('cart.count');
     Route::get('/data', [CartController::class, 'getCartData'])->name('cart.data');
-    Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth:customer');
-    Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update')->middleware('auth:customer');
-    Route::patch('/quantity/{itemKey}', [CartController::class, 'updateQuantity'])->name('cart.quantity')->middleware('auth:customer');
-    Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth:customer');
-    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear')->middleware('auth:customer');
+    Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update');
+    Route::patch('/quantity/{itemKey}', [CartController::class, 'updateQuantity'])->name('cart.quantity');
+    Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
 });
 
 // API Routes for Cart
@@ -143,6 +143,7 @@ Route::prefix('brands')->name('products.brand.')->group(function () {
 
 // Hoặc sử dụng dynamic route cho brands
 Route::get('/brand/{slug}', [BrandController::class, 'show'])->name('products.brand');
+Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
 
 // ===== PRODUCT CATEGORY ROUTES =====
 

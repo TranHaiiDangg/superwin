@@ -18,10 +18,8 @@ class CartController extends Controller
 
     public function index()
     {
-        $cart = $this->cartService->content();
-        $cartData = $this->cartService->getCartData();
-
-        return view('cart.index', compact('cart', 'cartData'));
+        // Không cần lấy dữ liệu từ CartService nữa vì sẽ được xử lý bởi JavaScript
+        return view('cart.index');
     }
 
     public function add(Request $request, Product $product)

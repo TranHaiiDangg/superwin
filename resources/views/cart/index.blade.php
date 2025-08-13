@@ -321,7 +321,21 @@ function checkout() {
         alert('Giỏ hàng trống!');
         return;
     }
-    window.location.href = '{{ route("orders.checkout") }}';
+
+    // Tạo form để gửi dữ liệu giỏ hàng
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '{{ route("orders.checkout") }}';
+
+    // Thêm dữ liệu giỏ hàng vào form
+    const cartDataInput = document.createElement('input');
+    cartDataInput.type = 'hidden';
+    cartDataInput.name = 'cart_data';
+    cartDataInput.value = JSON.stringify(cart.cartData);
+
+    form.appendChild(cartDataInput);
+    document.body.appendChild(form);
+    form.submit();
 }
 </script>
 @endpush

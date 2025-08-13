@@ -10,7 +10,7 @@
                 <img src="/image/logo.png" alt="SuperWin Logo" class="logo-responsive" style="height: 65px; margin-left:20px;">
             </a>
         </div>
-        
+
         <!-- Search container -->
         <div class="search-container flex-grow-1 mx-1 ms-3 ps-0 position-relative" style="min-width:90px;">
             <form action="{{ route('search') }}" method="GET" id="searchForm">
@@ -21,7 +21,7 @@
                     </button>
                 </div>
             </form>
-            
+
             <!-- Search Suggestions Dropdown -->
             <div class="search-suggestions" id="searchSuggestions" style="display: none;">
                 <div class="suggestions-content">
@@ -32,12 +32,12 @@
                             <span class="keyword-text"></span>
                         </div>
                     </div>
-                    
+
                     <!-- Products suggestions -->
                     <div class="suggestions-products" id="suggestionsProducts">
                         <!-- Dynamic content will be loaded here -->
                     </div>
-                    
+
                     <!-- Loading state -->
                     <div class="suggestion-loading" id="suggestionLoading" style="display: none;">
                         <div class="text-center py-3">
@@ -45,7 +45,7 @@
                             <span>Đang tìm kiếm...</span>
                         </div>
                     </div>
-                    
+
                     <!-- No results -->
                     <div class="suggestion-no-results" id="suggestionNoResults" style="display: none;">
                         <div class="text-center py-3 text-muted">
@@ -108,10 +108,10 @@
                 <a class="nav-link" href="{{ route('products.index') }}">Sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('categories.index') }}">Danh mục</a>
+                <a class="nav-link" href="{{ route('products.index') }}">Danh mục</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('brands.index') }}">Thương hiệu</a>
+                <a class="nav-link" href="{{ route('brands') }}">Thương hiệu</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('support') }}">Hỗ trợ</a>
@@ -138,13 +138,13 @@
                 <div class="category-grid">
                     @if(isset($mainCategories))
                         @foreach($mainCategories as $category)
-                            <div class="category-item">{{ $category->name }}</div>
+                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="category-item">{{ $category->name }}</a>
                         @endforeach
                     @else
-                        <div class="category-item">Máy bơm nước</div>
-                        <div class="category-item">Quạt công nghiệp</div>
-                        <div class="category-item">Phụ kiện</div>
-                        <div class="category-item">Linh kiện</div>
+                        <a href="#" class="category-item">Máy bơm nước</a>
+                        <a href="#" class="category-item">Quạt công nghiệp</a>
+                        <a href="#" class="category-item">Phụ kiện</a>
+                        <a href="#" class="category-item">Linh kiện</a>
                     @endif
                 </div>
             </div>
@@ -153,14 +153,14 @@
                 <div class="brand-grid">
                     @if(isset($brands))
                         @foreach($brands as $brand)
-                            <div class="brand-item">{{ $brand->name }}</div>
+                            <a href="{{ route('products.brand', $brand->slug ?? $brand->id) }}" class="brand-item">{{ $brand->name }}</a>
                         @endforeach
                     @else
-                        <div class="brand-item">SuperWin</div>
-                        <div class="brand-item">VinaPump</div>
-                        <div class="brand-item">Deton</div>
-                        <div class="brand-item">Quạt Inverter</div>
-                        <div class="brand-item">STHC</div>
+                        <a href="#" class="brand-item">SuperWin</a>
+                        <a href="#" class="brand-item">VinaPump</a>
+                        <a href="#" class="brand-item">Deton</a>
+                        <a href="#" class="brand-item">Quạt Inverter</a>
+                        <a href="#" class="brand-item">STHC</a>
                     @endif
                 </div>
             </div>
@@ -360,19 +360,19 @@
         right: -15px;
         border-radius: 8px;
     }
-    
+
     .search-suggestions {
         margin: 4px -8px;
         border-radius: 16px;
         max-height: 280px;
     }
-    
+
     .product-suggestion {
         padding: 12px;
         margin: 4px 8px;
         gap: 10px;
     }
-    
+
     .product-suggestion img {
         width: 40px;
         height: 40px;
@@ -380,40 +380,40 @@
         max-height: 40px;
         border-radius: 10px;
     }
-    
+
     .product-name {
         font-size: 13px;
         -webkit-line-clamp: 1;
     }
-    
+
     .product-price {
         font-size: 14px;
     }
-    
+
     .product-brand {
         font-size: 9px;
         padding: 2px 8px;
     }
-    
+
     .keyword-item {
         font-size: 13px;
         padding: 10px 16px;
         margin: 6px 8px;
     }
-    
+
     .product-details {
         font-size: 10px;
     }
-    
+
     .product-brand {
         font-size: 9px;
         padding: 1px 3px;
     }
-    
+
     .product-price {
         font-size: 11px;
     }
-    
+
     .keyword-item {
         font-size: 12px;
         padding: 6px 10px;
@@ -432,56 +432,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const suggestionLoading = document.getElementById('suggestionLoading');
     const suggestionNoResults = document.getElementById('suggestionNoResults');
     const searchForm = document.getElementById('searchForm');
-    
+
     let searchTimeout;
     let currentQuery = '';
-    
+
     // Search input event listener
     searchInput.addEventListener('input', function() {
         const query = this.value.trim();
         currentQuery = query;
-        
+
         // Clear previous timeout
         clearTimeout(searchTimeout);
-        
+
         if (query.length < 2) {
             hideSuggestions();
             return;
         }
-        
+
         // Show loading state
         showLoading();
-        
+
         // Debounce search requests
         searchTimeout = setTimeout(() => {
             fetchSuggestions(query);
         }, 300);
     });
-    
+
     // Hide suggestions when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.search-container')) {
             hideSuggestions();
         }
     });
-    
+
     // Show suggestions when focusing on input (if there's content)
     searchInput.addEventListener('focus', function() {
         if (this.value.trim().length >= 2) {
             searchSuggestions.style.display = 'block';
         }
     });
-    
+
     // Handle keyboard navigation
     searchInput.addEventListener('keydown', function(e) {
         const suggestions = searchSuggestions.querySelectorAll('.suggestion-item');
         const activeItem = searchSuggestions.querySelector('.suggestion-item.active');
         let activeIndex = -1;
-        
+
         if (activeItem) {
             activeIndex = Array.from(suggestions).indexOf(activeItem);
         }
-        
+
         switch(e.key) {
             case 'ArrowDown':
                 e.preventDefault();
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     suggestions[activeIndex + 1].classList.add('active');
                 }
                 break;
-                
+
             case 'ArrowUp':
                 e.preventDefault();
                 if (activeIndex > 0) {
@@ -498,20 +498,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     suggestions[activeIndex - 1].classList.add('active');
                 }
                 break;
-                
+
             case 'Enter':
                 if (activeItem) {
                     e.preventDefault();
                     activeItem.click();
                 }
                 break;
-                
+
             case 'Escape':
                 hideSuggestions();
                 break;
         }
     });
-    
+
     function fetchSuggestions(query) {
         fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`, {
             method: 'GET',
@@ -532,18 +532,18 @@ document.addEventListener('DOMContentLoaded', function() {
             hideSuggestions();
         });
     }
-    
+
     function displaySuggestions(data) {
         hideLoading();
-        
+
         // Clear previous suggestions
         suggestionsProducts.innerHTML = '';
-        
+
         // Show keyword suggestion
         if (data.keyword && data.keyword.length >= 2) {
             suggestionKeyword.querySelector('.keyword-text').textContent = `Tìm kiếm "${data.keyword}"`;
             suggestionKeyword.style.display = 'block';
-            
+
             // Add click handler for keyword
             const keywordItem = suggestionKeyword.querySelector('.keyword-item');
             keywordItem.onclick = function(e) {
@@ -554,14 +554,14 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             suggestionKeyword.style.display = 'none';
         }
-        
+
         // Show product suggestions
         if (data.products && data.products.length > 0) {
             data.products.forEach(product => {
                 const productElement = createProductSuggestion(product);
                 suggestionsProducts.appendChild(productElement);
             });
-            
+
             suggestionNoResults.style.display = 'none';
             searchSuggestions.style.display = 'block';
         } else if (data.keyword && data.keyword.length >= 2) {
@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideSuggestions();
         }
     }
-    
+
     function createProductSuggestion(product) {
         const div = document.createElement('div');
         div.className = 'suggestion-item product-suggestion';
@@ -586,16 +586,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         div.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
             window.location.href = product.url;
         };
-        
+
         return div;
     }
-    
+
     function showLoading() {
         suggestionLoading.style.display = 'block';
         suggestionNoResults.style.display = 'none';
@@ -603,11 +603,11 @@ document.addEventListener('DOMContentLoaded', function() {
         suggestionsProducts.innerHTML = '';
         searchSuggestions.style.display = 'block';
     }
-    
+
     function hideLoading() {
         suggestionLoading.style.display = 'none';
     }
-    
+
     function hideSuggestions() {
         searchSuggestions.style.display = 'none';
         // Remove active states

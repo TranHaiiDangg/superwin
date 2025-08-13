@@ -93,85 +93,87 @@
 @endif
 <!-- Flash Deals Section -->
 @if($saleProducts->count() > 0)
-<section class="flash-deals-section py-4">
-    <div class="container">
-        <div class="flash-deals-header d-flex justify-content-between align-items-center mb-4">
-            <div class="d-flex align-items-center">
-                <h2 class="fw-bold text-white mb-0 me-3">
-                    Flash Deal
-                </h2>
-                <div class="countdown-timer">
-                    <span class="timer-label text-white me-2">Kết thúc trong:</span>
-                    <div class="timer-display">
-                        <span class="time-unit" id="hours">02</span>
-                        <span class="time-unit" id="minutes">52</span>
-                        <span class="time-unit" id="seconds">52</span>
+<div class="container">
+    <section class="flash-deals-section py-4">
+        <div class="container">
+            <div class="flash-deals-header d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                    <h2 class="fw-bold text-white mb-0 me-3 flash-deal-title">
+                        Flash Deal
+                    </h2>
+                    <div class="countdown-timer">
+                        <span class="timer-label text-black me-2">Kết thúc trong:</span>
+                        <div class="timer-display">
+                            <span class="time-unit" id="hours">02</span>
+                            <span class="time-unit" id="minutes">52</span>
+                            <span class="time-unit" id="seconds">52</span>
+                        </div>
                     </div>
                 </div>
+                <a href="{{ route('deals') }}" class="btn btn-outline-light btn-sm flash-deal-view-all">
+                    Xem tất cả
+                </a>
             </div>
-            <a href="{{ route('deals') }}" class="btn btn-outline-light btn-sm">
-                Xem tất cả
-            </a>
-        </div>
 
-        <div class="flash-deals-slider">
-            <button class="slider-nav prev" id="flashDealsPrev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+            <div class="flash-deals-slider">
+                <button class="slider-nav prev" id="flashDealsPrev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
 
-            <div class="slider-container">
-                <div class="slider-track" id="flashDealsTrack">
-                    @foreach($saleProducts->take(10) as $index => $product)
-                    <div class="deal-item">
-                        <div class="deal-card">
-                            <div class="discount-badge">
-                                -{{ $product->discount_percentage }}%
-                            </div>
-
-                            <div class="product-image">
-                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
-                                    @if($product->baseImage)
-                                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
-                                    @else
-                                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
-                                    @endif
-                                </a>
-                            </div>
-
-                            <div class="deal-content">
-                                <h6 class="product-name">{{ $product->name }}</h6>
-
-                                <div class="price-section text-center">
-                                    <div class="sale-price">{{ number_format($product->sale_price) }}đ</div>
-                                    <div class="original-price">{{ number_format($product->price) }}đ</div>
+                <div class="slider-container">
+                    <div class="slider-track" id="flashDealsTrack">
+                        @foreach($saleProducts->take(10) as $index => $product)
+                        <div class="deal-item">
+                            <div class="deal-card">
+                                <div class="discount-badge">
+                                    -{{ $product->discount_percentage }}%
                                 </div>
 
-                                @php
-                                $soldCount = $product->sold_count ?? rand(20, 80);
-                                $totalStock = $product->stock_quantity + $soldCount;
-                                $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
-                                @endphp
+                                <div class="product-image">
+                                    <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                        @if($product->baseImage)
+                                        <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                        @else
+                                        <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                        @endif
+                                    </a>
+                                </div>
 
-                                <div class="progress-section text-center">
-                                    <div class="sold-info">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {{ $progress }}%"></div>
+                                <div class="deal-content">
+                                    <h6 class="product-name">{{ $product->name }}</h6>
+
+                                    <div class="price-section d-flex justify-content-center align-items-center">
+                                        <div class="sale-price">{{ number_format($product->sale_price) }}đ</div>
+                                        <div class="ms-2 original-price">{{ number_format($product->price) }}đ</div>
                                     </div>
 
+                                    @php
+                                    $soldCount = $product->sold_count ?? rand(20, 80);
+                                    $totalStock = $product->stock_quantity + $soldCount;
+                                    $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
+                                    @endphp
+
+                                    <div class="progress-section text-center">
+                                        <div class="sold-info">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: {{ $progress }}%"></div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
-            </div>
 
-            <button class="slider-nav next" id="flashDealsNext">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+                <button class="slider-nav next" id="flashDealsNext">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 @endif
 
 <!-- Category Products Sections -->
@@ -180,76 +182,75 @@
 <section class="py-4">
     <div class="container">
         <div class="category-section-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-bold text-primary mb-0">{{ $categoryData['category']->name }}</h3>
-                <p class="text-muted small mb-0">Khám phá sản phẩm chất lượng cao</p>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-0 normal-product-title">{{ $categoryData['category']->name }}</h3>
+                </div>
+                <a href="{{ route('categories.show', $categoryData['category']->id) }}" class="btn btn-sm normal-product-view-all">
+                    Xem tất cả
+                </a>
             </div>
-            <a href="{{ route('categories.show', $categoryData['category']->id) }}" class="btn btn-outline-primary btn-sm">
-                Xem tất cả
-            </a>
-        </div>
 
-        <div class="category-products-slider" data-category="{{ $categoryData['category']->id }}">
-            <button class="category-slider-nav prev" data-direction="prev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
+            <div class="category-products-slider" data-category="{{ $categoryData['category']->id }}">
+                <button class="category-slider-nav normal-product-nav prev" data-direction="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
 
-            <div class="category-slider-container">
-                <div class="category-slider-track">
-                    @foreach($categoryData['products'] as $product)
-                    <div class="category-product-item">
-                        <div class="category-product-card">
-                            <div class="category-product-image">
-                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
-                                    @if($product->baseImage)
-                                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
-                                    @else
-                                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
-                                    @endif
-                                </a>
+                <div class="category-slider-container">
+                    <div class="category-slider-track">
+                        @foreach($categoryData['products'] as $product)
+                        <div class="category-product-item">
+                            <div class="category-product-card">
+                                <div class="category-product-image">
+                                    <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                        @if($product->baseImage)
+                                        <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                        @else
+                                        <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                        @endif
+                                    </a>
 
-                                @if($product->isOnSale)
-                                <span class="category-discount-badge">
-                                    -{{ $product->discount_percentage }}%
-                                </span>
-                                @endif
-                            </div>
-
-                            <div class="category-product-content">
-                                <h6 class="category-product-name">{{ $product->name }}</h6>
-
-                                <div class="category-price-section text-center">
                                     @if($product->isOnSale)
-                                    <div class="category-sale-price">{{ number_format($product->sale_price) }}đ</div>
-                                    <div class="category-original-price">{{ number_format($product->price) }}đ</div>
-                                    @else
-                                    <div class="category-regular-price">{{ number_format($product->price) }}đ</div>
+                                    <span class="category-discount-badge">
+                                        -{{ $product->discount_percentage }}%
+                                    </span>
                                     @endif
                                 </div>
 
-                                <div class="category-stock-info text-center">
-                                    @if($product->stock_quantity > 0)
-                                    <span class="text-success small">
-                                        <i class="fas fa-check-circle"></i> Còn hàng
-                                    </span>
-                                    @else
-                                    <span class="text-danger small">
-                                        <i class="fas fa-times-circle"></i> Hết hàng
-                                    </span>
-                                    @endif
+                                <div class="category-product-content">
+                                    <h6 class="category-product-name">{{ $product->name }}</h6>
+
+                                    <div class="category-price-section text-center">
+                                        @if($product->isOnSale)
+                                        <div class="category-regular-price">{{ number_format($product->sale_price) }}đ</div>
+                                        <div class="category-original-price">{{ number_format($product->price) }}đ</div>
+                                        @else
+                                        <div class="category-regular-price">{{ number_format($product->price) }}đ</div>
+                                        @endif
+                                    </div>
+
+                                    <div class="category-stock-info  d-flex justify-content-center align-items-center ">
+                                        @if($product->stock_quantity > 0)
+                                        <span class=" small normal-product-sold">
+                                            <i class="fas fa-check-circle"></i> Còn hàng
+                                        </span>
+                                        @else
+                                        <span class="text-danger small">
+                                            <i class="fas fa-times-circle"></i> Hết hàng
+                                        </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
-            </div>
 
-            <button class="category-slider-nav next" data-direction="next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
+                <button class="category-slider-nav normal-product-nav next" data-direction="next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 </section>
@@ -300,9 +301,9 @@
 
                             <div class="suggested-rating">
                                 @for($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star {{ $i <= ($product->average_rating ?? 4) ? 'text-warning' : 'text-muted' }}"></i>
-                                @endfor
-                                <span class="suggested-rating-count">({{ $product->reviews_count ?? rand(10, 100) }})</span>
+                                    <i class="fas fa-star {{ $i <= ($product->average_rating ?? 4) ? 'text-warning' : 'text-muted' }}"></i>
+                                    @endfor
+                                    <span class="suggested-rating-count">({{ $product->reviews_count ?? rand(10, 100) }})</span>
                             </div>
 
                             <button class="suggested-buy-btn">
@@ -655,10 +656,10 @@
             let itemsPerView = 4; // Mặc định 4 sản phẩm trên desktop
 
             function getItemsPerView() {
-                if (window.innerWidth <= 576) return 1;      // Mobile
-                if (window.innerWidth <= 768) return 2;      // Small tablet
-                if (window.innerWidth <= 1024) return 3;     // Tablet
-                return 4;                                     // Desktop: 4 sản phẩm
+                if (window.innerWidth <= 576) return 1; // Mobile
+                if (window.innerWidth <= 768) return 2; // Small tablet
+                if (window.innerWidth <= 1024) return 3; // Tablet
+                return 4; // Desktop: 4 sản phẩm
             }
 
             itemsPerView = getItemsPerView();
@@ -781,7 +782,7 @@
         grid-template-columns: 2fr 1fr;
         grid-template-rows: 1fr 1fr;
         gap: 15px;
-        height: 400px;
+        height: 320px;
     }
 
     .main-banner {
@@ -916,10 +917,10 @@
     }
 
     .menu-item:hover {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+        /* background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white; */
+        transform: translateY(-10px);
+        /* box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3); */
     }
 
     .icon-container {
@@ -1007,13 +1008,93 @@
         }
     }
 
-         /* Flash Deals Section Styles */
-     .flash-deals-section {
-         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-         border-radius: 16px;
-         margin: 20px 0;
-     }
+    /* Flash Deals Section Styles */
+    .flash-deals-section {
+        background: #FFE5B4;
+        border-radius: 16px;
+        margin: 20px 0;
+    }
 
+    .flash-deal-title {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    background: #FF6B35;
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    height: 40px;
+    box-sizing: border-box;
+    }
+
+    .time-unit {
+        background: #FF6B35;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        min-width: 30px;
+        text-align: center;
+    }
+    .flash-deal-view-all{
+    background: #FF6B35;
+    color: #fff;
+    padding: 10px 20px !important;
+    border: none;
+    border-radius: 25px !important;
+    font-size: 14px;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+    }
+    .normal-product-title{
+    font-size: 20px;
+    color: #fff;
+    font-weight: 700;
+    background: #4facfe;
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    height: 40px;
+    box-sizing: border-box;}
+    .normal-product-nav{
+
+    background: rgba(79, 172, 254, 0.9) !important;
+    color: white;
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    transition: all 0.3s ease;
+
+    }
+    .normal-product-view-all{
+    background: #4facfe;
+    color: #fff;
+    padding: 10px 20px !important;
+    border: none;
+    border-radius: 25px !important;
+    font-size: 14px;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+    }
     .flash-deals-header {
         position: relative;
         z-index: 2;
@@ -1035,16 +1116,6 @@
         gap: 4px;
     }
 
-    .time-unit {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        min-width: 24px;
-        text-align: center;
-    }
 
     .flash-deals-slider {
         position: relative;
@@ -1136,7 +1207,8 @@
         -webkit-box-orient: vertical;
         line-clamp: 2;
         overflow: hidden;
-        height: 2.34em; /* Cố định chiều cao cho 2 dòng (0.9rem * 1.3 line-height * 2 dòng) */
+        height: 2.34em;
+        /* Cố định chiều cao cho 2 dòng (0.9rem * 1.3 line-height * 2 dòng) */
         text-overflow: ellipsis;
         word-wrap: break-word;
         word-break: break-word;
@@ -1173,12 +1245,12 @@
         position: relative;
     }
 
-         .progress-fill {
-         background: linear-gradient(90deg, #ff6b35, #f7931e);
-         height: 100%;
-         border-radius: 3px;
-         transition: width 0.3s ease;
-     }
+    .progress-fill {
+        background: linear-gradient(90deg, #ff6b35, #f7931e);
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
 
     .sold-info {
         font-size: 0.75rem;
@@ -1186,26 +1258,26 @@
         text-align: center;
     }
 
-         .deal-button {
-         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-         color: white;
-         border: none;
-         padding: 10px 16px;
-         border-radius: 8px;
-         font-weight: 600;
-         font-size: 0.9rem;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         margin-top: auto;
-         text-decoration: none;
-         display: inline-block;
-         text-align: center;
-     }
+    .deal-button {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: auto;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
 
-     .deal-button:hover {
-         transform: translateY(-2px);
-         box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-     }
+    .deal-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+    }
 
     .flash-deals-slider .slider-nav {
         background: rgba(255, 255, 255, 0.9);
@@ -1281,10 +1353,11 @@
             height: 140px;
         }
 
-                 .product-name {
-             font-size: 0.8rem;
-             height: 2.08em; /* Điều chỉnh chiều cao cho mobile (0.8rem * 1.3 line-height * 2 dòng) */
-         }
+        .product-name {
+            font-size: 0.8rem;
+            height: 2.08em;
+            /* Điều chỉnh chiều cao cho mobile (0.8rem * 1.3 line-height * 2 dòng) */
+        }
 
         .sale-price {
             font-size: 1rem;
@@ -1328,7 +1401,8 @@
     }
 
     .category-product-item {
-        min-width: calc(25% - 15px); /* 4 sản phẩm mỗi hàng với gap 20px */
+        min-width: calc(25% - 15px);
+        /* 4 sản phẩm mỗi hàng với gap 20px */
         flex-shrink: 0;
         width: calc(25% - 15px);
     }
@@ -1425,12 +1499,23 @@
         color: #3498db;
     }
 
+
+    .normal-product-sold {
+    font-size: 11px;
+    color: #4facfe;
+    font-weight: 600;
+    background: #e3f2fd;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
     .category-stock-info {
         font-size: 0.8rem;
     }
 
     .category-slider-nav {
-        background: white;
+        background: rgba(79, 172, 254, 0.9);
         border: 1px solid #e0e6ed;
         border-radius: 50%;
         width: 45px;
@@ -1473,7 +1558,8 @@
     /* Responsive for Category Sections */
     @media (max-width: 1024px) {
         .category-product-item {
-            min-width: calc(33.333% - 14px); /* 3 sản phẩm trên tablet */
+            min-width: calc(33.333% - 14px);
+            /* 3 sản phẩm trên tablet */
             width: calc(33.333% - 14px);
         }
     }
@@ -1486,7 +1572,8 @@
         }
 
         .category-product-item {
-            min-width: calc(50% - 10px); /* 2 sản phẩm trên mobile nhỏ */
+            min-width: calc(50% - 10px);
+            /* 2 sản phẩm trên mobile nhỏ */
             width: calc(50% - 10px);
         }
 
@@ -1523,7 +1610,8 @@
         }
 
         .category-product-item {
-            min-width: 100%; /* 1 sản phẩm trên mobile rất nhỏ */
+            min-width: 100%;
+            /* 1 sản phẩm trên mobile rất nhỏ */
             width: 100%;
         }
 

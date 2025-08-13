@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\CartItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class CartService
 {
@@ -14,8 +14,51 @@ class CartService
 
     public function __construct()
     {
-        $this->cart = Session::get('cart', []);
-        $this->loadFromDatabase();
+        $this->cart = [];
+    }
+
+    /**
+     * Lấy dữ liệu giỏ hàng từ request (được gửi từ JavaScript localStorage)
+     */
+    public function getCartFromRequest(Request $request)
+    {
+        $cartData = $request->input('cart_data', '[]');
+        $this->cart = json_decode($cartData, true) ?: [];
+        return $this->cart;
+    }
+
+    /**
+     * Lấy dữ liệu giỏ hàng từ localStorage (được gửi từ JavaScript)
+     */
+    public function getCartFromLocalStorage($cartData)
+    {
+        if (is_string($cartData)) {
+            $decodedData = json_decode($cartData, true) ?: [];
+        } else {
+            $decodedData = $cartData ?: [];
+        }
+
+        // Chuyển đổi từ array sang associative array với key
+        $this->cart = [];
+        if (is_array($decodedData)) {
+            foreach ($decodedData as $item) {
+                if (isset($item['id'])) {
+                    // Đảm bảo item luôn có attributes field
+                    if (!isset($item['attributes'])) {
+                        $item['attributes'] = [];
+                    }
+                    // Đảm bảo item có sku field
+                    if (!isset($item['sku'])) {
+                        $item['sku'] = $item['model'] ?? '';
+                    }
+
+                    $itemKey = $this->generateItemKey($item['id'], $item['attributes']);
+                    $this->cart[$itemKey] = $item;
+                }
+            }
+        }
+
+        return $this->cart;
     }
 
     public function add(Product $product, $quantity = 1, $attributes = [])
@@ -39,8 +82,6 @@ class CartService
             $this->cart[$itemKey] = $cartItem;
         }
 
-        $this->save();
-
         return $this->cart[$itemKey];
     }
 
@@ -52,7 +93,6 @@ class CartService
             } else {
                 $this->cart[$itemKey]['quantity'] = $quantity;
             }
-            $this->save();
             return true;
         }
         return false;
@@ -66,7 +106,6 @@ class CartService
                 return $this->remove($itemKey);
             } else {
                 $this->cart[$itemKey]['quantity'] = $newQuantity;
-                $this->save();
                 return true;
             }
         }
@@ -77,7 +116,6 @@ class CartService
     {
         if (isset($this->cart[$itemKey])) {
             unset($this->cart[$itemKey]);
-            $this->save();
             return true;
         }
         return false;
@@ -86,12 +124,6 @@ class CartService
     public function clear()
     {
         $this->cart = [];
-        $this->save();
-
-        // Xóa cả trong database nếu user đã đăng nhập
-        if (Auth::guard('customer')->check()) {
-            $this->clearDatabase();
-        }
     }
 
     public function content()
@@ -145,7 +177,6 @@ class CartService
                 } else {
                     $this->cart[$itemKey]['quantity'] = $quantity;
                 }
-                $this->save();
                 return true;
             }
         }
@@ -157,21 +188,10 @@ class CartService
         foreach ($this->cart as $itemKey => $item) {
             if ($item['id'] == $productId) {
                 unset($this->cart[$itemKey]);
-                $this->save();
                 return true;
             }
         }
         return false;
-    }
-
-    protected function save()
-    {
-        Session::put('cart', $this->cart);
-
-        // Nếu user đã đăng nhập, lưu giỏ hàng vào database
-        if (Auth::guard('customer')->check()) {
-            $this->syncToDatabase();
-        }
     }
 
     protected function generateItemKey($productId, $attributes)
@@ -179,36 +199,10 @@ class CartService
         return $productId . '_' . md5(serialize($attributes));
     }
 
-    protected function loadFromDatabase()
-    {
-        if (Auth::guard('customer')->check()) {
-            $customer = Auth::guard('customer')->user();
-            $cart = Cart::where('user_id', $customer->id)->first();
-
-            if ($cart && $cart->items->count() > 0) {
-                $dbCart = [];
-                foreach ($cart->items as $item) {
-                    $itemKey = $this->generateItemKey($item->product_id, $item->attributes ?: []);
-                    $dbCart[$itemKey] = [
-                        'id' => $item->product_id,
-                        'name' => $item->product->name,
-                        'price' => $item->price,
-                        'quantity' => $item->quantity,
-                        'attributes' => $item->attributes ?: [],
-                        'image' => $item->product->baseImage ? $item->product->baseImage->url : '/images/default.png',
-                        'slug' => $item->product->slug,
-                        'sku' => $item->product->sku ?? '',
-                    ];
-                }
-
-                // Merge với cart trong session, ưu tiên session cart
-                $this->cart = array_merge($dbCart, $this->cart);
-                Session::put('cart', $this->cart);
-            }
-        }
-    }
-
-    protected function syncToDatabase()
+    /**
+     * Lưu giỏ hàng vào database nếu user đã đăng nhập
+     */
+    public function syncToDatabase()
     {
         if (!Auth::guard('customer')->check()) {
             return;
@@ -223,16 +217,19 @@ class CartService
         // Thêm các item mới
         foreach ($this->cart as $itemKey => $item) {
             CartItem::create([
-                'cart_id' => $cart->id,
+                'cart_id' => $customer->id, // Sử dụng customer->id thay vì cart->id
                 'product_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'attributes' => $item['attributes'],
+                'quantity' => $item['quantity'] ?? 1,
+                'price' => $item['price'] ?? 0,
+                'attributes' => $item['attributes'] ?? [],
             ]);
         }
     }
 
-    protected function clearDatabase()
+    /**
+     * Xóa giỏ hàng khỏi database
+     */
+    public function clearDatabase()
     {
         if (!Auth::guard('customer')->check()) {
             return;
