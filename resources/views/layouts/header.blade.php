@@ -105,67 +105,58 @@
                         </a>
                         <div class="dropdown-content">
                             <ul class="main-category">
-                                <li>
-                                    <a href="{{ route('products.featured') }}">
-                                        <span>⭐ Sản phẩm nổi bật</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.show', 1) }}">
-                                        <span>💧 Máy Bơm Nước</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                    <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand.super-win') }}">Máy bơm nước Super Win</a></li>
-                                        <li><a href="{{ route('products.brand.vina-pump') }}">Máy bơm nước Vina Pump</a></li>
-                                        <li><a href="{{ route('products.brand.abc') }}">Máy bơm nước ABC</a></li>
-                                        <li><a href="{{ route('products.category', 'may-bom-nuoc-bien') }}">Máy bơm nước biển</a></li>
-                                        <li><a href="{{ route('products.category', 'may-bom-ho-boi') }}">Máy bơm hồ bơi</a></li>
-                                        <li><a href="{{ route('products.category', 'may-bom-nhap-khau') }}">Máy bơm nhập khẩu</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.show', 2) }}">
-                                        <span>🌪️ Quạt công nghiệp</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                    <ul class="sub-category">
-                                        <li><a href="{{ route('products.brand.super-win-fan') }}">Quạt Super Win</a></li>
-                                        <li><a href="{{ route('products.brand.deton') }}">Quạt Deton</a></li>
-                                        <li><a href="{{ route('products.brand.sthc') }}">Quạt STHC</a></li>
-                                        <li><a href="{{ route('products.brand.inverter') }}">Quạt Inverter</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.show', 5) }}">
-                                        <span>💨 Quạt thông gió</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                    <ul class="sub-category">
-                                        <li><a href="{{ route('products.category', 'quat-thong-gio-vuong-super-win') }}">Quạt thông gió vuông Super Win</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-thong-gio-vuong-deton') }}">Quạt thông gió vuông Deton</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-thong-gio-tron') }}">Quạt thông gió tròn</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.show', 3) }}">
-                                        <span>⚡ Quạt đặc biệt</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
-                                    <ul class="sub-category">
-                                        <li><a href="{{ route('products.category', 'quat-huong-truc-noi-ong') }}">Quạt hướng trục nổi ống</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-san-cong-nghiep') }}">Quạt sàn công nghiệp</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-tran-cong-nghiep') }}">Quạt trần công nghiệp</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-chong-chay-no') }}">Quạt chống cháy nổ</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-vuong') }}">Quạt vuông (trực tiếp/gián tiếp)</a></li>
-                                        <li><a href="{{ route('products.category', 'quat-composite') }}">Quạt Composite</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="{{ route('categories.show', 4) }}">
-                                        <span>❄️ Tấm làm mát</span>
-                                    </a>
-                                </li>
+                                @if(isset($mainCategories) && $mainCategories->count() > 0)
+                                    @foreach($mainCategories as $category)
+                                        <li>
+                                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}">
+                                                <span> {{ $category->name }}</span>
+                                                @if($category->children->count() > 0)
+                                                    <i class="fas fa-chevron-right"></i>
+                                                @endif
+                                            </a>
+                                            @if($category->children->count() > 0)
+                                                <ul class="sub-category">
+                                                    @foreach($category->children as $child)
+                                                        <li>
+                                                            <a href="{{ route('categories.show', $child->slug ?? $child->id) }}">
+                                                                {{ $child->name }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <!-- Fallback categories if database is empty -->
+                                    <li>
+                                        <a href="{{ route('products.featured') }}">
+                                            <span>⭐ Sản phẩm nổi bật</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <span>💧 Máy Bơm Nước</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                        <ul class="sub-category">
+                                            <li><a href="#">Máy bơm nước Super Win</a></li>
+                                            <li><a href="#">Máy bơm nước Vina Pump</a></li>
+                                            <li><a href="#">Máy bơm nước ABC</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <span>🌪️ Quạt công nghiệp</span>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                        <ul class="sub-category">
+                                            <li><a href="#">Quạt Super Win</a></li>
+                                            <li><a href="#">Quạt Deton</a></li>
+                                            <li><a href="#">Quạt STHC</a></li>
+                                        </ul>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -177,11 +168,11 @@
                 </div>
 
                 <div class="right-links">
-                    <a href="{{ route('news') }}">📰 Tin tức - Sự kiện</a>
+                    <a href="{{ route('news') }}"> <i class="fas fa-phone"></i> Đặt hàng: 097.168.7711 </a>
                     <span>|</span>
-                    <a href="{{ route('blog') }}">📝 Bài viết</a>
-                    <span>|</span>
-                    <a href="{{ route('warranty') }}"><b>🛡️ Chính sách bảo hành</b></a>
+                    <a href="{{ route('blog') }}"> <i class="fas fa-phone"></i> Hỗ trợ: 028.6269.7382</a>
+                    <!-- <span>|</span> -->
+                    <!-- <a href="{{ route('warranty') }}"><b>🛡️ Chính sách bảo hành</b></a> -->
                 </div>
             </div>
         </div>
@@ -252,6 +243,25 @@
                         <div class="keyword-tag">Quạt Thông Gió</div>
                         <div class="keyword-tag">Quạt Vuông</div>
                         <div class="keyword-tag">Bơm Thả Chìm DC</div>
+                    @endif
+                </div>
+            </div>
+            <div class="search-section">
+                <div class="section-title">Danh Mục</div>
+                <div class="category-grid">
+                    @if(isset($mainCategories) && $mainCategories->count() > 0)
+                        @foreach($mainCategories->take(6) as $category)
+                            <div class="category-item">
+                                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}">
+                                    {{ $category->name }}
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="category-item">Máy bơm nước</div>
+                        <div class="category-item">Quạt công nghiệp</div>
+                        <div class="category-item">Quạt thông gió</div>
+                        <div class="category-item">Tấm làm mát</div>
                     @endif
                 </div>
             </div>
