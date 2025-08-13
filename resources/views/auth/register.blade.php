@@ -141,9 +141,10 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-city"></i>
                                         </span>
-                                        <input type="text" class="form-control @error('city') is-invalid @enderror" 
-                                               id="city" name="city" value="{{ old('city') }}" 
-                                               placeholder="Nhập tỉnh/thành phố" required>
+                                        <select class="form-select @error('city') is-invalid @enderror" 
+                                               id="city" name="city" required>
+                                            <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                                        </select>
                                     </div>
                                     @error('city')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -156,9 +157,10 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-map"></i>
                                         </span>
-                                        <input type="text" class="form-control @error('district') is-invalid @enderror" 
-                                               id="district" name="district" value="{{ old('district') }}" 
-                                               placeholder="Nhập quận/huyện" required>
+                                        <select class="form-select @error('district') is-invalid @enderror" 
+                                               id="district" name="district" required disabled>
+                                            <option value="">-- Chọn Quận/Huyện --</option>
+                                        </select>
                                     </div>
                                     @error('district')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -171,9 +173,10 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-home"></i>
                                         </span>
-                                        <input type="text" class="form-control @error('ward') is-invalid @enderror" 
-                                               id="ward" name="ward" value="{{ old('ward') }}" 
-                                               placeholder="Nhập phường/xã" required>
+                                        <select class="form-select @error('ward') is-invalid @enderror" 
+                                               id="ward" name="ward" required disabled>
+                                            <option value="">-- Chọn Phường/Xã --</option>
+                                        </select>
                                     </div>
                                     @error('ward')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -236,6 +239,68 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+.form-select:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.65;
+}
+
+.input-group .form-select {
+    border-left: 0;
+}
+
+.input-group .input-group-text {
+    background-color: #e9ecef;
+    border-right: 0;
+}
+
+.loading-option {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.error-option {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* Custom styling for select elements */
+.form-select option {
+    padding: 8px 12px;
+}
+
+.form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Loading animation */
+.address-loading {
+    position: relative;
+}
+
+.address-loading::after {
+    content: '';
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.getElementById('togglePassword').addEventListener('click', function() {
@@ -251,6 +316,154 @@ document.getElementById('togglePassword').addEventListener('click', function() {
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
     }
+});
+
+// Address API handlers
+class AddressManager {
+    constructor() {
+        this.citySelect = document.getElementById('city');
+        this.districtSelect = document.getElementById('district');
+        this.wardSelect = document.getElementById('ward');
+        
+        this.init();
+    }
+    
+    async init() {
+        await this.loadProvinces();
+        this.bindEvents();
+    }
+    
+    async loadProvinces() {
+        try {
+            this.showLoading(this.citySelect, 'Đang tải tỉnh/thành phố...');
+            
+            const response = await fetch('/api/provinces');
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                this.populateSelect(this.citySelect, data.data, 'name', 'name', '-- Chọn Tỉnh/Thành phố --');
+                this.citySelect.parentElement.classList.remove('address-loading');
+            } else {
+                this.showError(this.citySelect, 'Không thể tải danh sách tỉnh/thành phố');
+            }
+        } catch (error) {
+            console.error('Error loading provinces:', error);
+            this.showError(this.citySelect, 'Lỗi kết nối. Vui lòng thử lại');
+        }
+    }
+    
+    async loadDistricts(provinceCode) {
+        try {
+            this.showLoading(this.districtSelect, 'Đang tải quận/huyện...');
+            this.resetSelect(this.wardSelect, '-- Chọn Phường/Xã --');
+            this.wardSelect.disabled = true;
+            
+            const response = await fetch(`/api/districts/${provinceCode}`);
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                this.populateSelect(this.districtSelect, data.data, 'name', 'name', '-- Chọn Quận/Huyện --');
+                this.districtSelect.parentElement.classList.remove('address-loading');
+            } else {
+                this.showError(this.districtSelect, 'Không thể tải danh sách quận/huyện');
+            }
+        } catch (error) {
+            console.error('Error loading districts:', error);
+            this.showError(this.districtSelect, 'Lỗi kết nối. Vui lòng thử lại');
+        }
+    }
+    
+    async loadWards(districtCode) {
+        try {
+            this.showLoading(this.wardSelect, 'Đang tải phường/xã...');
+            
+            const response = await fetch(`/api/wards/${districtCode}`);
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                this.populateSelect(this.wardSelect, data.data, 'name', 'name', '-- Chọn Phường/Xã --');
+                this.wardSelect.parentElement.classList.remove('address-loading');
+            } else {
+                this.showError(this.wardSelect, 'Không thể tải danh sách phường/xã');
+            }
+        } catch (error) {
+            console.error('Error loading wards:', error);
+            this.showError(this.wardSelect, 'Lỗi kết nối. Vui lòng thử lại');
+        }
+    }
+    
+    populateSelect(select, items, valueField, textField, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item[valueField];
+            option.textContent = item[textField];
+            option.dataset.code = item.code || '';
+            select.appendChild(option);
+            
+
+        });
+        
+        // Enable the select after populating
+        select.disabled = false;
+    }
+    
+    resetSelect(select, placeholder) {
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        select.disabled = true;
+    }
+    
+    showLoading(select, message) {
+        select.innerHTML = `<option value="" class="loading-option">${message}</option>`;
+        select.disabled = true;
+        select.parentElement.classList.add('address-loading');
+    }
+    
+    showError(select, message) {
+        select.innerHTML = `<option value="" class="error-option">${message}</option>`;
+        select.disabled = true;
+        select.parentElement.classList.remove('address-loading');
+    }
+    
+    bindEvents() {
+        this.citySelect.addEventListener('change', (e) => {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const provinceCode = selectedOption.dataset.code;
+            
+
+            
+            if (provinceCode) {
+                this.loadDistricts(provinceCode);
+            } else {
+                this.resetSelect(this.districtSelect, '-- Chọn Quận/Huyện --');
+                this.resetSelect(this.wardSelect, '-- Chọn Phường/Xã --');
+                this.districtSelect.disabled = true;
+                this.wardSelect.disabled = true;
+            }
+        });
+        
+        this.districtSelect.addEventListener('change', (e) => {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const districtCode = selectedOption.dataset.code;
+            
+
+            
+            if (districtCode) {
+                this.loadWards(districtCode);
+            } else {
+                this.resetSelect(this.wardSelect, '-- Chọn Phường/Xã --');
+                this.wardSelect.disabled = true;
+            }
+        });
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    new AddressManager();
+    
+
 });
 </script>
 @endpush

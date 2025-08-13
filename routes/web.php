@@ -212,6 +212,11 @@ Route::prefix('api')->group(function () {
     Route::get('/hot-keywords', [SearchController::class, 'hotKeywords'])->name('api.hot-keywords');
     Route::get('/search/hot-suggestions', [SearchController::class, 'hotSuggestions'])->name('api.search.hot-suggestions');
     Route::get('/brands-list', [BrandController::class, 'apiList'])->name('api.brands');
+    
+    // Address API Routes
+    Route::get('/provinces', [App\Http\Controllers\AddressController::class, 'getProvinces'])->name('api.provinces');
+    Route::get('/districts/{provinceCode}', [App\Http\Controllers\AddressController::class, 'getDistricts'])->name('api.districts');
+    Route::get('/wards/{districtCode}', [App\Http\Controllers\AddressController::class, 'getWards'])->name('api.wards');
 });
 
 // Sitemap (optional)

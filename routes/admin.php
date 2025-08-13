@@ -80,7 +80,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('brands', [BrandController::class, 'store'])->name('brands.store')->middleware('permission:brands.create');
     Route::middleware('permission:brands.view')->group(function () {
         Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
-        Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
+        Route::get('brands/{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
     });
     Route::get('brands/{brand}/edit', [BrandController::class, 'edit'])->name('brands.edit')->middleware('permission:brands.edit');
     Route::put('brands/{brand}', [BrandController::class, 'update'])->name('brands.update')->middleware('permission:brands.edit');

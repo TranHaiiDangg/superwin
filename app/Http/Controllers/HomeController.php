@@ -55,8 +55,7 @@ class HomeController extends Controller
             ->get();
 
         // Lấy thương hiệu
-        $brands = Brand::where('is_active', true)
-            ->withCount('products')
+        $brands = Brand::withCount('products')
             ->orderBy('products_count', 'desc')
             ->take(8)
             ->get();

@@ -94,6 +94,7 @@ class AuthController extends Controller
             'ward' => $request->ward,
             'customer_code' => $customerCode,
             'status' => 'active',
+            'is_active' => true,
             'total_spent' => 0,
             'loyalty_points' => 0,
         ]);
@@ -145,9 +146,13 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $customer->update($request->only([
-            'name', 'phone', 'address', 'city', 'district', 'ward'
-        ]));
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->address = $request->address;
+        $customer->city = $request->city;
+        $customer->district = $request->district;
+        $customer->ward = $request->ward;
+        $customer->save();
 
         return back()->with('success', 'Cập nhật thông tin thành công!');
     }

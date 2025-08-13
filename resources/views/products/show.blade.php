@@ -83,13 +83,18 @@
 
                             <!-- Price -->
                             <div class="product-price mb-4">
-                                @if($product->isOnSale)
-                                <div class="current-price">{{ number_format($product->sale_price) }}₫</div>
-                                <div class="original-price">{{ number_format($product->price) }}₫</div>
-                                <div class="discount-badge">-{{ $product->discount_percentage }}%</div>
-                                @else
-                                <div class="current-price">{{ number_format($product->price) }}₫</div>
-                                @endif
+                                <div class="price-row">
+                                    @if($product->isOnSale)
+                                    <div class="current-price">{{ number_format($product->sale_price) }}₫</div>
+                                    <div class="original-price">{{ number_format($product->price) }}₫</div>
+                                    <div class="discount-badge">-{{ $product->discount_percentage }}%</div>
+                                    @else
+                                    <div class="current-price">{{ number_format($product->price) }}₫</div>
+                                    @endif
+                                </div>
+                                <div class="vat-notice">
+                                    <small class="text-muted">Giá chưa bao gồm thuế VAT 8%</small>
+                                </div>
                             </div>
 
                             <!-- Power Attribute -->
@@ -161,7 +166,7 @@
                             <!-- Action Buttons -->
                             <div class="action-buttons mb-4">
                                 <div class="d-grid gap-2 d-md-flex">
-                                    <button class="btn btn-primary btn-lg flex-fill me-md-2" onclick="addToCart({{ $product->id }}) ">
+                                    <button class="btn btn-primary btn-lg flex-fill me-md-2" onclick="addToCart({{ $product->id }})">
                                         <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ
                                     </button>
                                     <button class="btn btn-outline-primary btn-lg flex-fill me-md-2" onclick="buyNow()">
@@ -470,7 +475,7 @@
                                 <div class="progress">
                                     <div class="progress-bar bg-warning"
                                         role="progressbar"
-                                        style="width: {{ $totalReviews > 0 ? round(($count / $totalReviews * 100), 1) : 0 }}%;"
+                                        style="width: {{ $totalReviews > 0 ? round(($count / $totalReviews * 100), 1) : 0 }}%"
                                         aria-valuenow="{{ $count }}"
                                         aria-valuemin="0"
                                         aria-valuemax="{{ $totalReviews }}">
@@ -565,6 +570,9 @@
                                 @else
                                     <span class="normal-price">{{ number_format($variant->price) }}₫</span>
                                 @endif
+                                <div class="vat-notice-variant">
+                                    <small class="text-muted">Chưa bao gồm VAT 8%</small>
+                                </div>
                             </div>
                             <div class="variant-col-stock">
                                 @if($variant->isInStock)
@@ -588,18 +596,7 @@
         </div>
         @endif
     </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-
-    </div>
+</div>
 </section>
 
 
@@ -946,8 +943,16 @@
 
     .product-price {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .price-row {
+        display: flex;
         align-items: center;
         gap: 15px;
+        flex-wrap: wrap;
     }
 
     .current-price {
@@ -963,12 +968,52 @@
     }
 
     .discount-badge {
-        background: #dc3545;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
         color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(238, 90, 82, 0.3);
+        display: inline-block;
+        position: relative;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .discount-badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+        border-radius: 20px;
+        pointer-events: none;
+    }
+
+    .vat-notice {
+        margin-top: 5px;
+        padding-left: 2px;
+    }
+
+    .vat-notice small {
+        font-style: italic;
+        font-size: 0.82rem;
+        color: #8e8e8e !important;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+    }
+
+    .vat-notice-variant {
+        margin-top: 3px;
+    }
+
+    .vat-notice-variant small {
+        font-style: italic;
+        font-size: 0.75rem;
+        color: #6c757d !important;
+        display: block;
     }
 
     /* Product Options */
@@ -1531,12 +1576,23 @@
     /* Variants Tab Styles */
     .variants-detail-section {
         padding: 20px 0;
+        clear: both;
+        overflow: hidden;
+    }
+
+    .variants-detail-section h4 {
+        margin-bottom: 20px !important;
+        font-weight: 600;
+        color: #333;
     }
 
     .variants-table {
         border: 1px solid #e9ecef;
         border-radius: 8px;
         overflow: hidden;
+        margin-top: 15px;
+        width: 100%;
+        clear: both;
     }
 
     .variants-header {
@@ -1595,14 +1651,16 @@
         font-size: 0.85rem;
     }
 
-    .discount-badge {
-        background: #dc3545;
+    .variant-col-price .discount-badge {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
         color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: bold;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
         align-self: flex-start;
+        box-shadow: 0 1px 4px rgba(238, 90, 82, 0.25);
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     }
 
     .normal-price {

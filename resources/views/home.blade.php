@@ -338,16 +338,25 @@
             @foreach($brands as $brand)
             <div class="col-md-3 col-6">
                 <div class="text-center p-3">
-                    @if($brand->image)
-                    <img src="{{ $brand->image }}" alt="{{ $brand->name }}" class="img-fluid" style="max-height: 60px;">
-                    @else
-                    <div class="bg-white p-3 rounded shadow-sm">
-                        <h6 class="mb-0">{{ $brand->name }}</h6>
-                    </div>
-                    @endif
+                    <a href="{{ route('brands.show', $brand->id) }}" class="brand-link-home" title="{{ $brand->name }}">
+                        @if($brand->image)
+                        <img src="{{ asset($brand->image) }}" alt="{{ $brand->name }}" class="img-fluid brand-image-home" style="max-height: 60px;">
+                        @else
+                        <div class="bg-white p-3 rounded shadow-sm brand-placeholder-home">
+                            <h6 class="mb-0">{{ $brand->name }}</h6>
+                        </div>
+                        @endif
+                        <div class="brand-name-overlay">{{ $brand->name }}</div>
+                    </a>
                 </div>
             </div>
             @endforeach
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ route('brands') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-building me-2"></i>Xem tất cả thương hiệu
+            </a>
         </div>
     </div>
 </section>
@@ -1888,6 +1897,82 @@
     @media (max-width: 400px) {
         .suggested-products-grid {
             grid-template-columns: 1fr;
+        }
+    }
+
+    /* Brand Section Styles */
+    .brand-link-home {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+    }
+
+    .brand-link-home:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .brand-image-home {
+        transition: all 0.3s ease;
+        filter: grayscale(20%);
+    }
+
+    .brand-link-home:hover .brand-image-home {
+        filter: grayscale(0%);
+        transform: scale(1.1);
+    }
+
+    .brand-placeholder-home {
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+        border: 1px solid #dee2e6;
+    }
+
+    .brand-link-home:hover .brand-placeholder-home {
+        background: linear-gradient(135deg, #3498db, #2980b9) !important;
+        color: white;
+        border-color: #3498db;
+    }
+
+    .brand-name-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        color: white;
+        padding: 8px 12px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+    }
+
+    .brand-link-home:hover .brand-name-overlay {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Responsive for brand section */
+    @media (max-width: 768px) {
+        .brand-link-home {
+            padding: 12px;
+        }
+        
+        .brand-name-overlay {
+            font-size: 0.75rem;
+            padding: 6px 8px 8px;
         }
     }
 </style>
