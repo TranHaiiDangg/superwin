@@ -40,14 +40,15 @@ class Review extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'user_id');
+    }
+    
+    // Alias for backward compatibility
+    public function user(): BelongsTo
+    {
+        return $this->customer();
     }
 
     public function order(): BelongsTo

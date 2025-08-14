@@ -280,7 +280,7 @@
                     <a href="{{ route('deals') }}">🔥 Hot Deals</a>
                     <a href="{{ route('brands') }}">🏷️ Thương hiệu</a>
                     <a href="{{ route('bestsellers') }}">📈 Bán chạy</a>
-                    <a href="{{ route('trending') }}">🔍 Top tìm kiếm</a>
+                    <!-- <a href="{{ route('trending') }}">🔍 Top tìm kiếm</a> -->
                 </div>
 
                 <div class="right-links">
