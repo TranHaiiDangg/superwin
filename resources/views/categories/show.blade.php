@@ -186,9 +186,9 @@
                                     @endif
                                 </div>
 
-                            <button class="product-btn" onclick="addToCart('{{ $product->id }}')">
+                            <!-- <button class="product-btn" onclick="addToCart('{{ $product->id }}')">
                                 Xem Ngay
-                                    </button>
+                                    </button> -->
                         </div>
                     </div>
                 </div>
