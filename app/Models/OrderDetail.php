@@ -17,7 +17,10 @@ class OrderDetail extends Model
         'product_sku',
         'quantity',
         'unit_price',
-        'total_price'
+        'total_price',
+        'variant_id',
+        'variant_name',
+        'variant_code'
     ];
 
     protected $casts = [
@@ -35,4 +38,4 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(Product::class);
     }
-} 
+}

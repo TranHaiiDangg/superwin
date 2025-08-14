@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Đăng nhập - SuperWin')
+@section('title', 'Đặt lại mật khẩu - SuperWin')
 
 @section('content')
 <div class="container py-5">
@@ -11,17 +11,11 @@
                     <!-- Header -->
                     <div class="text-center mb-4">
                         <img src="/image/logo.png" alt="SuperWin Logo" class="mb-3" style="height: 60px;">
-                        <h4 class="fw-bold text-dark">Đăng nhập</h4>
-                        <p class="text-muted">Chào mừng bạn quay trở lại!</p>
+                        <h4 class="fw-bold text-dark">Đặt lại mật khẩu</h4>
+                        <p class="text-muted">Nhập mật khẩu mới cho tài khoản của bạn</p>
                     </div>
 
                     <!-- Success/Error Messages -->
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
                     @if($errors->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -32,9 +26,10 @@
                         </div>
                     @endif
 
-                    <!-- Login Form -->
-                    <form method="POST" action="{{ route('login.post') }}">
+                    <!-- Reset Password Form -->
+                    <form method="POST" action="{{ route('password.update') }}">
                         @csrf
+                        <input type="hidden" name="token" value="{{ $token }}">
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
@@ -43,7 +38,7 @@
                                     <i class="fas fa-envelope"></i>
                                 </span>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                       id="email" name="email" value="{{ old('email') }}"
+                                       id="email" name="email" value="{{ old('email', $email) }}"
                                        placeholder="Nhập email của bạn" required>
                             </div>
                             @error('email')
@@ -52,13 +47,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">Mật khẩu</label>
+                            <label for="password" class="form-label">Mật khẩu mới</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                       id="password" name="password" placeholder="Nhập mật khẩu" required>
+                                       id="password" name="password" placeholder="Nhập mật khẩu mới" required>
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -68,29 +63,32 @@
                             @enderror
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                                <label class="form-check-label" for="remember">
-                                    Ghi nhớ đăng nhập
-                                </label>
+                        <div class="mb-4">
+                            <label for="password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control"
+                                       id="password_confirmation" name="password_confirmation"
+                                       placeholder="Nhập lại mật khẩu mới" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirmation">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
-                            <a href="{{ route('password.request') }}" class="text-decoration-none text-primary">
-                                Quên mật khẩu?
-                            </a>
                         </div>
 
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                                <i class="fas fa-key me-2"></i>Đặt lại mật khẩu
                             </button>
                         </div>
 
                         <div class="text-center">
                             <p class="text-muted mb-0">
-                                Chưa có tài khoản?
-                                <a href="{{ route('register') }}" class="text-decoration-none fw-bold">
-                                    Đăng ký ngay
+                                Nhớ mật khẩu rồi?
+                                <a href="{{ route('login') }}" class="text-decoration-none fw-bold">
+                                    Đăng nhập
                                 </a>
                             </p>
                         </div>
@@ -101,9 +99,7 @@
             <!-- Additional Info -->
             <div class="text-center mt-4">
                 <p class="text-muted small">
-                    Bằng việc đăng nhập, bạn đồng ý với
-                    <a href="#" class="text-decoration-none">Điều khoản sử dụng</a> và
-                    <a href="#" class="text-decoration-none">Chính sách bảo mật</a>
+                    Mật khẩu mới phải có ít nhất 8 ký tự và bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.
                 </p>
             </div>
         </div>
@@ -112,8 +108,24 @@
 
 @push('scripts')
 <script>
+// Toggle password visibility
 document.getElementById('togglePassword').addEventListener('click', function() {
     const password = document.getElementById('password');
+    const icon = this.querySelector('i');
+
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+
+document.getElementById('togglePasswordConfirmation').addEventListener('click', function() {
+    const password = document.getElementById('password_confirmation');
     const icon = this.querySelector('i');
 
     if (password.type === 'password') {

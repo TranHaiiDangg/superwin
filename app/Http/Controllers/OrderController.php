@@ -66,10 +66,12 @@ class OrderController extends Controller
         if (request()->has('buy_now') && request()->get('buy_now') == '1') {
             $productId = request()->get('product_id');
             $quantity = request()->get('quantity', 1);
+            $variantId = request()->get('variant_id');
 
             Log::info('Buy now detected', [
                 'product_id' => $productId,
-                'quantity' => $quantity
+                'quantity' => $quantity,
+                'variant_id' => $variantId
             ]);
 
             if (!$productId) {
@@ -88,21 +90,41 @@ class OrderController extends Controller
                 'product_name' => $product->name
             ]);
 
+            // Xử lý biến thể nếu có
+            $variantName = '';
+            $variantCode = '';
+            $finalPrice = $product->isOnSale ? $product->sale_price : $product->price;
+            $finalProductName = $product->name;
+
+            if ($variantId && $variantId !== 'none' && $variantId !== null) {
+                $variant = \App\Models\ProductVariant::find($variantId);
+                if ($variant) {
+                    $variantName = $variant->name;
+                    $variantCode = $variant->code;
+                    $finalPrice = $variant->isOnSale ? $variant->price_sale : $variant->price;
+                    // Sử dụng tên biến thể làm tên sản phẩm chính
+                    $finalProductName = $variantName;
+                }
+            }
+
             // Tạo dữ liệu giỏ hàng cho mua ngay
             $cartData = [
                 'items' => [
                     [
                         'id' => $product->id,
-                        'name' => $product->name,
-                        'price' => $product->isOnSale ? $product->sale_price : $product->price,
+                        'name' => $finalProductName, // Sử dụng tên biến thể
+                        'price' => $finalPrice,
                         'original_price' => $product->price,
                         'quantity' => (int)$quantity,
                         'image' => $product->baseImage ? $product->baseImage->url : '/image/sp1.png',
                         'slug' => $product->slug,
+                        'variant_id' => $variantId,
+                        'variant_name' => $variantName,
+                        'variant_code' => $variantCode,
                         'attributes' => []
                     ]
                 ],
-                'total' => ($product->isOnSale ? $product->sale_price : $product->price) * (int)$quantity,
+                'total' => $finalPrice * (int)$quantity,
                 'itemCount' => (int)$quantity,
                 'isBuyNow' => true
             ];
@@ -186,10 +208,25 @@ class OrderController extends Controller
             if (request()->has('buy_now') && request()->get('buy_now') == '1') {
                 $productId = request()->get('product_id');
                 $quantity = request()->get('quantity', 1);
+                $variantId = request()->get('variant_id');
 
                 $product = Product::find($productId);
                 if (!$product) {
                     throw new \Exception('Sản phẩm không tồn tại');
+                }
+
+                // Xử lý biến thể nếu có
+                $variantName = '';
+                $variantCode = '';
+                $finalPrice = $product->isOnSale ? $product->sale_price : $product->price;
+
+                if ($variantId && $variantId !== 'none') {
+                    $variant = \App\Models\ProductVariant::find($variantId);
+                    if ($variant) {
+                        $variantName = $variant->name;
+                        $variantCode = $variant->code;
+                        $finalPrice = $variant->isOnSale ? $variant->price_sale : $variant->price;
+                    }
                 }
 
                 $cartData = [
@@ -197,12 +234,15 @@ class OrderController extends Controller
                         [
                             'id' => $product->id,
                             'name' => $product->name,
-                            'price' => $product->isOnSale ? $product->sale_price : $product->price,
+                            'price' => $finalPrice,
                             'quantity' => (int)$quantity,
-                            'sku' => $product->sku ?? ''
+                            'sku' => $product->sku ?? '',
+                            'variant_id' => $variantId,
+                            'variant_name' => $variantName,
+                            'variant_code' => $variantCode
                         ]
                     ],
-                    'total' => ($product->isOnSale ? $product->sale_price : $product->price) * (int)$quantity
+                    'total' => $finalPrice * (int)$quantity
                 ];
                 $isBuyNow = true;
             } else {
@@ -267,7 +307,10 @@ class OrderController extends Controller
                     'product_sku' => $item['sku'] ?? '',
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['price'],
-                    'total_price' => $item['price'] * $item['quantity']
+                    'total_price' => $item['price'] * $item['quantity'],
+                    'variant_id' => $item['variant_id'] ?? null,
+                    'variant_name' => $item['variant_name'] ?? null,
+                    'variant_code' => $item['variant_code'] ?? null
                 ]);
             }
 

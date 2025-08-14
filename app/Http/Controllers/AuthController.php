@@ -94,7 +94,6 @@ class AuthController extends Controller
             'ward' => $request->ward,
             'customer_code' => $customerCode,
             'status' => 'active',
-            'is_active' => true,
             'total_spent' => 0,
             'loyalty_points' => 0,
         ]);

@@ -130,8 +130,16 @@
                             <div class="item-info">
                                 <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="item-image">
                                 <div class="item-details">
-                                    <h6 class="item-name">{{ $item['name'] }}</h6>
+                                    <h6 class="item-name">
+                                        {{ $item['name'] }}
+                                        @if(isset($item['variant_name']) && $item['variant_name'])
+                                            <br><small class="text-muted">{{ $item['variant_name'] }}</small>
+                                        @endif
+                                    </h6>
                                     <span class="item-price">{{ number_format($item['price']) }}₫ x {{ $item['quantity'] }}</span>
+                                    @if(isset($item['variant_code']) && $item['variant_code'])
+                                        <br><small class="text-muted">Mã: {{ $item['variant_code'] }}</small>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -845,9 +853,34 @@ document.addEventListener('DOMContentLoaded', function() {
             // Lấy dữ liệu từ sessionStorage cho mua ngay
             const buyNowData = sessionStorage.getItem('buyNowData');
             if (buyNowData) {
-                cartDataInput.value = buyNowData;
-                // Xóa dữ liệu mua ngay sau khi load
-                sessionStorage.removeItem('buyNowData');
+                try {
+                    const buyNowInfo = JSON.parse(buyNowData);
+
+                    // Tạo cart item với thông tin biến thể
+                    const cartItem = {
+                        id: buyNowInfo.productId,
+                        name: buyNowInfo.productName,
+                        model: buyNowInfo.productModel,
+                        price: buyNowInfo.variant_price || buyNowInfo.price || 0,
+                        quantity: buyNowInfo.quantity,
+                        image: buyNowInfo.productImage,
+                        variant_id: buyNowInfo.variant_id,
+                        variant_name: buyNowInfo.variant_name,
+                        variant_code: buyNowInfo.variant_code
+                    };
+
+                    // Tạo cart array với item này
+                    const cartArray = [cartItem];
+                    cartDataInput.value = JSON.stringify(cartArray);
+
+                    console.log('Buy now cart data created:', cartArray);
+
+                    // Xóa dữ liệu mua ngay sau khi load
+                    sessionStorage.removeItem('buyNowData');
+                } catch (error) {
+                    console.error('Error parsing buy now data:', error);
+                    window.history.back();
+                }
             } else {
                 // Nếu không có dữ liệu mua ngay, redirect về trang trước
                 window.history.back();

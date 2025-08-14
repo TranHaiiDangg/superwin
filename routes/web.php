@@ -15,6 +15,7 @@ use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,12 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 
 // Đăng xuất
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Quên mật khẩu
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
 // Routes cần customer authentication
 Route::middleware(['customer'])->group(function () {

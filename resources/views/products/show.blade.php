@@ -2381,7 +2381,7 @@
         }
 
         // Show loading notification
-        showNotification('Đang thêm vào giỏ hàng...', 'info');
+        // showNotification('Đang thêm vào giỏ hàng...', 'info');
 
         // Get product data from DOM or create default
         const productElement = document.querySelector(`[data-product-id="${productId}"]`);
@@ -2486,26 +2486,65 @@
 
     function buyNow(productId = null) {
         const targetProductId = productId || '{{ $product->id ?? "" }}';
-        const quantity = document.getElementById('quantity') ? document.getElementById('quantity').value : 1;
+        const quantity = document.getElementById('quantity') ? parseInt(document.getElementById('quantity').value) : 1;
+
+        // Validate quantity
+        if (quantity < 1 || quantity > 99) {
+            showNotification('Số lượng không hợp lệ', 'error');
+            return;
+        }
+
+        // Get selected variant
+        const selectedVariant = document.querySelector('input[name="selected_variant"]:checked');
+        let variantId = null;
+        let variantName = '';
+        let variantCode = '';
+        let variantPrice = 0;
+
+        if (selectedVariant && selectedVariant.value !== 'none') {
+            variantId = selectedVariant.value;
+            const variantItem = document.querySelector(`[data-variant-id="${variantId}"]`);
+            if (variantItem) {
+                variantName = variantItem.dataset.variantName || '';
+                variantCode = variantItem.dataset.variantCode || '';
+                variantPrice = parseInt(variantItem.dataset.variantPrice) || 0;
+            }
+        }
 
         // Debug: Log thông tin
         console.log('Buy Now Debug:', {
             productId: productId,
             targetProductId: targetProductId,
             quantity: quantity,
+            variantId: variantId,
+            variantName: variantName,
+            variantCode: variantCode,
+            variantPrice: variantPrice,
             productIdFromBlade: '{{ $product->id ?? "" }}'
         });
 
         // Kiểm tra nếu có product ID
         if (!targetProductId || targetProductId === '') {
-            alert('Không tìm thấy thông tin sản phẩm!');
+            showNotification('Không tìm thấy thông tin sản phẩm!', 'error');
             return;
         }
 
-        // Lưu thông tin cơ bản vào sessionStorage để trang checkout có thể đọc
+        // Get product data from DOM
+        const productElement = document.querySelector(`[data-product-id="${targetProductId}"]`);
+        const currentProductTitle = document.querySelector('.product-title');
+        const currentProductName = currentProductTitle ? currentProductTitle.textContent.trim() : `Sản phẩm ${targetProductId}`;
+
+        // Lưu thông tin chi tiết vào sessionStorage để trang checkout có thể đọc
         const buyNowInfo = {
-            productId: targetProductId,
-            quantity: parseInt(quantity),
+            productId: parseInt(targetProductId),
+            productName: variantName || currentProductName,
+            productModel: productElement ? productElement.dataset.productModel || `SW-${targetProductId}` : `SW-${targetProductId}`,
+            productImage: productElement ? productElement.dataset.productImage || '/image/sp1.png' : '/image/sp1.png',
+            quantity: quantity,
+            variant_id: variantId,
+            variant_name: variantName,
+            variant_code: variantCode,
+            variant_price: variantPrice,
             timestamp: Date.now()
         };
 
@@ -2513,7 +2552,7 @@
         console.log('Buy now info saved to sessionStorage:', buyNowInfo);
 
         // Chuyển đến trang checkout
-        const checkoutUrl = `/checkout?buy_now=1&product_id=${targetProductId}&quantity=${quantity}`;
+        const checkoutUrl = `/checkout?buy_now=1&product_id=${targetProductId}&quantity=${quantity}${variantId ? `&variant_id=${variantId}` : ''}`;
         console.log('Redirecting to:', checkoutUrl);
         window.location.href = checkoutUrl;
     }
