@@ -10,7 +10,7 @@
             <div class="brands-header">
                 <div class="text-center mb-5">
                     <h2 class="brands-main-title">Thương Hiệu Nổi Bật</h2>
-                    <p class="brands-subtitle">Khám phá các thương hiệu uy tín hàng đầu về máy bơm nước và quạt thông gió</p>
+                    <!-- <p class="brands-subtitle">Khám phá các thương hiệu uy tín hàng đầu về máy bơm nước và quạt thông gió</p> -->
                 </div>
             </div>
         </div>

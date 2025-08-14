@@ -107,11 +107,18 @@ class ReviewController extends Controller
             // Tạo review mới
             $review = Review::create([
                 'product_id' => $request->product_id,
-                'user_id' => $customer->id,
+                'user_id' => $customer->id, // Sử dụng customer->id làm user_id
                 'rating' => $request->rating,
                 'title' => $request->title,
                 'comment' => $request->comment,
                 'is_approved' => true, // Tự động approve, có thể thay đổi thành false nếu cần duyệt
+            ]);
+            
+            Log::info('Review created successfully:', [
+                'review_id' => $review->id,
+                'product_id' => $request->product_id,
+                'customer_id' => $customer->id,
+                'rating' => $request->rating
             ]);
 
             // Cập nhật rating trung bình của sản phẩm
@@ -143,12 +150,19 @@ class ReviewController extends Controller
             return back()->with('success', 'Cảm ơn bạn đã đánh giá sản phẩm!');
 
         } catch (\Exception $e) {
-            Log::error('Error creating review: ' . $e->getMessage());
+            Log::error('Error creating review: ' . $e->getMessage(), [
+                'exception' => $e,
+                'customer_id' => $customer->id,
+                'product_id' => $request->product_id,
+                'stack_trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
             
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Có lỗi xảy ra khi lưu đánh giá. Vui lòng thử lại.'
+                    'message' => 'Có lỗi xảy ra khi lưu đánh giá. Vui lòng thử lại.',
+                    'error_details' => config('app.debug') ? $e->getMessage() : null
                 ], 500);
             }
             return back()->with('error', 'Có lỗi xảy ra khi lưu đánh giá. Vui lòng thử lại.');
