@@ -87,20 +87,20 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
                     <h5 class="mb-4">Thông tin liên hệ</h5>
-                    
+<!--                     
                     <div class="d-flex mb-3">
                         <i class="fas fa-map-marker-alt text-primary fa-lg me-3 mt-1"></i>
                         <div>
                             <h6 class="mb-1">Địa chỉ</h6>
                             <p class="text-muted mb-0">123 Đường ABC, Quận XYZ<br>Hà Nội, Việt Nam</p>
                         </div>
-                    </div>
+                    </div> -->
                     
                     <div class="d-flex mb-3">
                         <i class="fas fa-phone text-primary fa-lg me-3 mt-1"></i>
                         <div>
                             <h6 class="mb-1">Điện thoại</h6>
-                            <p class="text-muted mb-0">0123 456 789</p>
+                            <p class="text-muted mb-0">028.6269.7382</p>
                         </div>
                     </div>
                     
@@ -108,21 +108,21 @@
                         <i class="fas fa-envelope text-primary fa-lg me-3 mt-1"></i>
                         <div>
                             <h6 class="mb-1">Email</h6>
-                            <p class="text-muted mb-0">info@superwin.com</p>
+                            <p class="text-muted mb-0">superwin.vn@gmail.com</p>
                         </div>
                     </div>
                     
-                    <div class="d-flex mb-3">
+                    <!-- <div class="d-flex mb-3">
                         <i class="fas fa-clock text-primary fa-lg me-3 mt-1"></i>
                         <div>
                             <h6 class="mb-1">Giờ làm việc</h6>
                             <p class="text-muted mb-0">Thứ 2 - Thứ 7: 8:00 - 18:00<br>Chủ nhật: 9:00 - 16:00</p>
                         </div>
-                    </div>
+                    </div> -->
                     
                     <hr>
                     
-                    <h6 class="mb-3">Theo dõi chúng tôi</h6>
+                    <!-- <h6 class="mb-3">Theo dõi chúng tôi</h6>
                     <div class="d-flex gap-2">
                         <a href="#" class="btn btn-outline-primary">
                             <i class="fab fa-facebook-f"></i>
@@ -136,7 +136,7 @@
                         <a href="#" class="btn btn-outline-primary">
                             <i class="fab fa-tiktok"></i>
                         </a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

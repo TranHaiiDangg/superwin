@@ -82,17 +82,17 @@
                             </div>
 
                             <!-- Price -->
-                            <div class="product-price mb-4">
-                                <div class="price-row">
+                            <div class="product-price mb-4" style="text-align: left !important; width: 100%; justify-content: flex-start !important; align-items: flex-start !important;">
+                                <div class="price-row" style="justify-content: flex-start !important; text-align: left !important;">
                                     @if($product->isOnSale)
-                                    <div class="current-price">{{ number_format($product->sale_price) }}₫</div>
-                                    <div class="original-price">{{ number_format($product->price) }}₫</div>
-                                    <div class="discount-badge">-{{ $product->discount_percentage }}%</div>
+                                    <span class="current-price">{{ number_format($product->sale_price) }}₫</span>
+                                    <span class="original-price">{{ number_format($product->price) }}₫</span>
+                                    <span class="discount-badge">-{{ $product->discount_percentage }}%</span>
                                     @else
-                                    <div class="current-price">{{ number_format($product->price) }}₫</div>
+                                    <span class="current-price">{{ number_format($product->price) }}₫</span>
                                     @endif
                                 </div>
-                                <div class="vat-notice">
+                                <div class="vat-notice" style="text-align: left !important;">
                                     <small class="text-muted">Giá chưa bao gồm thuế VAT 8%</small>
                                 </div>
                             </div>
@@ -179,156 +179,194 @@
                         </div>
                         <div class="col-md-4">
                             <div class="delivery-info">
-                                <div class="delivery-list">
-                                    <div class="delivery-item">
-                                        <i class="fas fa-shipping-fast"></i>
-                                        <div class="delivery-text">
-                                            <strong>Giao hàng nhanh</strong>
-                                            <span>24-48h</span>
+                                <aside id="text-2" class="widget widget_text">
+                                    <div class="textwidget">
+                                        <div class="icon-box featured-box icon-box-left text-left has-block">
+                                            <div class="icon-box-img" style="width: 40px">
+                                                <div class="icon">
+                                                    <div class="icon-inner">
+                                                        <img loading="lazy" width="45" height="34" src="https://superwin.vn/wp-content/uploads/2018/08/productdetail-icon5.png" class="attachment-medium size-medium" alt="Giao hàng nhanh" decoding="async">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="icon-box-text last-reset">
+                                                <p><strong>Giao hàng nhanh chóng</strong><br>
+                                                <span style="font-size: 85%;">chỉ trong vòng 24 giờ</span></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
+                                        
+                                        <div class="icon-box featured-box icon-box-left text-left">
+                                            <div class="icon-box-img" style="width: 40px">
+                                                <div class="icon">
+                                                    <div class="icon-inner">
+                                                        <img loading="lazy" width="33" height="34" src="https://superwin.vn/wp-content/uploads/2018/08/productdetail-icon4.png" class="attachment-medium size-medium" alt="Sản phẩm chính hãng" decoding="async">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="icon-box-text last-reset">
+                                                <p><strong>Sản phẩm chính hãng</strong><br>
+                                                <span style="font-size: 85%;">sản phẩm nhập khẩu 100%</span></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
+                                        
+                                        <div class="icon-box featured-box icon-box-left text-left">
+                                            <div class="icon-box-img" style="width: 40px">
+                                                <div class="icon">
+                                                    <div class="icon-inner">
+                                                        <img width="34" height="34" src="https://superwin.vn/wp-content/uploads/2018/08/productdetail-icon3.png" class="attachment-medium size-medium" alt="Mua hàng tiết kiệm" decoding="async" loading="lazy">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="icon-box-text last-reset">
+                                                <p><strong>Mua hàng tiết kiệm</strong><br><span style="font-size: 85%;">rẻ hơn từ 10% – 20%</span></p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
+                                        
+                                        <div class="icon-box featured-box icon-box-left text-left">
+                                            <div class="icon-box-img" style="width: 40px">
+                                                <div class="icon">
+                                                    <div class="icon-inner">
+                                                        <img width="37" height="34" src="https://superwin.vn/wp-content/uploads/2018/08/productdetail-icon1.png" class="attachment-medium size-medium" alt="Hotline mua hàng" decoding="async" loading="lazy">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="icon-box-text last-reset">
+                                                <p><strong>Hotline mua hàng</strong><br><span style="font-size: 85%;">097 168 7711</span></p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="delivery-item">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <div class="delivery-text">
-                                            <strong>Bảo hành</strong>
-                                            <span>Chính hãng</span>
-                                        </div>
-                                    </div>
-                                    <div class="delivery-item">
-                                        <i class="fas fa-undo"></i>
-                                        <div class="delivery-text">
-                                            <strong>Đổi trả</strong>
-                                            <span>30 ngày</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                </aside>
                                 @if($product->brand)
-                                <div class="brand-info mt-3">
-                                    <div class="brand-item">
-                                        <i class="fas fa-trademark"></i>
-                                        <div class="brand-text">
-                                            <strong>Thương hiệu</strong>
-                                            <span>{{ $product->brand->name }}</span>
-                                        </div>
+                            <div class="brand-info mt-3">
+                                <div class="brand-item">
+                                    <i class="fas fa-trademark"></i>
+                                    <div class="brand-text">
+                                        <strong>Thương hiệu</strong>
+                                        <span>{{ $product->brand->name }}</span>
                                     </div>
                                 </div>
-                                @endif
-
-
-                                <!-- Sản phẩm cùng thương hiệu -->
-                                @if($sameBrandProducts->count() > 0)
-                                <div class="related-products mb-5 mt-5">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <h4 class="mb-0 text-center">Sản phẩm cùng thương hiệu {{ $product->brand ? $product->brand->name : '' }}</h4>
-                                        @if($product->brand && $product->brand->slug)
-                                        <a href="{{ route('products.brand', ['slug' => $product->brand->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                                        @endif
-                                    </div>
-                                    <div class="row g-4">
-                                        @foreach($sameBrandProducts as $brandProduct)
-                                        <div class="col">
-                                            <div class="card h-100 border-0 shadow-sm product-card">
-                                                <div class="position-relative">
-                                                    <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none">
-                                                        @if($brandProduct->baseImage)
-                                                        <img src="{{ $brandProduct->baseImage->url }}" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                        @else
-                                                        <img src="/image/sp1.png" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                        @endif
-                                                    </a>
-
-                                                    @if($brandProduct->isOnSale)
-                                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
-                                                        -{{ $brandProduct->discount_percentage }}%
-                                                    </span>
-                                                    @endif
-                                                </div>
-
-                                                <div class="card-body d-flex flex-column p-3">
-                                                    <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none text-dark">
-                                                        <h6 class="card-title small mb-2">{{ Str::limit($brandProduct->name, 50) }}</h6>
-                                                    </a>
-
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            @if($brandProduct->isOnSale)
-                                                            <span class="text-danger fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
-                                                            <span class="text-muted small text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
-                                                            @else
-                                                            <span class="text-primary fw-bold small">{{ number_format($brandProduct->price) }}đ</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                @endif
-
-                                <!-- Sản phẩm cùng danh mục -->
-                                @if($sameCategoryProducts->count() > 0)
-                                <div class="related-products mb-5 mt-5">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <h4 class="mb-0 text-center">Sản phẩm cùng danh mục {{ $product->category ? $product->category->name : '' }}</h4>
-                                        @if($product->category && $product->category->slug)
-                                        <a href="{{ route('products.category', ['slug' => $product->category->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                                        @endif
-                                    </div>
-                                    <div class="row g-4">
-                                        @foreach($sameCategoryProducts as $categoryProduct)
-                                        <div class="col">
-                                            <div class="card h-100 border-0 shadow-sm product-card">
-                                                <div class="position-relative">
-                                                    <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none">
-                                                        @if($categoryProduct->baseImage)
-                                                        <img src="{{ $categoryProduct->baseImage->url }}" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                        @else
-                                                        <img src="/image/sp1.png" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                        @endif
-                                                    </a>
-
-                                                    @if($categoryProduct->isOnSale)
-                                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
-                                                        -{{ $categoryProduct->discount_percentage }}%
-                                                    </span>
-                                                    @endif
-                                                </div>
-
-                                                <div class="card-body d-flex flex-column p-3">
-                                                    <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none text-dark">
-                                                        <h6 class="card-title small mb-2">{{ Str::limit($categoryProduct->name, 50) }}</h6>
-                                                    </a>
-
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            @if($categoryProduct->isOnSale)
-                                                            <span class="text-danger fw-bold small">{{ number_format($categoryProduct->sale_price) }}đ</span>
-                                                            <span class="text-muted small text-decoration-line-through">{{ number_format($categoryProduct->price) }}đ</span>
-                                                            @else
-                                                            <span class="text-primary fw-bold small">{{ number_format($categoryProduct->price) }}đ</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                @endif
                             </div>
+                            @endif
 
 
+                            <!-- Sản phẩm cùng thương hiệu -->
+                            @if($sameBrandProducts->count() > 0)
+                            <div class="related-products mb-5 mt-5">
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <h4 class="mb-0 text-center">Sản phẩm cùng thương hiệu {{ $product->brand ? $product->brand->name : '' }}</h4>
+                                    @if($product->brand && $product->brand->slug)
+                                    <a href="{{ route('products.brand', ['slug' => $product->brand->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+                                    @endif
+                                </div>
+                                <div class="row g-4">
+                                    @foreach($sameBrandProducts as $brandProduct)
+                                    <div class="col">
+                                        <div class="card h-100 border-0 shadow-sm product-card">
+                                            <div class="position-relative">
+                                                <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none">
+                                                    @if($brandProduct->baseImage)
+                                                    <img src="{{ $brandProduct->baseImage->url }}" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
+                                                    @else
+                                                    <img src="/image/sp1.png" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
+                                                    @endif
+                                                </a>
 
+                                                @if($brandProduct->isOnSale)
+                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                                    -{{ $brandProduct->discount_percentage }}%
+                                                </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="card-body d-flex flex-column p-3">
+                                                <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none text-dark">
+                                                    <h6 class="card-title small mb-2">{{ Str::limit($brandProduct->name, 50) }}</h6>
+                                                </a>
+
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        @if($brandProduct->isOnSale)
+                                                        <span class="text-danger fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
+                                                        <span class="text-muted small text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
+                                                        @else
+                                                        <span class="text-primary fw-bold small">{{ number_format($brandProduct->price) }}đ</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            <!-- Sản phẩm cùng danh mục -->
+                            @if($sameCategoryProducts->count() > 0)
+                            <div class="related-products mb-5 mt-5">
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <h4 class="mb-0 text-center">Sản phẩm cùng danh mục {{ $product->category ? $product->category->name : '' }}</h4>
+                                    @if($product->category && $product->category->slug)
+                                    <a href="{{ route('products.category', ['slug' => $product->category->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+                                    @endif
+                                </div>
+                                <div class="row g-4">
+                                    @foreach($sameCategoryProducts as $categoryProduct)
+                                    <div class="col">
+                                        <div class="card h-100 border-0 shadow-sm product-card">
+                                            <div class="position-relative">
+                                                <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none">
+                                                    @if($categoryProduct->baseImage)
+                                                    <img src="{{ $categoryProduct->baseImage->url }}" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
+                                                    @else
+                                                    <img src="/image/sp1.png" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
+                                                    @endif
+                                                </a>
+
+                                                @if($categoryProduct->isOnSale)
+                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                                    -{{ $categoryProduct->discount_percentage }}%
+                                                </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="card-body d-flex flex-column p-3">
+                                                <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none text-dark">
+                                                    <h6 class="card-title small mb-2">{{ Str::limit($categoryProduct->name, 50) }}</h6>
+                                                </a>
+
+                                                <div class="mt-auto">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        @if($categoryProduct->isOnSale)
+                                                        <span class="text-danger fw-bold small">{{ number_format($categoryProduct->sale_price) }}đ</span>
+                                                        <span class="text-muted small text-decoration-line-through">{{ number_format($categoryProduct->price) }}đ</span>
+                                                        @else
+                                                        <span class="text-primary fw-bold small">{{ number_format($categoryProduct->price) }}đ</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                            </div>
+                        
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Product Tabs -->
-        <div class="product-tabs-section py-5 bg-light">
+        <div class="product-tabs-section py-3 bg-light">
             <div class="container">
                 <div class="product-tabs">
                     <ul class="nav nav-tabs" id="productTabs" role="tablist">
@@ -438,7 +476,7 @@
 
         <!-- Reviews Tab -->
         <div class="tab-pane fade" id="reviews" role="tabpanel">
-            <div class="tab-content-wrapper">
+            <div class="tab-content-wrapper" style="display: none;">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="rating-summary text-center">
@@ -940,29 +978,39 @@
     }
 
     .product-price {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
         gap: 8px;
+        text-align: left !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
     }
 
     .price-row {
-        display: flex;
-        align-items: center;
+        display: flex !important;
+        align-items: center !important;
         gap: 15px;
         flex-wrap: wrap;
+        justify-content: flex-start !important;
+        text-align: left !important;
+        width: 100% !important;
     }
 
     .current-price {
         font-size: 1.5rem;
         font-weight: bold;
         color: #dc3545;
+        display: inline-block;
+        margin-right: 10px;
     }
 
     .original-price {
         font-size: 1.2rem;
         color: #6c757d;
         text-decoration: line-through;
+        display: inline-block;
+        margin-right: 10px;
     }
 
     .discount-badge {
@@ -976,6 +1024,7 @@
         display: inline-block;
         position: relative;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        vertical-align: middle;
     }
 
     .discount-badge::before {
@@ -993,6 +1042,10 @@
     .vat-notice {
         margin-top: 5px;
         padding-left: 2px;
+        text-align: left !important;
+        width: 100% !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
     }
 
     .vat-notice small {
@@ -1341,6 +1394,8 @@
     /* Product Tabs */
     .product-tabs-section {
         background: #f8f9fa;
+        clear: both;
+        overflow: hidden;
     }
 
     .nav-tabs {
@@ -1367,6 +1422,34 @@
         padding: 30px;
         border-radius: 0 0 12px 12px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Reduce padding for variants tab specifically */
+    #variants .tab-content-wrapper {
+        padding: 10px 15px;
+    }
+
+    /* Fix tab content positioning */
+    .tab-pane {
+        clear: both;
+        overflow: hidden;
+    }
+
+    /* Remove extra spacing in variants tab */
+    #variants .variants-detail-section {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Ensure reviews tab doesn't affect variants tab */
+    #reviews .row {
+        margin: 0;
+    }
+
+    #reviews .row::after {
+        clear: both;
+        content: "";
+        display: table;
     }
 
     /* Specifications */
@@ -1573,13 +1656,14 @@
 
     /* Variants Tab Styles */
     .variants-detail-section {
-        padding: 20px 0;
+        padding: 0;
         clear: both;
         overflow: hidden;
     }
 
     .variants-detail-section h4 {
-        margin-bottom: 20px !important;
+        margin-bottom: 15px !important;
+        margin-top: 0 !important;
         font-weight: 600;
         color: #333;
     }
@@ -1588,17 +1672,20 @@
         border: 1px solid #e9ecef;
         border-radius: 8px;
         overflow: hidden;
-        margin-top: 15px;
+        margin-top: 0;
+        margin-bottom: 0;
         width: 100%;
         clear: both;
+        max-width: 100%;
+        table-layout: fixed;
     }
 
     .variants-header {
         display: grid;
-        grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
-        gap: 15px;
+        grid-template-columns: 2.5fr 1fr 1.8fr 1fr 1fr;
+        gap: 5px;
         background: #f8f9fa;
-        padding: 15px;
+        padding: 12px 8px;
         font-weight: 600;
         color: #495057;
         border-bottom: 1px solid #e9ecef;
@@ -1606,9 +1693,9 @@
 
     .variant-row {
         display: grid;
-        grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
-        gap: 15px;
-        padding: 15px;
+        grid-template-columns: 2.5fr 1fr 1.8fr 1fr 1fr;
+        gap: 5px;
+        padding: 12px 8px;
         border-bottom: 1px solid #f0f0f0;
         align-items: center;
         transition: background-color 0.3s ease;
@@ -2595,6 +2682,51 @@
             }
         }, timeout);
     }
+
+    // ===== TAB EVENT HANDLERS =====
+
+    // Handle reviews tab click to show content
+    document.addEventListener('DOMContentLoaded', function() {
+        const reviewsTab = document.getElementById('reviews-tab');
+        const reviewsTabContent = document.querySelector('#reviews .tab-content-wrapper');
+        const allTabs = document.querySelectorAll('#productTabs .nav-link');
+        
+        if (reviewsTab && reviewsTabContent && allTabs.length > 0) {
+            // Function to hide reviews content
+            function hideReviewsContent() {
+                reviewsTabContent.style.opacity = '0';
+                setTimeout(() => {
+                    reviewsTabContent.style.display = 'none';
+                }, 300); // Wait for opacity transition to complete
+            }
+            
+            // Function to show reviews content
+            function showReviewsContent() {
+                reviewsTabContent.style.display = '';
+                setTimeout(() => {
+                    reviewsTabContent.style.opacity = '1';
+                }, 50);
+            }
+            
+            // Handle reviews tab click
+            reviewsTab.addEventListener('click', function() {
+                showReviewsContent();
+            });
+            
+            // Handle other tabs click to hide reviews content
+            allTabs.forEach(tab => {
+                if (tab.id !== 'reviews-tab') {
+                    tab.addEventListener('click', function() {
+                        hideReviewsContent();
+                    });
+                }
+            });
+            
+            // Set initial styles for smooth transition
+            reviewsTabContent.style.opacity = '0';
+            reviewsTabContent.style.transition = 'opacity 0.3s ease';
+        }
+    });
 
     // ===== REVIEW FUNCTIONS =====
 

@@ -131,18 +131,13 @@ let cartManager;
 
 // Initialize cart manager when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initializing CartManager...');
     cartManager = new CartManager();
-    console.log('CartManager initialized:', cartManager);
 });
 
 // Global functions for backward compatibility
 function addToCart(productId) {
-    console.log('addToCart called with productId:', productId);
-
     // Check if cartManager is initialized
     if (!cartManager) {
-        console.error('CartManager not initialized');
         alert('Hệ thống giỏ hàng chưa sẵn sàng');
         return;
     }

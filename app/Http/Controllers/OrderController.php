@@ -269,6 +269,19 @@ class OrderController extends Controller
                     'unit_price' => $item['price'],
                     'total_price' => $item['price'] * $item['quantity']
                 ]);
+
+                // Cập nhật sold_count của product
+                $product = Product::find($item['id']);
+                if ($product) {
+                    $product->increment('sold_count', $item['quantity']);
+                    
+                    Log::info('Updated product sold_count', [
+                        'product_id' => $item['id'],
+                        'product_name' => $item['name'],
+                        'quantity_sold' => $item['quantity'],
+                        'new_sold_count' => $product->fresh()->sold_count
+                    ]);
+                }
             }
 
             // Lưu giỏ hàng vào database nếu user đã đăng nhập và không phải mua ngay
