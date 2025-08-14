@@ -116,12 +116,12 @@
                     </div>
 
                     <!-- Thông tin xuất hóa đơn -->
-                    <div class="invoice-info mb-3">
+                    <!-- <div class="invoice-info mb-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <span>Thông tin xuất hóa đơn</span>
                             <a href="#" class="enter-link">Nhập</a>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Danh sách sản phẩm -->
                     <div class="summary-items">

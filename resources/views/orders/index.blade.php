@@ -84,11 +84,11 @@
                                         Hủy đơn hàng
                                     </button>
                                     @endif
-                                    @if($order->status == 'delivered')
+                                    <!-- @if($order->status == 'delivered')
                                     <button class="btn btn-primary btn-sm">
                                         Đánh giá
                                     </button>
-                                    @endif
+                                    @endif -->
                                 </div>
                             </div>
                         </div>

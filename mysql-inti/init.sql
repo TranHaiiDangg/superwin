@@ -140,20 +140,25 @@ CREATE TABLE `cache_locks` (
 -- Table structure for cart_items
 -- ----------------------------
 DROP TABLE IF EXISTS `cart_items`;
-CREATE TABLE `cart_items` (
+CREATE TABLE `cart_items`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `cart_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `quantity` int NOT NULL DEFAULT '1',
+  `quantity` int NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `price` decimal(10, 2) NULL DEFAULT NULL,
+  `attributes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `unique_cart_product` (`cart_id`,`product_id`) USING BTREE,
-  KEY `idx_cart_id` (`cart_id`) USING BTREE,
-  KEY `idx_product_id` (`product_id`) USING BTREE,
+  UNIQUE INDEX `unique_cart_product`(`cart_id` ASC, `product_id` ASC) USING BTREE,
+  INDEX `idx_cart_id`(`cart_id` ASC) USING BTREE,
+  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
   CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 
 -- ----------------------------
 -- Table structure for carts

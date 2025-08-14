@@ -15,7 +15,7 @@
                 <div class="card-body p-4">
                     <i class="fas fa-phone text-primary fa-3x mb-3"></i>
                     <h5>Hotline</h5>
-                    <p class="text-muted">0123 456 789</p>
+                    <p class="text-muted">028.6269.7382</p>
                     <p class="small text-muted">Thời gian: 8:00 - 22:00</p>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="card-body p-4">
                     <i class="fas fa-envelope text-primary fa-3x mb-3"></i>
                     <h5>Email</h5>
-                    <p class="text-muted">support@superwin.com</p>
+                    <p class="text-muted">superwin.vn@gmail.com</p>
                     <p class="small text-muted">Phản hồi trong 24h</p>
                 </div>
             </div>
@@ -35,9 +35,13 @@
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 border-0 shadow-sm text-center">
                 <div class="card-body p-4">
-                    <i class="fab fa-facebook-messenger text-primary fa-3x mb-3"></i>
-                    <h5>Messenger</h5>
-                    <p class="text-muted">SuperWin Support</p>
+                    <i class="fas fa-comments text-primary fa-3x mb-3"></i>
+                    <h5>Zalo</h5>
+                    <p class="text-muted">
+                        <a href="https://zalo.me/0971687711" target="_blank" class="text-decoration-none">
+                            0971687711
+                        </a>
+                    </p>
                     <p class="small text-muted">Chat trực tuyến</p>
                 </div>
             </div>
@@ -45,7 +49,7 @@
     </div>
 
     <div class="row mt-5">
-        <div class="col-lg-8 mx-auto">
+        <!-- <div class="col-lg-8 mx-auto">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-5">
                     <h4 class="text-center mb-4">Gửi yêu cầu hỗ trợ</h4>
@@ -90,7 +94,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 @endsection 

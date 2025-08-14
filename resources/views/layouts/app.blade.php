@@ -12,7 +12,11 @@
     <meta name="author" content="SuperWin">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/image/favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
 
     <!-- CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -804,11 +808,11 @@
             }
 
             // Check if cartManager is available
-            if (typeof cartManager === 'undefined') {
-                console.error('CartManager not loaded properly');
-            } else {
-                console.log('CartManager loaded successfully');
-            }
+            // if (typeof cartManager === 'undefined') {
+            //     console.error('CartManager not loaded properly');
+            // } else {
+            //     console.log('CartManager loaded successfully');
+            // }
         });
     </script>
 

@@ -1,10 +1,19 @@
--- Sửa foreign key của bảng reviews để reference customers thay vì users
--- Bước 1: Drop foreign key constraint hiện tại
+-- Fix foreign key constraint for reviews table
+USE superwin;
+
+-- Check existing foreign keys first
+SHOW CREATE TABLE `reviews`;
+
+-- Drop existing foreign key constraint (without IF EXISTS)
 ALTER TABLE `reviews` DROP FOREIGN KEY `reviews_ibfk_2`;
 
--- Bước 2: Thêm foreign key mới reference tới customers
-ALTER TABLE `reviews` ADD CONSTRAINT `reviews_ibfk_2` 
-FOREIGN KEY (`user_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+-- Add new foreign key constraint referencing customers table
+ALTER TABLE `reviews` ADD CONSTRAINT `reviews_customer_fk` 
+    FOREIGN KEY (`user_id`) REFERENCES `customers` (`id`) 
+    ON DELETE CASCADE ON UPDATE RESTRICT;
 
--- Bước 3: Cập nhật comment để rõ ràng
-ALTER TABLE `reviews` MODIFY COLUMN `user_id` int NOT NULL COMMENT 'References customers.id, not users.id';
+-- Verify the structure
+DESCRIBE `reviews`;
+
+-- Show sample data to confirm
+SELECT * FROM `reviews` LIMIT 5;

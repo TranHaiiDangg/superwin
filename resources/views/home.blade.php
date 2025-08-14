@@ -399,6 +399,25 @@
 </section>
 @endsection
 
+<!-- Floating Contact Icons -->
+<div class="floating-contact-icons">
+    <!-- Zalo Icon -->
+    <div class="floating-icon zalo-icon">
+        <a href="https://zalo.me/0971687711" target="_blank" title="Chat qua Zalo">
+            <i class="fas fa-comments"></i>
+        </a>
+        <div class="icon-tooltip">Chat Zalo</div>
+    </div>
+    
+    <!-- Phone Icon -->
+    <div class="floating-icon phone-icon">
+        <a href="tel:02862697382" title="Gọi ngay">
+            <i class="fas fa-phone-alt"></i>
+        </a>
+        <div class="icon-tooltip">Gọi ngay</div>
+    </div>
+</div>
+
 @push('scripts')
 <script src="/js/trang_chu/banner_slider.js"></script>
 <script src="/js/trang_chu/flass_deal.js"></script>
@@ -1429,6 +1448,7 @@
     .category-product-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        border: 2px solid #4facfe;
     }
 
     .category-product-image {
@@ -1964,6 +1984,22 @@
         transform: translateY(0);
     }
 
+    .brand-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+        padding: 5px 10px;
+        border-radius: 8px;
+        background-color: #f0f0f0;
+        transition: all 0.3s ease;
+    }
+
+    .brand-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
     /* Responsive for brand section */
     @media (max-width: 768px) {
         .brand-link-home {
@@ -1973,6 +2009,167 @@
         .brand-name-overlay {
             font-size: 0.75rem;
             padding: 6px 8px 8px;
+        }
+    }
+
+    /* Floating Contact Icons */
+    .floating-contact-icons {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .floating-icon {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+    }
+
+    .floating-icon a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        text-decoration: none;
+        color: white;
+        font-size: 24px;
+        transition: all 0.3s ease;
+    }
+
+    .zalo-icon {
+        background: linear-gradient(135deg, #0068ff, #0052cc);
+    }
+
+    .zalo-icon:hover {
+        background: linear-gradient(135deg, #0052cc, #003d99);
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(0, 104, 255, 0.4);
+    }
+
+    .phone-icon {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+    }
+
+    .phone-icon:hover {
+        background: linear-gradient(135deg, #128c7e, #075e54);
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+    }
+
+    .icon-tooltip {
+        position: absolute;
+        right: 70px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .icon-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        transform: translateY(-50%);
+        border: 6px solid transparent;
+        border-left-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .floating-icon:hover .icon-tooltip {
+        opacity: 1;
+        visibility: visible;
+        right: 75px;
+    }
+
+    /* Pulse Animation */
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 104, 255, 0.7);
+        }
+        70% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(0, 104, 255, 0);
+        }
+        100% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 104, 255, 0);
+        }
+    }
+
+    .phone-icon {
+        animation: pulse-phone 2s infinite;
+    }
+
+    @keyframes pulse-phone {
+        0% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(37, 211, 102, 0.7);
+        }
+        70% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(37, 211, 102, 0);
+        }
+        100% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(37, 211, 102, 0);
+        }
+    }
+
+    /* Floating Icons Responsive */
+    @media (max-width: 768px) {
+        .floating-contact-icons {
+            right: 15px;
+            bottom: 15px;
+            gap: 12px;
+        }
+
+        .floating-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .floating-icon a {
+            font-size: 20px;
+        }
+
+        .icon-tooltip {
+            right: 60px;
+            font-size: 11px;
+            padding: 6px 10px;
+        }
+
+        .floating-icon:hover .icon-tooltip {
+            right: 65px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .floating-contact-icons {
+            right: 10px;
+            bottom: 10px;
+        }
+
+        .floating-icon {
+            width: 45px;
+            height: 45px;
+        }
+
+        .floating-icon a {
+            font-size: 18px;
         }
     }
 </style>

@@ -312,6 +312,19 @@ class OrderController extends Controller
                     'variant_name' => $item['variant_name'] ?? null,
                     'variant_code' => $item['variant_code'] ?? null
                 ]);
+
+                // Cập nhật sold_count của product
+                $product = Product::find($item['id']);
+                if ($product) {
+                    $product->increment('sold_count', $item['quantity']);
+                    
+                    Log::info('Updated product sold_count', [
+                        'product_id' => $item['id'],
+                        'product_name' => $item['name'],
+                        'quantity_sold' => $item['quantity'],
+                        'new_sold_count' => $product->fresh()->sold_count
+                    ]);
+                }
             }
 
             // Lưu giỏ hàng vào database nếu user đã đăng nhập và không phải mua ngay

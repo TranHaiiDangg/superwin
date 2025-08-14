@@ -442,8 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const slider = new ResponsiveSlider('.main-slider');
     window.slider = slider;
     
-    console.log('🚀 Enhanced Touch Slider Initialized');
-    console.log('📱 Touch Support:', 'ontouchstart' in window ? 'Yes' : 'No');
+    // console.log('🚀 Enhanced Touch Slider Initialized');
+    // console.log('📱 Touch Support:', 'ontouchstart' in window ? 'Yes' : 'No');
     
     // Handle intersection observer for performance
     if ('IntersectionObserver' in window) {
