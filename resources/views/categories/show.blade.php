@@ -9,35 +9,43 @@
         <div class="col-lg-3 col-md-4">
             <div class="category-sidebar">
                 <!-- Category Filter -->
+                @if($categories->count() > 0)
                 <div class="filter-section">
-                    <h5 class="filter-title">{{ strtoupper($category->name) }}</h5>
-                    @if($category->children->count() > 0)
+                    <h6 class="filter-subtitle">DANH MỤC</h6>
                     <div class="filter-content">
-                        @foreach($category->children as $child)
+                            @foreach($categories as $cat)
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{ $child->id }}" id="cat{{ $child->id }}">
-                            <label class="form-check-label" for="cat{{ $child->id }}">
-                            {{ $child->name }}
+                            <input class="form-check-input" type="checkbox" value="{{ $cat->id }}" id="cat{{ $cat->id }}" name="category_id" {{ request('category_id') == $cat->id ? 'checked' : '' }}>
+                            <label class="form-check-label" for="cat{{ $cat->id }}">
+                                {{ $cat->name }}
                             </label>
                         </div>
                         @endforeach
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="catAll" name="category_id" {{ !request('category_id') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="catAll">Tất cả danh mục</label>
+                        </div>
+                        </div>
                     </div>
                     @endif
-                </div>
 
                 <!-- Brand Filter -->
-                @if($brands->count() > 0)
+                    @if($brands->count() > 0)
                 <div class="filter-section">
-                    <h6 class="filter-subtitle">DÒNG SẢN PHẨM</h6>
+                    <h6 class="filter-subtitle">THƯƠNG HIỆU</h6>
                     <div class="filter-content">
-                        @foreach($brands as $brand)
+                            @foreach($brands as $brand)
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{ $brand->id }}" id="brand{{ $brand->id }}">
+                            <input class="form-check-input" type="checkbox" value="{{ $brand->id }}" id="brand{{ $brand->id }}" name="brand_id" {{ request('brand_id') == $brand->id ? 'checked' : '' }}>
                             <label class="form-check-label" for="brand{{ $brand->id }}">
-                                {{ $brand->name }} <span class="text-muted">({{ $brand->products_count ?? 0 }})</span>
+                                {{ $brand->name }}
                             </label>
                         </div>
-                        @endforeach
+                            @endforeach
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="brandAll" name="brand_id" {{ !request('brand_id') ? 'checked' : '' }}>
+                                <label class="form-check-label" for="brandAll">Tất cả thương hiệu</label>
+                            </div>
                     </div>
                 </div>
                 @endif
@@ -47,45 +55,40 @@
                     <h6 class="filter-subtitle">KHOẢNG GIÁ</h6>
                     <div class="filter-content">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="0-1000000" id="price1">
+                            <input class="form-check-input" type="radio" value="0-1000000" id="price1" name="price_range" {{ request('price_range') == '0-1000000' ? 'checked' : '' }}>
                             <label class="form-check-label" for="price1">Dưới 1.000.000đ</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1000000-3000000" id="price2">
+                            <input class="form-check-input" type="radio" value="1000000-3000000" id="price2" name="price_range" {{ request('price_range') == '1000000-3000000' ? 'checked' : '' }}>
                             <label class="form-check-label" for="price2">1.000.000đ - 3.000.000đ</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="3000000-5000000" id="price3">
+                            <input class="form-check-input" type="radio" value="3000000-5000000" id="price3" name="price_range" {{ request('price_range') == '3000000-5000000' ? 'checked' : '' }}>
                             <label class="form-check-label" for="price3">3.000.000đ - 5.000.000đ</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="5000000-10000000" id="price4">
+                            <input class="form-check-input" type="radio" value="5000000-10000000" id="price4" name="price_range" {{ request('price_range') == '5000000-10000000' ? 'checked' : '' }}>
                             <label class="form-check-label" for="price4">5.000.000đ - 10.000.000đ</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="10000000+" id="price5">
+                            <input class="form-check-input" type="radio" value="10000000+" id="price5" name="price_range" {{ request('price_range') == '10000000+' ? 'checked' : '' }}>
                             <label class="form-check-label" for="price5">Trên 10.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="" id="priceAll" name="price_range" {{ !request('price_range') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="priceAll">Tất cả</label>
                         </div>
                     </div>
                 </div>
 
-                <!-- Rating Filter -->
-                <div class="filter-section">
-                    <h6 class="filter-subtitle">LỌI SẢN PHẨM</h6>
-                    <div class="filter-content">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="sale" id="sale">
-                            <label class="form-check-label" for="sale">Đang khuyến mãi</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="featured" id="featured">
-                            <label class="form-check-label" for="featured">Sản phẩm nổi bật</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="new" id="new">
-                            <label class="form-check-label" for="new">Sản phẩm mới</label>
-                        </div>
-                    </div>
+                <!-- Filter Actions -->
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-primary btn-sm w-100 mb-2" onclick="applyFilters()">
+                        <i class="fas fa-filter me-2"></i>Áp dụng bộ lọc
+                    </button>
+                    <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-secondary btn-sm w-100">
+                        <i class="fas fa-refresh me-2"></i>Xóa bộ lọc
+                    </a>
                 </div>
             </div>
         </div>
@@ -119,10 +122,10 @@
 
                 <!-- Quick Filters -->
                 <div class="quick-filters mb-4">
-                    <button class="quick-filter-btn active" data-filter="all">Tất cả</button>
-                    <button class="quick-filter-btn" data-filter="sale">Đang giảm giá</button>
-                    <button class="quick-filter-btn" data-filter="featured">Nổi bật</button>
-                    <button class="quick-filter-btn" data-filter="bestseller">Bán chạy</button>
+                    <button class="quick-filter-btn {{ !request('filter') && !request('sort_by') ? 'active' : '' }}" data-filter="all">Tất cả</button>
+                    <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
+                    <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
+                    <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
                 </div>
             </div>
 
@@ -383,11 +386,85 @@ document.addEventListener('DOMContentLoaded', function() {
         const perPage = this.value;
         changePerPage(perPage);
     });
+
+    // Handle category checkboxes (only one can be selected)
+    const categoryCheckboxes = document.querySelectorAll('input[name="category_id"]');
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                categoryCheckboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            }
+        });
+    });
+
+    // Handle brand checkboxes (only one can be selected)
+    const brandCheckboxes = document.querySelectorAll('input[name="brand_id"]');
+    brandCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                brandCheckboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            }
+        });
+    });
 });
 
+function applyFilters() {
+    const url = new URL(window.location);
+
+    // Get selected category (checkbox)
+    const selectedCategory = document.querySelector('input[name="category_id"]:checked');
+    if (selectedCategory && selectedCategory.value) {
+        url.searchParams.set('category_id', selectedCategory.value);
+    } else {
+        url.searchParams.delete('category_id');
+    }
+
+    // Get selected brand (checkbox)
+    const selectedBrand = document.querySelector('input[name="brand_id"]:checked');
+    if (selectedBrand && selectedBrand.value) {
+        url.searchParams.set('brand_id', selectedBrand.value);
+    } else {
+        url.searchParams.delete('brand_id');
+    }
+
+    // Get selected price range (radio)
+    const selectedPrice = document.querySelector('input[name="price_range"]:checked');
+    if (selectedPrice && selectedPrice.value) {
+        url.searchParams.set('price_range', selectedPrice.value);
+    } else {
+        url.searchParams.delete('price_range');
+    }
+
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
 function filterProducts(filter) {
-    // Implementation for filtering products
-    console.log('Filtering by:', filter);
+    const url = new URL(window.location);
+
+    switch(filter) {
+        case 'sale':
+            url.searchParams.set('filter', 'sale');
+            break;
+        case 'featured':
+            url.searchParams.set('filter', 'featured');
+            break;
+        case 'bestseller':
+            url.searchParams.set('sort_by', 'bestseller');
+            url.searchParams.delete('filter');
+            break;
+        case 'all':
+        default:
+            url.searchParams.delete('filter');
+            break;
+    }
+
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
 }
 
 function sortProducts(sortBy) {
@@ -402,6 +479,12 @@ function changePerPage(perPage) {
     url.searchParams.set('per_page', perPage);
     url.searchParams.delete('page'); // Reset to first page
     window.location.href = url.toString();
+}
+
+// Add to cart function (placeholder)
+function addToCart(productId) {
+    console.log('Add to cart:', productId);
+    // Implement add to cart functionality
 }
 </script>
 @endpush

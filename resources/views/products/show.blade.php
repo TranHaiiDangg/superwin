@@ -172,9 +172,7 @@
                                     <button class="btn btn-outline-primary btn-lg flex-fill me-md-2" onclick="buyNow()">
                                         <i class="fas fa-bolt me-2"></i>Mua ngay
                                     </button>
-                                    <button class="btn btn-outline-danger btn-lg" style="width: 60px;" onclick="toggleWishlist()">
-                                        <i class="fas fa-heart"></i>
-                                    </button>
+
                                 </div>
                             </div>
 
@@ -696,7 +694,7 @@
             <form id="reviewForm" action="{{ route('reviews.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
-                
+
                 <div class="modal-body">
                     <!-- Product Info -->
                     <div class="product-review-info mb-4">
@@ -765,7 +763,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i>Hủy
@@ -2490,8 +2488,34 @@
         const targetProductId = productId || '{{ $product->id ?? "" }}';
         const quantity = document.getElementById('quantity') ? document.getElementById('quantity').value : 1;
 
-        // Redirect to checkout page
-        window.location.href = `/checkout?product=${targetProductId}&quantity=${quantity}`;
+        // Debug: Log thông tin
+        console.log('Buy Now Debug:', {
+            productId: productId,
+            targetProductId: targetProductId,
+            quantity: quantity,
+            productIdFromBlade: '{{ $product->id ?? "" }}'
+        });
+
+        // Kiểm tra nếu có product ID
+        if (!targetProductId || targetProductId === '') {
+            alert('Không tìm thấy thông tin sản phẩm!');
+            return;
+        }
+
+        // Lưu thông tin cơ bản vào sessionStorage để trang checkout có thể đọc
+        const buyNowInfo = {
+            productId: targetProductId,
+            quantity: parseInt(quantity),
+            timestamp: Date.now()
+        };
+
+        sessionStorage.setItem('buyNowData', JSON.stringify(buyNowInfo));
+        console.log('Buy now info saved to sessionStorage:', buyNowInfo);
+
+        // Chuyển đến trang checkout
+        const checkoutUrl = `/checkout?buy_now=1&product_id=${targetProductId}&quantity=${quantity}`;
+        console.log('Redirecting to:', checkoutUrl);
+        window.location.href = checkoutUrl;
     }
 
     function toggleWishlist() {
@@ -2512,11 +2536,11 @@
     function showNotification(message, type = 'info') {
         // Remove existing notifications first
         document.querySelectorAll('.custom-notification').forEach(notif => notif.remove());
-        
+
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `custom-notification alert alert-${type} alert-dismissible fade show`;
-        
+
         // Enhanced styling for better visibility
         const bgColors = {
             'success': 'linear-gradient(135deg, #28a745, #20c997)',
@@ -2524,12 +2548,12 @@
             'info': 'linear-gradient(135deg, #17a2b8, #6f42c1)',
             'warning': 'linear-gradient(135deg, #ffc107, #fd7e14)'
         };
-        
+
         notification.style.cssText = `
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            z-index: 99999; 
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
             min-width: 350px;
             max-width: 500px;
             background: ${bgColors[type] || bgColors['info']};
@@ -2554,7 +2578,7 @@
             <div style="display: flex; align-items: center; gap: 12px;">
                 <i class="fas fa-${icons[type] || icons['info']}" style="font-size: 20px; flex-shrink: 0;"></i>
                 <div style="flex: 1; line-height: 1.4;">${message}</div>
-                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.parentElement.remove()" 
+                <button type="button" class="btn-close btn-close-white" onclick="this.parentElement.parentElement.remove()"
                         style="margin: 0; padding: 8px; opacity: 0.8;" aria-label="Close">
                 </button>
             </div>
@@ -2587,10 +2611,10 @@
             console.warn('Review modal not found - user may not be logged in');
             return;
         }
-        
+
         // Reset form
         resetReviewForm();
-        
+
         // Show modal
         const reviewModal = new bootstrap.Modal(reviewModalElement);
         reviewModal.show();
@@ -2599,34 +2623,34 @@
     function resetReviewForm() {
         const form = document.getElementById('reviewForm');
         if (!form) return;
-        
+
         form.reset();
-        
+
         // Reset rating
         const stars = document.querySelectorAll('.star-item');
         const ratingInput = document.getElementById('ratingInput');
         const ratingText = document.querySelector('.rating-text');
-        
+
         if (stars.length) {
             stars.forEach(star => {
                 star.classList.remove('active');
             });
         }
-        
+
         if (ratingInput) {
             ratingInput.value = '';
         }
-        
+
         if (ratingText) {
             ratingText.textContent = 'Chọn số sao';
         }
-        
+
         // Reset comment count
         const commentCount = document.getElementById('commentCount');
         if (commentCount) {
             commentCount.textContent = '0';
         }
-        
+
         // Clear validation errors
         clearValidationErrors();
     }
@@ -2663,10 +2687,10 @@
         stars.forEach((star, index) => {
             star.addEventListener('click', function() {
                 const rating = parseInt(this.dataset.rating);
-                
+
                 // Update hidden input
                 ratingInput.value = rating;
-                
+
                 // Update visual stars
                 stars.forEach((s, i) => {
                     if (i < rating) {
@@ -2675,11 +2699,11 @@
                         s.classList.remove('active');
                     }
                 });
-                
+
                 // Update rating text
                 const ratingTexts = ['', 'Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Rất tốt'];
                 ratingText.textContent = ratingTexts[rating];
-                
+
                 // Clear rating error
                 document.getElementById('ratingError').textContent = '';
                 document.querySelector('.rating-input').classList.remove('is-invalid');
@@ -2716,12 +2740,12 @@
         // Comment character count
         const commentTextarea = document.getElementById('reviewComment');
         const commentCount = document.getElementById('commentCount');
-        
+
         if (commentTextarea && commentCount) {
             commentTextarea.addEventListener('input', function() {
                 const length = this.value.length;
                 commentCount.textContent = length;
-                
+
                 // Color coding
                 if (length < 10) {
                     commentCount.style.color = '#dc3545';
@@ -2746,24 +2770,24 @@
     function submitReview() {
         const form = document.getElementById('reviewForm');
         const submitBtn = document.getElementById('submitReviewBtn');
-        
+
         // Clear previous errors
         clearValidationErrors();
-        
+
         // Validate form
         if (!validateReviewForm()) {
             return;
         }
-        
+
         // Show loading state
         submitBtn.classList.add('btn-loading');
         submitBtn.innerHTML = '<span style="opacity: 0;">Đang gửi...</span>';
-        
+
         // Get CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         console.log('CSRF Token found:', csrfToken ? 'Yes' : 'No');
         console.log('CSRF Token value:', csrfToken);
-        
+
         if (!csrfToken) {
             console.error('CSRF token not found in meta tag');
             showNotification('Lỗi bảo mật. Vui lòng tải lại trang và thử lại.', 'error');
@@ -2773,7 +2797,7 @@
         // Prepare form data
         const formData = new FormData(form);
         formData.append('_token', csrfToken);
-        
+
         // Debug: Log form data
         console.log('Form data being sent:');
         for (let pair of formData.entries()) {
@@ -2793,21 +2817,21 @@
         .then(response => {
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
-            
+
             if (!response.ok) {
                 // Try to get error message from response
                 return response.text().then(text => {
                     let errorMessage = `HTTP error! status: ${response.status}`;
-                    
+
                     // Try to parse JSON error message
                     try {
                         const errorData = JSON.parse(text);
                         console.log('Error response data:', errorData);
-                        
+
                         if (errorData.message) {
                             errorMessage = errorData.message;
                         }
-                        
+
                         // Handle validation errors specifically
                         if (errorData.errors && response.status === 422) {
                             const firstError = Object.values(errorData.errors)[0];
@@ -2827,11 +2851,11 @@
                             errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
                         }
                     }
-                    
+
                     throw new Error(errorMessage);
                 });
             }
-            
+
             return response.json();
         })
         .then(data => {
@@ -2840,10 +2864,10 @@
                 // Close modal
                 const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
                 reviewModal.hide();
-                
+
                 // Show success message
                 showNotification(data.message, 'success');
-                
+
                 // Add new review to the list
                 if (data.review) {
                     addNewReviewToList(data.review);
@@ -2852,32 +2876,32 @@
                         updateRatingDisplay(data.updated_rating);
                     }
                 }
-                
+
                 // Reset form
                 resetReviewForm();
-                
+
             } else {
                 console.log('Review submission failed:', data);
-                
+
                 // Show error message
                 let errorMessage = data.message || 'Có lỗi xảy ra khi gửi đánh giá';
-                
+
                 // If there are specific validation errors, show the first one
                 if (data.errors && Object.keys(data.errors).length > 0) {
                     const firstErrorField = Object.keys(data.errors)[0];
                     const firstErrorMessage = data.errors[firstErrorField][0];
                     errorMessage = firstErrorMessage;
-                    
+
                     // Also show field-specific errors
                     showValidationErrors(data.errors);
                 }
-                
+
                 showNotification(errorMessage, 'error');
             }
         })
         .catch(error => {
             console.error('Error submitting review:', error);
-            
+
             // Use error message if available, otherwise default
             const errorMessage = error.message || 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.';
             showNotification(errorMessage, 'error');
@@ -2891,12 +2915,12 @@
 
     function validateReviewForm() {
         let isValid = true;
-        
+
         // Validate rating
         const ratingInput = document.getElementById('ratingInput');
         const ratingContainer = document.querySelector('.rating-input');
         const ratingError = document.getElementById('ratingError');
-        
+
         if (ratingInput) {
             const rating = ratingInput.value;
             if (!rating || rating < 1 || rating > 5) {
@@ -2905,11 +2929,11 @@
                 isValid = false;
             }
         }
-        
+
         // Validate comment
         const commentInput = document.getElementById('reviewComment');
         const commentError = document.getElementById('commentError');
-        
+
         if (commentInput) {
             const comment = commentInput.value.trim();
             if (!comment) {
@@ -2926,7 +2950,7 @@
                 isValid = false;
             }
         }
-        
+
         return isValid;
     }
 
@@ -2934,15 +2958,15 @@
         Object.keys(errors).forEach(field => {
             const errorElement = document.getElementById(field + 'Error');
             const inputElement = document.getElementById('review' + field.charAt(0).toUpperCase() + field.slice(1));
-            
+
             if (errorElement && errors[field][0]) {
                 errorElement.textContent = errors[field][0];
             }
-            
+
             if (inputElement) {
                 inputElement.classList.add('is-invalid');
             }
-            
+
             // Special handling for rating
             if (field === 'rating') {
                 document.querySelector('.rating-input').classList.add('is-invalid');
@@ -2953,12 +2977,12 @@
     function addNewReviewToList(review) {
         const reviewsList = document.getElementById('reviewsList');
         const noReviews = document.querySelector('.no-reviews');
-        
+
         // Hide no reviews message if exists
         if (noReviews) {
             noReviews.style.display = 'none';
         }
-        
+
         // Create new review element
         const reviewElement = document.createElement('div');
         reviewElement.className = 'review-item';
@@ -2975,7 +2999,7 @@
             ${review.title ? `<div class="review-title"><strong>${review.title}</strong></div>` : ''}
             <div class="review-content">${review.comment}</div>
         `;
-        
+
         // Add to top of reviews list
         if (reviewsList) {
             const firstReview = reviewsList.querySelector('.review-item');
@@ -2996,7 +3020,7 @@
             newReviewsSection.appendChild(reviewElement);
             reviewsTab.querySelector('.tab-content-wrapper').appendChild(newReviewsSection);
         }
-        
+
         // Update review count
         updateReviewCount();
     }
@@ -3019,7 +3043,7 @@
         if (reviewCountElement) {
             reviewCountElement.textContent = `${reviewItems} bình luận cho sản phẩm này`;
         }
-        
+
         // Update tab title
         const reviewTab = document.querySelector('#reviews-tab');
         if (reviewTab) {

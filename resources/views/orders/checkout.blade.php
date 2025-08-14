@@ -5,6 +5,13 @@
 @section('content')
 <div class="checkout-page py-4">
     <div class="container">
+        @if(isset($isBuyNow) && $isBuyNow)
+            <div class="alert alert-info mb-4" role="alert">
+                <i class="fas fa-bolt me-2"></i>
+                <strong>Chế độ Mua ngay:</strong> Bạn đang thực hiện mua nhanh sản phẩm này. Sản phẩm sẽ được giao ngay sau khi đặt hàng thành công.
+            </div>
+        @endif
+
         <div class="row">
             <!-- Left Side - Main Content -->
             <div class="col-lg-8">
@@ -13,6 +20,12 @@
                         @csrf
                         <!-- Hidden input để gửi dữ liệu giỏ hàng từ localStorage -->
                         <input type="hidden" name="cart_data" id="cartDataInput">
+
+                        @if(isset($isBuyNow) && $isBuyNow)
+                            <input type="hidden" name="buy_now" value="1">
+                            <input type="hidden" name="product_id" value="{{ request()->get('product_id') }}">
+                            <input type="hidden" name="quantity" value="{{ request()->get('quantity', 1) }}">
+                        @endif
 
                         <!-- Hidden inputs cho thông tin khách hàng và địa chỉ -->
                         <input type="hidden" name="customer_name" value="{{ auth('customer')->user()->name ?? 'Khách hàng' }}">
@@ -63,14 +76,14 @@
                                         <div class="text-muted">Thanh toán bằng tiền mặt khi nhận hàng</div>
                                     </label>
                                 </div>
-                                <div class="form-check mb-3">
+                                <!-- <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="vnpay" value="vnpay">
                                     <label class="form-check-label" for="vnpay">
                                         <i class="fas fa-credit-card me-2"></i>
                                         <strong>Thanh toán trực tuyến (VNPAY)</strong>
                                         <div class="text-muted">Thanh toán online qua VNPAY</div>
                                     </label>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
 
@@ -90,8 +103,16 @@
             <div class="col-lg-4">
                 <div class="order-summary">
                     <div class="summary-header">
-                        <h4 class="summary-title">Đơn hàng của bạn</h4>
-                        <a href="{{ route('cart.index') }}" class="change-link">Thay đổi</a>
+                        <h4 class="summary-title">
+                            @if(isset($isBuyNow) && $isBuyNow)
+                                Mua ngay
+                            @else
+                                Đơn hàng của bạn
+                            @endif
+                        </h4>
+                        @if(!isset($isBuyNow) || !$isBuyNow)
+                            <a href="{{ route('cart.index') }}" class="change-link">Thay đổi</a>
+                        @endif
                     </div>
 
                     <!-- Thông tin xuất hóa đơn -->
@@ -180,35 +201,35 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-user"></i>
                                     </span>
-                                    <input type="text" class="form-control" id="modal_name" 
+                                    <input type="text" class="form-control" id="modal_name"
                                            value="{{ auth('customer')->user()->name ?? '' }}" required>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="modal_phone" class="form-label">Số điện thoại *</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-phone"></i>
                                     </span>
-                                    <input type="tel" class="form-control" id="modal_phone" 
+                                    <input type="tel" class="form-control" id="modal_phone"
                                            value="{{ auth('customer')->user()->phone ?? '' }}" required>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="modal_address" class="form-label">Địa chỉ *</label>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="fas fa-map-marker-alt"></i>
                                     </span>
-                                    <input type="text" class="form-control" id="modal_address" 
-                                           value="{{ auth('customer')->user()->address ?? '' }}" 
+                                    <input type="text" class="form-control" id="modal_address"
+                                           value="{{ auth('customer')->user()->address ?? '' }}"
                                            placeholder="Số nhà, tên đường" required>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="modal_city" class="form-label">Tỉnh/Thành phố *</label>
@@ -221,7 +242,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="modal_district" class="form-label">Quận/Huyện *</label>
                                 <div class="input-group">
@@ -233,7 +254,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="modal_ward" class="form-label">Phường/Xã *</label>
                                 <div class="input-group">
@@ -587,7 +608,7 @@
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .modal-body {
         padding: 1rem;
     }
@@ -603,31 +624,31 @@ class CheckoutAddressManager {
         this.citySelect = document.getElementById('modal_city');
         this.districtSelect = document.getElementById('modal_district');
         this.wardSelect = document.getElementById('modal_ward');
-        
+
         // Store current values for pre-selection
         this.currentCity = '{{ auth("customer")->user()->city ?? "" }}';
         this.currentDistrict = '{{ auth("customer")->user()->district ?? "" }}';
         this.currentWard = '{{ auth("customer")->user()->ward ?? "" }}';
-        
+
         this.init();
     }
-    
+
     async init() {
         await this.loadProvinces();
         this.bindEvents();
     }
-    
+
     async loadProvinces() {
         try {
             this.showLoading(this.citySelect, 'Đang tải tỉnh/thành phố...');
-            
+
             const response = await fetch('/api/provinces');
             const data = await response.json();
-            
+
             if (data.success && data.data) {
                 this.populateSelect(this.citySelect, data.data, 'name', 'name', '-- Chọn Tỉnh/Thành phố --');
                 this.citySelect.parentElement.classList.remove('address-loading');
-                
+
                 // Pre-select current city if exists
                 if (this.currentCity) {
                     this.selectOptionByText(this.citySelect, this.currentCity);
@@ -644,20 +665,20 @@ class CheckoutAddressManager {
             this.showError(this.citySelect, 'Lỗi kết nối. Vui lòng thử lại');
         }
     }
-    
+
     async loadDistricts(provinceCode) {
         try {
             this.showLoading(this.districtSelect, 'Đang tải quận/huyện...');
             this.resetSelect(this.wardSelect, '-- Chọn Phường/Xã --');
             this.wardSelect.disabled = true;
-            
+
             const response = await fetch(`/api/districts/${provinceCode}`);
             const data = await response.json();
-            
+
             if (data.success && data.data) {
                 this.populateSelect(this.districtSelect, data.data, 'name', 'name', '-- Chọn Quận/Huyện --');
                 this.districtSelect.parentElement.classList.remove('address-loading');
-                
+
                 if (this.currentDistrict) {
                     this.selectOptionByText(this.districtSelect, this.currentDistrict);
                     const selectedOption = this.districtSelect.options[this.districtSelect.selectedIndex];
@@ -673,18 +694,18 @@ class CheckoutAddressManager {
             this.showError(this.districtSelect, 'Lỗi kết nối. Vui lòng thử lại');
         }
     }
-    
+
     async loadWards(districtCode) {
         try {
             this.showLoading(this.wardSelect, 'Đang tải phường/xã...');
-            
+
             const response = await fetch(`/api/wards/${districtCode}`);
             const data = await response.json();
-            
+
             if (data.success && data.data) {
                 this.populateSelect(this.wardSelect, data.data, 'name', 'name', '-- Chọn Phường/Xã --');
                 this.wardSelect.parentElement.classList.remove('address-loading');
-                
+
                 if (this.currentWard) {
                     this.selectOptionByText(this.wardSelect, this.currentWard);
                 }
@@ -696,10 +717,10 @@ class CheckoutAddressManager {
             this.showError(this.wardSelect, 'Lỗi kết nối. Vui lòng thử lại');
         }
     }
-    
+
     populateSelect(select, items, valueField, textField, placeholder) {
         select.innerHTML = `<option value="">${placeholder}</option>`;
-        
+
         items.forEach(item => {
             const option = document.createElement('option');
             option.value = item[valueField];
@@ -707,27 +728,27 @@ class CheckoutAddressManager {
             option.dataset.code = item.code || '';
             select.appendChild(option);
         });
-        
+
         select.disabled = false;
     }
-    
+
     resetSelect(select, placeholder) {
         select.innerHTML = `<option value="">${placeholder}</option>`;
         select.disabled = true;
     }
-    
+
     showLoading(select, message) {
         select.innerHTML = `<option value="" class="loading-option">${message}</option>`;
         select.disabled = true;
         select.parentElement.classList.add('address-loading');
     }
-    
+
     showError(select, message) {
         select.innerHTML = `<option value="" class="error-option">${message}</option>`;
         select.disabled = true;
         select.parentElement.classList.remove('address-loading');
     }
-    
+
     selectOptionByText(select, text) {
         for (let i = 0; i < select.options.length; i++) {
             if (select.options[i].textContent.trim() === text.trim()) {
@@ -736,15 +757,15 @@ class CheckoutAddressManager {
             }
         }
     }
-    
+
     bindEvents() {
         this.citySelect.addEventListener('change', async (e) => {
             const selectedOption = e.target.options[e.target.selectedIndex];
             const provinceCode = selectedOption.dataset.code;
-            
+
             this.currentDistrict = '';
             this.currentWard = '';
-            
+
             if (provinceCode) {
                 await this.loadDistricts(provinceCode);
             } else {
@@ -754,13 +775,13 @@ class CheckoutAddressManager {
                 this.wardSelect.disabled = true;
             }
         });
-        
+
         this.districtSelect.addEventListener('change', async (e) => {
             const selectedOption = e.target.options[e.target.selectedIndex];
             const districtCode = selectedOption.dataset.code;
-            
+
             this.currentWard = '';
-            
+
             if (districtCode) {
                 await this.loadWards(districtCode);
             } else {
@@ -775,17 +796,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('checkoutForm');
     const submitBtn = document.getElementById('submitBtn');
     const cartDataInput = document.getElementById('cartDataInput');
-    
+
     // Initialize Address Manager
     let addressManager;
-    
+
     // Initialize address manager when modal is opened
     document.getElementById('updateAddressModal').addEventListener('shown.bs.modal', function () {
         if (!addressManager) {
             addressManager = new CheckoutAddressManager();
         }
     });
-    
+
     // Save address button handler
     document.getElementById('saveAddressBtn').addEventListener('click', function() {
         const name = document.getElementById('modal_name').value;
@@ -794,54 +815,72 @@ document.addEventListener('DOMContentLoaded', function() {
         const city = document.getElementById('modal_city').value;
         const district = document.getElementById('modal_district').value;
         const ward = document.getElementById('modal_ward').value;
-        
+
         // Validate required fields
         if (!name || !phone || !address || !city || !district || !ward) {
             showToast('Vui lòng điền đầy đủ thông tin địa chỉ', 'error');
             return;
         }
-        
+
         // Update the address display on checkout page
         updateAddressDisplay(name, phone, address, city, district, ward);
-        
+
         // Update hidden form inputs
         updateFormInputs(name, phone, address, city, district, ward);
-        
+
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('updateAddressModal'));
         modal.hide();
-        
+
         showToast('Cập nhật địa chỉ thành công!', 'success');
     });
 
-    // Lấy dữ liệu giỏ hàng từ localStorage
+    // Lấy dữ liệu giỏ hàng từ localStorage hoặc sessionStorage (cho mua ngay)
     function loadCartData() {
-        const cartData = localStorage.getItem('superwin_cart');
-        if (cartData) {
-            cartDataInput.value = cartData;
+        // Kiểm tra nếu là mua ngay
+        const urlParams = new URLSearchParams(window.location.search);
+        const isBuyNow = urlParams.get('buy_now');
+
+        if (isBuyNow === '1') {
+            // Lấy dữ liệu từ sessionStorage cho mua ngay
+            const buyNowData = sessionStorage.getItem('buyNowData');
+            if (buyNowData) {
+                cartDataInput.value = buyNowData;
+                // Xóa dữ liệu mua ngay sau khi load
+                sessionStorage.removeItem('buyNowData');
+            } else {
+                // Nếu không có dữ liệu mua ngay, redirect về trang trước
+                window.history.back();
+            }
         } else {
-            // Nếu không có dữ liệu giỏ hàng, redirect về trang giỏ hàng
-            window.location.href = '{{ route("cart.index") }}';
+            // Lấy dữ liệu giỏ hàng từ localStorage
+            const cartData = localStorage.getItem('superwin_cart');
+            if (cartData) {
+                cartDataInput.value = cartData;
+            } else {
+                // Nếu không có dữ liệu giỏ hàng, redirect về trang giỏ hàng
+                window.location.href = '{{ route("cart.index") }}';
+            }
         }
     }
 
     // Load dữ liệu giỏ hàng khi trang load
     loadCartData();
-    
+
     // Function to update address display
     function updateAddressDisplay(name, phone, address, city, district, ward) {
         const customerInfo = document.querySelector('.customer-info');
         const addressDetails = document.querySelector('.address-details');
-        
+
         if (customerInfo) {
             customerInfo.innerHTML = `<strong>${name}</strong> - <span>${phone}</span>`;
         }
-        
+
         if (addressDetails) {
             addressDetails.textContent = `${address}, ${ward}, ${district}, ${city}`;
         }
     }
-    
+
     // Function to update hidden form inputs
     function updateFormInputs(name, phone, address, city, district, ward) {
         const inputs = {
@@ -852,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'shipping_district': district,
             'shipping_ward': ward
         };
-        
+
         Object.keys(inputs).forEach(name => {
             const input = document.querySelector(`input[name="${name}"]`);
             if (input) {

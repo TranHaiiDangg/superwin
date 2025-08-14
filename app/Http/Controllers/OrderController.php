@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Customer;
+use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,25 +50,83 @@ class OrderController extends Controller
 
     public function checkout()
     {
-        // Kiểm tra xem có dữ liệu giỏ hàng được gửi từ JavaScript không
-        $cartData = request()->input('cart_data');
-
-        if (!$cartData) {
-            return redirect()->route('cart.index')->with('error', 'Vui lòng chọn sản phẩm từ giỏ hàng');
-        }
-
         $customer = Auth::guard('customer')->user();
+        $cartData = null;
+        $isBuyNow = false;
 
-        // Lấy dữ liệu giỏ hàng từ localStorage
-        $this->cartService->getCartFromLocalStorage($cartData);
+        // Debug: Log request parameters
+        Log::info('Checkout request', [
+            'buy_now' => request()->get('buy_now'),
+            'product_id' => request()->get('product_id'),
+            'quantity' => request()->get('quantity'),
+            'all_params' => request()->all()
+        ]);
 
-        if (!$this->cartService->hasItems()) {
-            return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+        // Kiểm tra nếu là "Mua ngay"
+        if (request()->has('buy_now') && request()->get('buy_now') == '1') {
+            $productId = request()->get('product_id');
+            $quantity = request()->get('quantity', 1);
+
+            Log::info('Buy now detected', [
+                'product_id' => $productId,
+                'quantity' => $quantity
+            ]);
+
+            if (!$productId) {
+                Log::warning('No product_id provided');
+                return redirect()->back()->with('error', 'Không tìm thấy thông tin sản phẩm');
+            }
+
+            $product = Product::find($productId);
+            if (!$product) {
+                Log::warning('Product not found', ['product_id' => $productId]);
+                return redirect()->back()->with('error', 'Sản phẩm không tồn tại');
+            }
+
+            Log::info('Product found', [
+                'product_id' => $product->id,
+                'product_name' => $product->name
+            ]);
+
+            // Tạo dữ liệu giỏ hàng cho mua ngay
+            $cartData = [
+                'items' => [
+                    [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'price' => $product->isOnSale ? $product->sale_price : $product->price,
+                        'original_price' => $product->price,
+                        'quantity' => (int)$quantity,
+                        'image' => $product->baseImage ? $product->baseImage->url : '/image/sp1.png',
+                        'slug' => $product->slug,
+                        'attributes' => []
+                    ]
+                ],
+                'total' => ($product->isOnSale ? $product->sale_price : $product->price) * (int)$quantity,
+                'itemCount' => (int)$quantity,
+                'isBuyNow' => true
+            ];
+
+            $isBuyNow = true;
+        } else {
+            // Kiểm tra xem có dữ liệu giỏ hàng được gửi từ JavaScript không
+            $cartDataInput = request()->input('cart_data');
+
+            if (!$cartDataInput) {
+                return redirect()->route('cart.index')->with('error', 'Vui lòng chọn sản phẩm từ giỏ hàng');
+            }
+
+            // Lấy dữ liệu giỏ hàng từ localStorage
+            $this->cartService->getCartFromLocalStorage($cartDataInput);
+
+            if (!$this->cartService->hasItems()) {
+                return redirect()->route('cart.index')->with('error', 'Giỏ hàng của bạn đang trống');
+            }
+
+            $cartData = $this->cartService->getCartData();
         }
 
-        $cartData = $this->cartService->getCartData();
-
-        return view('orders.checkout', compact('customer', 'cartData'));
+        return view('orders.checkout', compact('customer', 'cartData', 'isBuyNow'));
     }
 
     public function store(Request $request)
@@ -79,17 +138,22 @@ class OrderController extends Controller
             'method' => $request->method()
         ]);
 
-        // Lấy dữ liệu giỏ hàng từ localStorage
-        $cartData = $request->input('cart_data');
+        // Kiểm tra nếu là mua ngay
+        $isBuyNow = $request->has('buy_now') && $request->get('buy_now') == '1';
 
-        if (!$cartData) {
-            return redirect()->back()->with('error', 'Không tìm thấy dữ liệu giỏ hàng')->withInput();
-        }
+        if (!$isBuyNow) {
+            // Lấy dữ liệu giỏ hàng từ localStorage cho trường hợp thường
+            $cartData = $request->input('cart_data');
 
-        $this->cartService->getCartFromLocalStorage($cartData);
+            if (!$cartData) {
+                return redirect()->back()->with('error', 'Không tìm thấy dữ liệu giỏ hàng')->withInput();
+            }
 
-        if (!$this->cartService->hasItems()) {
-            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống')->withInput();
+            $this->cartService->getCartFromLocalStorage($cartData);
+
+            if (!$this->cartService->hasItems()) {
+                return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống')->withInput();
+            }
         }
 
         $validator = Validator::make($request->all(), [
@@ -102,7 +166,7 @@ class OrderController extends Controller
             'shipping_ward' => 'required|string|max:100',
             'payment_method' => 'required|in:cod,vnpay',
             'customer_note' => 'nullable|string|max:1000',
-            'cart_data' => 'required|string'
+            'cart_data' => $isBuyNow ? 'nullable|string' : 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -113,7 +177,37 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $customer = Auth::guard('customer')->user();
-            $cartData = $this->cartService->getCartData();
+
+            // Xử lý dữ liệu giỏ hàng
+            $cartData = null;
+            $isBuyNow = false;
+
+            // Kiểm tra nếu là mua ngay
+            if (request()->has('buy_now') && request()->get('buy_now') == '1') {
+                $productId = request()->get('product_id');
+                $quantity = request()->get('quantity', 1);
+
+                $product = Product::find($productId);
+                if (!$product) {
+                    throw new \Exception('Sản phẩm không tồn tại');
+                }
+
+                $cartData = [
+                    'items' => [
+                        [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'price' => $product->isOnSale ? $product->sale_price : $product->price,
+                            'quantity' => (int)$quantity,
+                            'sku' => $product->sku ?? ''
+                        ]
+                    ],
+                    'total' => ($product->isOnSale ? $product->sale_price : $product->price) * (int)$quantity
+                ];
+                $isBuyNow = true;
+            } else {
+                $cartData = $this->cartService->getCartData();
+            }
 
             // Tạo mã đơn hàng
             $orderCode = $this->generateOrderCode();
@@ -177,8 +271,10 @@ class OrderController extends Controller
                 ]);
             }
 
-            // Lưu giỏ hàng vào database nếu user đã đăng nhập
-            $this->cartService->syncToDatabase();
+            // Lưu giỏ hàng vào database nếu user đã đăng nhập và không phải mua ngay
+            if (!$isBuyNow) {
+                $this->cartService->syncToDatabase();
+            }
 
             DB::commit();
 

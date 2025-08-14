@@ -362,12 +362,19 @@
         const finalPrice = modelConfig.price + motorConfig.priceModifier;
 
         return {
+            id: productConfig.productId || window.productId, // Lấy ID từ global variable
             name: `Máy Bơm Super Win ${currentState.selectedModel} | ${motorConfig.label}`,
             model: currentState.selectedModel,
             motorType: currentState.selectedMotor,
             power: modelConfig.power,
             quantity: currentState.quantity,
-            price: finalPrice
+            price: finalPrice,
+            image: productConfig.productImage || '/image/sp1.png', // Lấy image từ global variable
+            attributes: {
+                model: currentState.selectedModel,
+                motorType: currentState.selectedMotor,
+                power: modelConfig.power
+            }
         };
     }
 
@@ -386,8 +393,32 @@
 
     function buyNow() {
         const product = getCurrentProductConfig();
-        showNotification('Đang chuyển đến trang thanh toán...', 'info');
-        console.log('Buy now:', product);
+        const quantity = parseInt(document.getElementById('quantity')?.value || 1);
+
+        if (!product || !product.id) {
+            showNotification('Vui lòng chọn sản phẩm trước khi mua', 'error');
+            return;
+        }
+
+        // Tạo dữ liệu giỏ hàng tạm thời cho mua ngay
+        const buyNowData = {
+            items: [{
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+                image: product.image,
+                attributes: product.attributes || {}
+            }],
+            total: product.price * quantity,
+            itemCount: quantity
+        };
+
+        // Lưu vào sessionStorage để checkout page có thể đọc
+        sessionStorage.setItem('buyNowData', JSON.stringify(buyNowData));
+
+        // Chuyển đến trang checkout với tham số buy_now
+        window.location.href = `/checkout?buy_now=1&product_id=${product.id}&quantity=${quantity}`;
     }
 
     // Tab System

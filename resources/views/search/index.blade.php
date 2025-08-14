@@ -188,9 +188,9 @@
                                     @endif
                                 </div>
 
-                            <button class="product-btn" onclick="addToCart('{{ $product->id }}')">
+                            <!-- <button class="product-btn" onclick="addToCart('{{ $product->id }}')">
                                 Xem Ngay
-                                    </button>
+                            </button> -->
                         </div>
                     </div>
                 </div>
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function applyFilters() {
     const url = new URL(window.location);
-    
+
     // Get selected category
     const selectedCategory = document.querySelector('input[name="category_id"]:checked');
     if (selectedCategory) {
@@ -403,7 +403,7 @@ function applyFilters() {
     } else {
         url.searchParams.delete('category_id');
     }
-    
+
     // Get selected brand
     const selectedBrand = document.querySelector('input[name="brand_id"]:checked');
     if (selectedBrand) {
@@ -411,7 +411,7 @@ function applyFilters() {
     } else {
         url.searchParams.delete('brand_id');
     }
-    
+
     // Get selected price range
     const selectedPrice = document.querySelector('input[name="price_range"]:checked');
     if (selectedPrice && selectedPrice.value) {
@@ -419,14 +419,14 @@ function applyFilters() {
     } else {
         url.searchParams.delete('price_range');
     }
-    
+
     url.searchParams.delete('page'); // Reset to first page
     window.location.href = url.toString();
 }
 
 function filterProducts(filter) {
     const url = new URL(window.location);
-    
+
     switch(filter) {
         case 'sale':
             url.searchParams.set('filter', 'sale');
@@ -443,7 +443,7 @@ function filterProducts(filter) {
             url.searchParams.delete('filter');
             break;
     }
-    
+
     url.searchParams.delete('page'); // Reset to first page
     window.location.href = url.toString();
 }
@@ -988,12 +988,12 @@ function addToCart(productId) {
     .suggested-products-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-    
+
     .products-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 16px;
     }
-    
+
     .category-sidebar {
         position: static;
         margin-bottom: 20px;
@@ -1006,15 +1006,15 @@ function addToCart(productId) {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
-    
+
     .category-header {
         padding: 15px;
     }
-    
+
     .quick-filters {
         justify-content: center;
     }
-    
+
     .d-flex.justify-content-between {
         flex-direction: column;
         gap: 15px;
@@ -1027,7 +1027,7 @@ function addToCart(productId) {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-    
+
     .category-header {
         text-align: center;
     }

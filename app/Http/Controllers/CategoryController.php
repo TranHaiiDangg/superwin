@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function show(Category $category)
+    public function show(Category $category, Request $request)
     {
         // Ensure category is active
         if (!$category->is_active) {
@@ -26,12 +26,51 @@ class CategoryController extends Controller
             $categoryIds = $categoryIds->merge($category->children->pluck('id'));
         }
 
-        $perPage = request('per_page', 3); // Changed from 16 to 3 for testing pagination
-        $sortBy = request('sort_by', 'newest'); // Default sort by newest
+        $perPage = request('per_page', 12);
+        $sortBy = request('sort_by', 'newest');
 
         $products = Product::with(['category', 'brand', 'baseImage'])
             ->whereIn('category_id', $categoryIds)
             ->where('status', true);
+
+        // Apply category filter (for subcategories)
+        if ($request->filled('category_id')) {
+            $products = $products->where('category_id', $request->category_id);
+        }
+
+        // Apply brand filter
+        if ($request->filled('brand_id')) {
+            $products = $products->where('brand_id', $request->brand_id);
+        }
+
+        // Apply price range filter
+        if ($request->filled('price_range')) {
+            $priceRange = $request->price_range;
+            if ($priceRange !== '') {
+                if (strpos($priceRange, '+') !== false) {
+                    $minPrice = (int) str_replace('+', '', $priceRange);
+                    $products = $products->where('price', '>=', $minPrice);
+                } else {
+                    [$minPrice, $maxPrice] = explode('-', $priceRange);
+                    $products = $products->whereBetween('price', [(int) $minPrice, (int) $maxPrice]);
+                }
+            }
+        }
+
+        // Apply quick filters
+        if ($request->filled('filter')) {
+            switch ($request->filter) {
+                case 'sale':
+                    $products = $products->whereNotNull('sale_price')->where('sale_price', '>', 0);
+                    break;
+                case 'featured':
+                    $products = $products->where('is_featured', true);
+                    break;
+                case 'bestseller':
+                    $products = $products->where('sold_count', '>', 0);
+                    break;
+            }
+        }
 
         // Apply sorting
         switch ($sortBy) {
@@ -42,10 +81,10 @@ class CategoryController extends Controller
                 $products = $products->orderBy('sold_count', 'desc');
                 break;
             case 'price_low':
-                $products = $products->orderBy('price', 'asc');
+                $products = $products->orderByRaw('COALESCE(sale_price, price) ASC');
                 break;
             case 'price_high':
-                $products = $products->orderBy('price', 'desc');
+                $products = $products->orderByRaw('COALESCE(sale_price, price) DESC');
                 break;
             case 'name':
                 $products = $products->orderBy('name', 'asc');
@@ -55,7 +94,12 @@ class CategoryController extends Controller
                 break;
         }
 
-        $products = $products->paginate($perPage);
+        $products = $products->paginate($perPage)->appends($request->query());
+
+        // Lấy tất cả categories cho filter (bao gồm category hiện tại và subcategories)
+        $categories = Category::whereIn('id', $categoryIds)
+            ->where('is_active', true)
+            ->get();
 
         // Lấy brands trong category này
         $brands = Brand::whereHas('products', function($query) use ($categoryIds) {
@@ -76,7 +120,7 @@ class CategoryController extends Controller
             ->take(10)
             ->get();
 
-        return view('categories.show', compact('category', 'products', 'brands', 'suggestedProducts'));
+        return view('categories.show', compact('category', 'categories', 'products', 'brands', 'suggestedProducts'));
     }
 
     public function mayBomNuoc()

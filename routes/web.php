@@ -93,6 +93,15 @@ Route::prefix('api')->group(function () {
             'slug' => $product->slug
         ]);
     });
+
+    // Test route để kiểm tra tất cả sản phẩm
+    Route::get('/test/products', function() {
+        $products = \App\Models\Product::take(5)->get(['id', 'name', 'sku']);
+        return response()->json([
+            'count' => $products->count(),
+            'products' => $products
+        ]);
+    });
 });
 
 // Sản phẩm
@@ -212,7 +221,7 @@ Route::prefix('api')->group(function () {
     Route::get('/hot-keywords', [SearchController::class, 'hotKeywords'])->name('api.hot-keywords');
     Route::get('/search/hot-suggestions', [SearchController::class, 'hotSuggestions'])->name('api.search.hot-suggestions');
     Route::get('/brands-list', [BrandController::class, 'apiList'])->name('api.brands');
-    
+
     // Address API Routes
     Route::get('/provinces', [App\Http\Controllers\AddressController::class, 'getProvinces'])->name('api.provinces');
     Route::get('/districts/{provinceCode}', [App\Http\Controllers\AddressController::class, 'getDistricts'])->name('api.districts');
