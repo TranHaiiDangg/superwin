@@ -18,9 +18,7 @@ class OrderDetail extends Model
         'quantity',
         'unit_price',
         'total_price',
-        'variant_id',
-        'variant_name',
-        'variant_code'
+
     ];
 
     protected $casts = [

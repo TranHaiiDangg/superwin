@@ -25,6 +25,7 @@
                             <input type="hidden" name="buy_now" value="1">
                             <input type="hidden" name="product_id" value="{{ request()->get('product_id') }}">
                             <input type="hidden" name="quantity" value="{{ request()->get('quantity', 1) }}">
+                            <input type="hidden" name="variant_id" value="{{ request()->get('variant_id') }}">
                         @endif
 
                         <!-- Hidden inputs cho thông tin khách hàng và địa chỉ -->
@@ -169,7 +170,7 @@
                         </div>
                         <div class="total-row">
                             <span>Thuế VAT (8%):</span>
-                            <span>{{ number_format($vat) }}₫</span>
+                           <span>{{ number_format($vat) }}₫</span>
                         </div>
                         <div class="total-row total-final">
                             <span>Tổng cộng (Đã VAT):</span>
