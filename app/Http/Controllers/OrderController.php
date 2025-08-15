@@ -26,7 +26,7 @@ class OrderController extends Controller
     public function index()
     {
         $customer = Auth::guard('customer')->user();
-        $orders = Order::where('customer_email', $customer->email)
+        $orders = Order::where('user_id', $customer->id)
             ->with('orderDetails.product')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -38,8 +38,8 @@ class OrderController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        // Kiểm tra quyền truy cập dựa trên thông tin khách hàng
-        if ($order->customer_email !== $customer->email) {
+        // Kiểm tra quyền truy cập dựa trên customer ID
+        if ($order->user_id !== $customer->id) {
             abort(403, 'Bạn không có quyền xem đơn hàng này.');
         }
 
@@ -290,7 +290,7 @@ class OrderController extends Controller
 
             // Tạo đơn hàng
             $order = Order::create([
-                'user_id' => null, // Để null vì không có user_id hợp lệ
+                'user_id' => $customer->id, // Lưu customer ID
                 'order_code' => $orderCode,
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
@@ -376,8 +376,8 @@ class OrderController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        // Kiểm tra quyền truy cập dựa trên thông tin khách hàng
-        if ($order->customer_email !== $customer->email) {
+        // Kiểm tra quyền truy cập dựa trên customer ID
+        if ($order->user_id !== $customer->id) {
             abort(403, 'Bạn không có quyền xem đơn hàng này.');
         }
 
@@ -390,8 +390,8 @@ class OrderController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        // Kiểm tra quyền truy cập dựa trên thông tin khách hàng
-        if ($order->customer_email !== $customer->email) {
+        // Kiểm tra quyền truy cập dựa trên customer ID
+        if ($order->user_id !== $customer->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bạn không có quyền hủy đơn hàng này'

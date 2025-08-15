@@ -51,7 +51,7 @@ class HomeController extends Controller
             ->with(['children' => function($query) {
                 $query->where('is_active', true)->take(5);
             }])
-            ->take(6)
+            ->take(8) // 8 categories for 2 rows layout
             ->get();
 
         // Lấy thương hiệu

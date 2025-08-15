@@ -5,8 +5,8 @@
 @section('content')
 <div class="container-fluid py-4">
     <div class="row">
-        <!-- Sidebar Filter -->
-        <div class="col-lg-3 col-md-4">
+        <!-- Sidebar Filter (Desktop) -->
+        <div class="col-lg-3 col-md-4 d-none d-md-block">
             <div class="category-sidebar">
                 <!-- Search Info -->
                 <div class="filter-section">
@@ -97,15 +97,45 @@
         </div>
 
         <!-- Main Content -->
-        <div class="col-lg-9 col-md-8">
+        <div class="col-lg-9 col-md-8 col-12">
+            <!-- Mobile Filter Button -->
+            <div class="mobile-filter-section d-md-none mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="mobile-filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas" aria-controls="filterOffcanvas">
+                        <i class="fas fa-sliders-h me-2"></i>
+                        <span>Bộ lọc</span>
+                    </button>
+                    <div class="mobile-sort-options">
+                        <select class="form-select form-select-sm" id="mobileSortBy">
+                            <option value="newest" {{ request('sort_by', 'newest') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
+                            <option value="bestseller" {{ request('sort_by') == 'bestseller' ? 'selected' : '' }}>Bán chạy</option>
+                            <option value="price_low" {{ request('sort_by') == 'price_low' ? 'selected' : '' }}>Giá thấp</option>
+                            <option value="price_high" {{ request('sort_by') == 'price_high' ? 'selected' : '' }}>Giá cao</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Header -->
             <div class="category-header">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                        <h3 class="category-title">Kết quả tìm kiếm</h3>
-                        <p class="category-subtitle">Tìm kiếm: "<strong>{{ $query }}</strong>" ({{ $products->total() }} sản phẩm)</p>
+                <!-- Title Section -->
+                <div class="header-top mb-3">
+                    <h3 class="category-title">Kết quả tìm kiếm</h3>
+                    <p class="category-subtitle">Tìm kiếm: "<strong>{{ $query }}</strong>" ({{ $products->total() }} sản phẩm)</p>
+                </div>
+
+                <!-- Controls Section -->
+                <div class="header-controls d-none d-md-flex justify-content-between align-items-center mb-3">
+                    <!-- Quick Filters -->
+                    <div class="quick-filters">
+                        <button class="quick-filter-btn {{ !request('filter') && request('sort_by') != 'bestseller' ? 'active' : '' }}" data-filter="all">Tất cả</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
+                        <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
                     </div>
-                    <div class="sort-options d-flex gap-2">
+                    
+                    <!-- Sort Options -->
+                    <div class="sort-options d-flex gap-2 align-items-center">
                         <select class="form-select form-select-sm" id="perPage">
                             <option value="6" {{ request('per_page') == 6 ? 'selected' : '' }}>6 sản phẩm</option>
                             <option value="12" {{ request('per_page', 12) == 12 ? 'selected' : '' }}>12 sản phẩm</option>
@@ -122,12 +152,14 @@
                     </div>
                 </div>
 
-                <!-- Quick Filters -->
-                <div class="quick-filters mb-4">
-                    <button class="quick-filter-btn {{ !request('filter') && request('sort_by') != 'bestseller' ? 'active' : '' }}" data-filter="all">Tất cả</button>
-                    <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
-                    <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
-                    <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
+                <!-- Mobile Quick Filters -->
+                <div class="mobile-quick-filters d-md-none mb-3">
+                    <div class="quick-filters justify-content-center">
+                        <button class="quick-filter-btn {{ !request('filter') && request('sort_by') != 'bestseller' ? 'active' : '' }}" data-filter="all">Tất cả</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
+                        <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
+                    </div>
                 </div>
             </div>
 
@@ -287,6 +319,103 @@
     </div>
 </div>
 
+<!-- Mobile Filter Offcanvas -->
+<div class="offcanvas offcanvas-start mobile-filter-offcanvas" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterOffcanvasLabel">
+            <i class="fas fa-filter me-2"></i>Bộ lọc sản phẩm
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Search Info -->
+        <div class="filter-section">
+            <h5 class="filter-title">KẾT QUẢ TÌM KIẾM</h5>
+            <div class="search-query">
+                <strong>"{{ $query }}"</strong>
+            </div>
+            <div class="search-count">
+                {{ $products->total() }} sản phẩm
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        @if($categories->count() > 0)
+        <div class="filter-section">
+            <h6 class="filter-subtitle">DANH MỤC</h6>
+            <div class="filter-content">
+                @foreach($categories as $category)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $category->id }}" id="mobile-cat{{ $category->id }}" name="category_id" {{ request('category_id') == $category->id ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-cat{{ $category->id }}">
+                        {{ $category->name }}
+                    </label>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- Brand Filter -->
+        @if($brands->count() > 0)
+        <div class="filter-section">
+            <h6 class="filter-subtitle">THƯƠNG HIỆU</h6>
+            <div class="filter-content">
+                @foreach($brands as $brand)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $brand->id }}" id="mobile-brand{{ $brand->id }}" name="brand_id" {{ request('brand_id') == $brand->id ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-brand{{ $brand->id }}">
+                        {{ $brand->name }}
+                    </label>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- Price Filter -->
+        <div class="filter-section">
+            <h6 class="filter-subtitle">KHOẢNG GIÁ</h6>
+            <div class="filter-content">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="0-1000000" id="mobile-price1" name="price_range" {{ request('price_range') == '0-1000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price1">Dưới 1.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="1000000-3000000" id="mobile-price2" name="price_range" {{ request('price_range') == '1000000-3000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price2">1.000.000đ - 3.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="3000000-5000000" id="mobile-price3" name="price_range" {{ request('price_range') == '3000000-5000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price3">3.000.000đ - 5.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="5000000-10000000" id="mobile-price4" name="price_range" {{ request('price_range') == '5000000-10000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price4">5.000.000đ - 10.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="10000000+" id="mobile-price5" name="price_range" {{ request('price_range') == '10000000+' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price5">Trên 10.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="" id="mobile-priceAll" name="price_range" {{ !request('price_range') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-priceAll">Tất cả</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="filter-actions">
+            <button type="button" class="btn btn-primary btn-sm w-100 mb-2" onclick="applyMobileFilters()">
+                <i class="fas fa-filter me-2"></i>Áp dụng
+            </button>
+            <a href="{{ route('search', ['q' => $query]) }}" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="fas fa-refresh me-2"></i>Xóa bộ lọc
+            </a>
+        </div>
+    </div>
+</div>
+
 <!-- Suggested Products Section -->
 @if(isset($suggestedProducts) && $suggestedProducts->count() > 0)
 <section class="py-5">
@@ -391,6 +520,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const perPage = this.value;
         changePerPage(perPage);
     });
+
+    // Mobile sort functionality
+    const mobileSortSelect = document.getElementById('mobileSortBy');
+    if (mobileSortSelect) {
+        mobileSortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            sortProducts(sortBy);
+        });
+    }
 });
 
 function applyFilters() {
@@ -414,6 +552,37 @@ function applyFilters() {
 
     // Get selected price range
     const selectedPrice = document.querySelector('input[name="price_range"]:checked');
+    if (selectedPrice && selectedPrice.value) {
+        url.searchParams.set('price_range', selectedPrice.value);
+    } else {
+        url.searchParams.delete('price_range');
+    }
+
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+function applyMobileFilters() {
+    const url = new URL(window.location);
+
+    // Get selected category from mobile filter
+    const selectedCategory = document.querySelector('#filterOffcanvas input[name="category_id"]:checked');
+    if (selectedCategory) {
+        url.searchParams.set('category_id', selectedCategory.value);
+    } else {
+        url.searchParams.delete('category_id');
+    }
+
+    // Get selected brand from mobile filter
+    const selectedBrand = document.querySelector('#filterOffcanvas input[name="brand_id"]:checked');
+    if (selectedBrand) {
+        url.searchParams.set('brand_id', selectedBrand.value);
+    } else {
+        url.searchParams.delete('brand_id');
+    }
+
+    // Get selected price range from mobile filter
+    const selectedPrice = document.querySelector('#filterOffcanvas input[name="price_range"]:checked');
     if (selectedPrice && selectedPrice.value) {
         url.searchParams.set('price_range', selectedPrice.value);
     } else {
@@ -472,6 +641,199 @@ function addToCart(productId) {
 
 @push('styles')
 <style>
+/* Mobile Filter Section */
+.mobile-filter-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+    margin-top: 10px;
+}
+
+.mobile-filter-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.mobile-filter-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    color: white;
+}
+
+.mobile-filter-btn i {
+    font-size: 1rem;
+}
+
+.mobile-sort-options {
+    min-width: 140px;
+}
+
+.mobile-sort-options .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.mobile-sort-options .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Offcanvas Customization */
+.mobile-filter-offcanvas {
+    width: 320px !important;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1055 !important;
+}
+
+.mobile-filter-offcanvas .offcanvas-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border-bottom: none;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-filter-offcanvas .offcanvas-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.mobile-filter-offcanvas .offcanvas-body {
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.mobile-filter-offcanvas .filter-section {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mobile-filter-offcanvas .filter-section:last-child {
+    margin-bottom: 0;
+}
+
+.mobile-filter-offcanvas .filter-title {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+}
+
+.mobile-filter-offcanvas .filter-subtitle {
+    color: #3498db;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-filter-offcanvas .search-query {
+    background: linear-gradient(135deg, #e8f4fd, #d4edda);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 4px solid #3498db;
+    font-weight: 600;
+}
+
+.mobile-filter-offcanvas .search-count {
+    color: #6c757d;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.mobile-filter-offcanvas .form-check {
+    margin-bottom: 10px;
+    padding-left: 1.8em;
+}
+
+.mobile-filter-offcanvas .form-check-input {
+    margin-left: -1.8em;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.mobile-filter-offcanvas .form-check-input:checked {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.mobile-filter-offcanvas .form-check-label {
+    font-size: 0.9rem;
+    color: #495057;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.mobile-filter-offcanvas .form-check-label:hover {
+    color: #3498db;
+}
+
+.mobile-filter-offcanvas .filter-actions {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-primary:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+
+
 /* Reuse styles from category show page */
 .category-sidebar {
     background: white;
@@ -542,10 +904,17 @@ function addToCart(productId) {
     margin-bottom: 20px;
 }
 
+.header-top {
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
 .category-title {
     color: #2c3e50;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-size: 1.5rem;
 }
 
 .category-subtitle {
@@ -554,44 +923,68 @@ function addToCart(productId) {
     margin: 0;
 }
 
+.header-controls {
+    padding-top: 15px;
+}
+
 .sort-options .form-select {
-    border: 1px solid #ddd;
+    border: 2px solid #dee2e6;
     border-radius: 8px;
     padding: 8px 12px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     min-width: 140px;
     background-color: white;
     transition: all 0.3s ease;
+    height: 40px;
+    font-weight: 500;
 }
 
 .sort-options .form-select:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+.sort-options .form-select:hover {
+    border-color: #3498db;
 }
 
 .quick-filters {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .quick-filter-btn {
     background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 20px;
-    padding: 8px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 25px;
+    padding: 10px 18px;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #6c757d;
     cursor: pointer;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.quick-filter-btn:hover,
+.quick-filter-btn:hover {
+    background: #e3f2fd;
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-1px);
+}
+
 .quick-filter-btn.active {
-    background: #3498db;
+    background: linear-gradient(135deg, #3498db, #2980b9);
     border-color: #3498db;
     color: white;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
 }
 
 .products-grid {
@@ -984,6 +1377,12 @@ function addToCart(productId) {
     }
 }
 
+@media (max-width: 1200px) {
+    .suggested-products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 @media (max-width: 992px) {
     .suggested-products-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1001,6 +1400,11 @@ function addToCart(productId) {
 }
 
 @media (max-width: 768px) {
+    /* Mobile header spacing to avoid fixed header overlap */
+    .container-fluid {
+        padding-top: 80px !important;
+    }
+
     .suggested-products-grid,
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1011,17 +1415,51 @@ function addToCart(productId) {
         padding: 15px;
     }
 
-    .quick-filters {
-        justify-content: center;
+    .header-top {
+        padding-bottom: 12px;
+        margin-bottom: 15px;
     }
 
-    .d-flex.justify-content-between {
+    .category-title {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
+    }
+
+    .category-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .mobile-quick-filters .quick-filters {
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .mobile-quick-filters .quick-filter-btn {
+        font-size: 0.8rem;
+        padding: 8px 14px;
+        height: 36px;
+    }
+
+    .sort-options {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
+    }
+
+    .sort-options .form-select {
+        min-width: auto;
+        width: 100%;
+        height: 36px;
+        font-size: 0.8rem;
     }
 }
 
 @media (max-width: 576px) {
+    /* Small mobile header spacing */
+    .container-fluid {
+        padding-top: 5px !important;
+    }
+
     .suggested-products-grid,
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1030,6 +1468,91 @@ function addToCart(productId) {
 
     .category-header {
         text-align: center;
+        padding: 12px;
+    }
+
+    .mobile-filter-section {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .mobile-filter-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .mobile-sort-options {
+        min-width: 120px;
+    }
+
+    .mobile-sort-options .form-select {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .product-card {
+        border-radius: 8px;
+    }
+
+    .product-image {
+        height: 160px;
+    }
+
+    .product-content {
+        padding: 12px;
+    }
+
+    .product-name {
+        font-size: 0.85rem;
+        height: 2.04em;
+    }
+
+    .quick-filters {
+        gap: 6px;
+        margin-bottom: 20px;
+    }
+
+    .quick-filter-btn {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+
+    .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .mobile-filter-offcanvas {
+        width: 280px !important;
+    }
+
+    .mobile-filter-offcanvas .offcanvas-body {
+        padding: 15px;
+    }
+
+    .mobile-filter-offcanvas .filter-section {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+
+    .mobile-filter-offcanvas .filter-title {
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+    }
+
+    .mobile-filter-offcanvas .filter-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+
+    .pagination-wrapper {
+        margin-top: 20px;
+    }
+
+    .custom-pagination .page-link {
+        padding: 6px 10px;
+        font-size: 13px;
+        min-width: 30px;
     }
 }
 </style>

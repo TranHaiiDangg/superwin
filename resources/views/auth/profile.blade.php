@@ -178,7 +178,7 @@
             </div>
 
             <!-- Account Statistics -->
-            <div class="row mt-4">
+            <!-- <div class="row mt-4">
                 <div class="col-md-4">
                     <div class="card text-center border-0 shadow-sm">
                         <div class="card-body">
@@ -206,7 +206,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

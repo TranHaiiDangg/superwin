@@ -71,16 +71,15 @@
 @if($mainCategories->count() > 0)
 <div class="container-menu">
     <div class="container">
-        <div class="row g-3 d-flex justify-content-center">
+        <div class="row g-2 g-md-3 justify-content-center align-items-stretch">
             @foreach($mainCategories as $category)
-            <div class="col-6 col-md-3 col-lg-2 d-flex align-items-stretch">
+            <div class="col-3 d-flex justify-content-center align-items-stretch">
                 <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="menu-item">
                     <div class="icon-container">
                         @if($category->image)
-                        <!-- <img src="{{ $category->image }}" alt="{{ $category->name }}" class="menu-img" /> -->
-                        <img src="/image/bom.png" alt="Bơm Nước" class="menu-img" />
+                        <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="menu-img" />
                         @else
-                        <i class="fas fa-cog text-primary fa-2x"></i>
+                        <img src="/image/bom.png" alt="{{ $category->name }}" class="menu-img" />
                         @endif
                     </div>
                     <p class="mb-0">{{ $category->name }}</p>
@@ -924,7 +923,7 @@
     /* Container Menu Styles */
     .container-menu {
         background: white;
-        padding: 20px 0;
+        padding: 0 0;
         border-bottom: 1px solid #eee;
     }
 
@@ -980,14 +979,17 @@
         line-height: 1.2;
     }
 
-    /* Đảm bảo các menu items có chiều cao đồng đều và căn giữa */
-    .col-6.col-md-3.col-lg-2 {
+    /* Custom Bootstrap classes for better responsive */
+
+
+    /* Menu items - 4 columns layout for all screen sizes */
+    .col-3 {
         display: flex;
         align-items: stretch;
         min-height: 120px;
     }
 
-    .col-6.col-md-3.col-lg-2>a {
+    .col-3 .menu-item {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1015,24 +1017,78 @@
             height: 150px;
         }
 
-        /* Mobile menu items */
-        .col-6.col-md-3.col-lg-2 {
+        /* Tablet adjustments */
+        .col-3 {
             min-height: 100px;
         }
 
         .menu-item {
             min-height: 80px;
-            padding: 10px 5px;
+            padding: 15px 8px;
         }
 
         .icon-container {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             margin-bottom: 8px;
         }
 
         .menu-item p {
             font-size: 0.8rem;
+            line-height: 1.2;
+        }
+    }
+
+    /* Mobile adjustments - màn hình nhỏ hơn */
+    @media (max-width: 576px) {
+        .col-3 {
+            min-height: 85px;
+        }
+
+        .menu-item {
+            min-height: 65px;
+            padding: 10px 6px;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 6px;
+        }
+
+        .menu-item p {
+            font-size: 0.7rem;
+            line-height: 1.1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            height: 2.2em;
+        }
+    }
+
+    /* Extra small mobile - màn hình rất nhỏ */
+    @media (max-width: 400px) {
+        .col-3 {
+            min-height: 75px;
+        }
+
+        .menu-item {
+            min-height: 55px;
+            padding: 8px 4px;
+        }
+
+        .icon-container {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 4px;
+        }
+
+        .menu-item p {
+            font-size: 0.65rem;
+            line-height: 1.0;
+            height: 2.0em;
         }
     }
 

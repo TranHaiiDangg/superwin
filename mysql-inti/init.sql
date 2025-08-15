@@ -741,37 +741,37 @@ CREATE TABLE `quat_details`  (
 -- Table structure for reviews
 -- ----------------------------
 DROP TABLE IF EXISTS `reviews`;
-CREATE TABLE `reviews`  (
-                            `id` int NOT NULL AUTO_INCREMENT,
-                            `product_id` int NOT NULL,
-                            `user_id` int NOT NULL,
-                            `order_id` int NULL DEFAULT NULL,
-                            `rating` int NOT NULL,
-                            `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-                            `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-                            `images` json NULL,
-                            `pros` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-                            `cons` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-                            `is_verified_purchase` tinyint(1) NULL DEFAULT 0,
-                            `is_approved` tinyint(1) NULL DEFAULT 1,
-                            `helpful_count` int NULL DEFAULT 0,
-                            `parent_id` int NULL DEFAULT NULL,
-                            `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-                            `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                            PRIMARY KEY (`id`) USING BTREE,
-                            INDEX `order_id`(`order_id` ASC) USING BTREE,
-                            INDEX `parent_id`(`parent_id` ASC) USING BTREE,
-                            INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-                            INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-                            INDEX `idx_rating`(`rating` ASC) USING BTREE,
-                            INDEX `idx_approved`(`is_approved` ASC) USING BTREE,
-                            INDEX `idx_created_at`(`created_at` ASC) USING BTREE,
-                            CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-                            CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-                            CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
-                            CONSTRAINT `reviews_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
-                            CONSTRAINT `reviews_chk_1` CHECK ((`rating` >= 1) and (`rating` <= 5))
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+CREATE TABLE `reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `order_id` int DEFAULT NULL,
+  `rating` int NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `images` json DEFAULT NULL,
+  `pros` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `cons` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `is_verified_purchase` tinyint(1) DEFAULT '0',
+  `is_approved` tinyint(1) DEFAULT '1',
+  `helpful_count` int DEFAULT '0',
+  `parent_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `order_id` (`order_id`) USING BTREE,
+  KEY `parent_id` (`parent_id`) USING BTREE,
+  KEY `idx_product_id` (`product_id`) USING BTREE,
+  KEY `idx_user_id` (`user_id`) USING BTREE,
+  KEY `idx_rating` (`rating`) USING BTREE,
+  KEY `idx_approved` (`is_approved`) USING BTREE,
+  KEY `idx_created_at` (`created_at`) USING BTREE,
+  CONSTRAINT `reviews_customer_fk` FOREIGN KEY (`user_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
+  CONSTRAINT `reviews_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `reviews_chk_1` CHECK (((`rating` >= 1) and (`rating` <= 5)))
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for role_permissions
