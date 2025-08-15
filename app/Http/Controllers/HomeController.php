@@ -38,9 +38,9 @@ class HomeController extends Controller
         $saleProducts = Product::with(['category', 'brand', 'baseImage'])
             ->where('status', true)
             ->where('is_sale', true) // Chỉ lấy sản phẩm có is_sale = true
-            ->whereNotNull('sale_price')
-            ->where('sale_price', '>', 0)
-            ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
+            // ->whereNotNull('sale_price')
+            // ->where('sale_price', '>', 0)
+            // ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
             ->orderByRaw('((price - sale_price) / price * 100) DESC') // Sắp xếp theo % giảm giá cao nhất
             ->take(10)
             ->get();

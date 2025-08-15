@@ -1,5 +1,5 @@
     <!-- Main Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container d-flex align-items-center justify-content-between flex-nowrap">
             <!-- Group hamburger + logo -->
             <div class="d-flex align-items-center flex-row flex-nowrap">

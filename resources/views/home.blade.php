@@ -143,8 +143,8 @@
                                     <h6 class="product-name">{{ $product->name }}</h6>
 
                                     <div class="price-section d-flex justify-content-center align-items-center">
-                                        <div class="sale-price">{{ number_format($product->sale_price) }}đ</div>
-                                        <div class="ms-2 original-price">{{ number_format($product->price) }}đ</div>
+                                        <div class="sale-price">{{ number_format($product->price) }}đ</div>
+                                        <!-- <div class="ms-2 original-price">{{ number_format($product->price) }}đ</div> -->
                                     </div>
 
                                     @php
@@ -292,8 +292,8 @@
 
                             <div class="suggested-price-section">
                                 @if($product->isOnSale)
-                                <div class="suggested-sale-price">{{ number_format($product->sale_price) }}đ</div>
-                                <div class="suggested-original-price">{{ number_format($product->price) }}đ</div>
+                                <div class="suggested-sale-price">{{ number_format($product->price) }}đ</div>
+                                <!-- <div class="suggested-original-price">{{ number_format($product->price) }}đ</div> -->
                                 @else
                                 <div class="suggested-regular-price">{{ number_format($product->price) }}đ</div>
                                 @endif
