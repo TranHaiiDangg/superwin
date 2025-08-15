@@ -210,6 +210,14 @@ class OrderController extends Controller
                 $quantity = request()->get('quantity', 1);
                 $variantId = request()->get('variant_id');
 
+                // Debug log để kiểm tra dữ liệu
+                Log::info('Store method - Buy now data received', [
+                    'product_id' => $productId,
+                    'quantity' => $quantity,
+                    'variant_id' => $variantId,
+                    'all_request_data' => request()->all()
+                ]);
+
                 $product = Product::find($productId);
                 if (!$product) {
                     throw new \Exception('Sản phẩm không tồn tại');
@@ -219,6 +227,7 @@ class OrderController extends Controller
                 $variantName = '';
                 $variantCode = '';
                 $finalPrice = $product->isOnSale ? $product->sale_price : $product->price;
+                $finalProductName = $product->name; // Tên sản phẩm mặc định
 
                 if ($variantId && $variantId !== 'none') {
                     $variant = \App\Models\ProductVariant::find($variantId);
@@ -226,14 +235,30 @@ class OrderController extends Controller
                         $variantName = $variant->name;
                         $variantCode = $variant->code;
                         $finalPrice = $variant->isOnSale ? $variant->price_sale : $variant->price;
+                        $finalProductName = $variantName; // Sử dụng tên biến thể làm tên sản phẩm chính
+
+                        Log::info('Variant found and processed', [
+                            'variant_id' => $variantId,
+                            'variant_name' => $variantName,
+                            'variant_code' => $variantCode,
+                            'final_price' => $finalPrice,
+                            'final_product_name' => $finalProductName
+                        ]);
+                    } else {
+                        Log::warning('Variant not found', ['variant_id' => $variantId]);
                     }
+                } else {
+                    Log::info('No variant selected, using original product', [
+                        'variant_id' => $variantId,
+                        'final_product_name' => $finalProductName
+                    ]);
                 }
 
                 $cartData = [
                     'items' => [
                         [
                             'id' => $product->id,
-                            'name' => $product->name,
+                            'name' => $finalProductName, // Sử dụng tên biến thể
                             'price' => $finalPrice,
                             'quantity' => (int)$quantity,
                             'sku' => $product->sku ?? '',
@@ -245,6 +270,10 @@ class OrderController extends Controller
                     'total' => $finalPrice * (int)$quantity
                 ];
                 $isBuyNow = true;
+
+                Log::info('Final cart data for buy now', [
+                    'cart_data' => $cartData
+                ]);
             } else {
                 $cartData = $this->cartService->getCartData();
             }
@@ -317,7 +346,7 @@ class OrderController extends Controller
                 $product = Product::find($item['id']);
                 if ($product) {
                     $product->increment('sold_count', $item['quantity']);
-                    
+
                     Log::info('Updated product sold_count', [
                         'product_id' => $item['id'],
                         'product_name' => $item['name'],

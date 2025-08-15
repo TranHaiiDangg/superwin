@@ -7,20 +7,20 @@ INSERT INTO `roles` (`name`, `display_name`, `description`, `is_active`, `create
 
 -- Gán tất cả permissions cho super_admin role
 INSERT INTO `role_permissions` (`role_id`, `permission_id`, `created_at`, `updated_at`)
-SELECT r.id, p.id, NOW(), NOW() 
-FROM roles r, permissions p 
+SELECT r.id, p.id, NOW(), NOW()
+FROM roles r, permissions p
 WHERE r.name = 'super_admin' AND p.is_active = 1;
 
 -- Gán hầu hết permissions cho admin role - trừ một số quyền nhạy cảm
 INSERT INTO `role_permissions` (`role_id`, `permission_id`, `created_at`, `updated_at`)
-SELECT r.id, p.id, NOW(), NOW() 
-FROM roles r, permissions p 
-WHERE r.name = 'admin' 
-AND p.is_active = 1 
+SELECT r.id, p.id, NOW(), NOW()
+FROM roles r, permissions p
+WHERE r.name = 'admin'
+AND p.is_active = 1
 AND p.name NOT IN ('users.delete', 'users.ban', 'users.permissions');
 
 -- Gán user adminmaster@gmail.com vào role admin
 INSERT INTO `user_roles` (`user_id`, `role_id`, `created_at`, `updated_at`)
-SELECT u.id, r.id, NOW(), NOW() 
-FROM users u, roles r 
+SELECT u.id, r.id, NOW(), NOW()
+FROM users u, roles r
 WHERE u.email = 'adminmaster@gmail.com' AND r.name = 'admin';
