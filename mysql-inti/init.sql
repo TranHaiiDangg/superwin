@@ -243,7 +243,7 @@ CREATE TABLE `coupons`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers`  (
-                              `id` int NOT NULL DEFAULT 0,
+                             `id` int NOT NULL AUTO_INCREMENT,
                               `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                               `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                               `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
