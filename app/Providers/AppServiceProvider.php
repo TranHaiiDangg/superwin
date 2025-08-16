@@ -22,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Set timezone to Vietnam
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+
         // Register view composer for cart data
         View::composer(['layouts.header', 'layouts.app'], CartComposer::class);
 
