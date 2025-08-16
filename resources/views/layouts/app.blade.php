@@ -163,7 +163,7 @@
             z-index: 1050;
             max-height: 450px;
             overflow-y: auto;
-            margin-top: 12px;
+            margin-top: 5px;
             width: 100%;
             min-width: 320px;
             animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
