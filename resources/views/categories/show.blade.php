@@ -3,7 +3,7 @@
 @section('title', $category->name . ' - SuperWin')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row">
         <!-- Sidebar Filter (Desktop) -->
         <div class="col-lg-3 col-md-4 d-none d-md-block">
@@ -647,6 +647,53 @@ function addToCart(productId) {
 @push('styles')
 <style>
 /* Category Page Styles */
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .container-fluid {
+    width: 95%;
+    max-width: 1320px;
+    margin: 20px auto;
+  }
+}
+
+/* Desktop trung bình (1440px - 1679px) */
+@media screen and (min-width: 1440px) and (max-width: 1679px) {
+  .container-fluid {
+    width: 1320px;
+    margin: 20px auto;
+  }
+}
+
+/* Desktop lớn và màn hình wide (1680px - 1919px) */
+@media screen and (min-width: 1680px) and (max-width: 1919px) {
+  .container-fluid {
+    width: 1400px;
+    margin: 40px auto;
+  }
+}
+
+/* Màn hình 2K (1920px - 2559px) */
+@media screen and (min-width: 1920px) and (max-width: 2559px) {
+  .container-fluid {
+    width: 1600px;
+    margin: 50px auto;
+  }
+}
+
+/* Màn hình 4K và siêu lớn (2560px+) */
+@media screen and (min-width: 2560px) {
+  .container-fluid {
+    width: 2000px;
+    margin: 60px auto;
+  }
+}
+
+/* Tối ưu cho màn hình siêu rộng (Ultra-wide) */
+@media screen and (min-width: 3440px) {
+  .container-fluid {
+    width: 2400px;
+    margin: 80px auto;
+  }
+}
 .category-sidebar {
     background: white;
     border-radius: 12px;
@@ -787,7 +834,7 @@ function addToCart(productId) {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
@@ -809,7 +856,6 @@ function addToCart(productId) {
 
 .product-image {
     position: relative;
-    height: 200px;
     overflow: hidden;
     background: #f8f9fa;
     display: flex;
