@@ -26,12 +26,27 @@
                     <!-- Thumbnail Images -->
                     @if($product->images && $product->images->count() > 0)
                     <div class="thumbnail-container me-3">
-                        <div class="thumbnail-wrapper d-flex flex-column">
+                        <!-- Slider Navigation Arrows (Mobile Only) -->
+                        <button class="slider-nav prev d-md-none" onclick="slideThumbnails('prev')">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="slider-nav next d-md-none" onclick="slideThumbnails('next')">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <div class="thumbnail-wrapper d-flex flex-column" id="thumbnailWrapper">
                             @foreach($product->images->where('isbase', false)->take(5) as $index => $image)
                             <div class="thumbnail-item mb-2 {{ $index === 0 ? 'active' : '' }}"
                                 onclick="changeMainImage('{{ $image->url }}', this)">
                                 <img src="{{ $image->url }}" alt="{{ $product->name }}" class="thumbnail-image">
                             </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Slider Dots (Mobile Only) -->
+                        <div class="slider-dots d-md-none" id="sliderDots">
+                            @foreach($product->images->where('isbase', false)->take(5) as $index => $image)
+                            <div class="slider-dot {{ $index === 0 ? 'active' : '' }}" onclick="slideToThumbnail({{ $index }})"></div>
                             @endforeach
                         </div>
                     </div>
@@ -177,7 +192,7 @@
                             </div>
 
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 d-none d-lg-block">
                             <div class="delivery-info">
                                 <aside id="text-2" class="widget widget_text">
                                     <div class="textwidget">
@@ -194,9 +209,9 @@
                                                 <span style="font-size: 85%;">chỉ trong vòng 24 giờ</span></p>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
-                                        
+
                                         <div class="icon-box featured-box icon-box-left text-left">
                                             <div class="icon-box-img" style="width: 40px">
                                                 <div class="icon">
@@ -210,9 +225,9 @@
                                                 <span style="font-size: 85%;">sản phẩm nhập khẩu 100%</span></p>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
-                                        
+
                                         <div class="icon-box featured-box icon-box-left text-left">
                                             <div class="icon-box-img" style="width: 40px">
                                                 <div class="icon">
@@ -225,9 +240,9 @@
                                                 <p><strong>Mua hàng tiết kiệm</strong><br><span style="font-size: 85%;">rẻ hơn từ 10% – 20%</span></p>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="gap-element" style="display:block; height:auto; padding-top:20px"></div>
-                                        
+
                                         <div class="icon-box featured-box icon-box-left text-left">
                                             <div class="icon-box-img" style="width: 40px">
                                                 <div class="icon">
@@ -278,7 +293,7 @@
                                                 </a>
 
                                                 @if($brandProduct->isOnSale)
-                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                                <span class="badge discount-tag position-absolute top-0 end-0 m-2">
                                                     -{{ $brandProduct->discount_percentage }}%
                                                 </span>
                                                 @endif
@@ -292,8 +307,8 @@
                                                 <div class="mt-auto">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         @if($brandProduct->isOnSale)
-                                                        <span class="text-danger fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
-                                                        <span class="text-muted small text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
+                                                        <span class="sale-price fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
+                                                        <span class="text-muted small ms-1 text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
                                                         @else
                                                         <span class="text-primary fw-bold small">{{ number_format($brandProduct->price) }}đ</span>
                                                         @endif
@@ -359,7 +374,7 @@
                             </div>
                             @endif
                             </div>
-                        
+
                         </div>
                     </div>
                 </div>
@@ -645,7 +660,8 @@
 <section class="suggested-products-section py-5">
     <div class="container">
         <h2 class="section-title">GỢI Ý DÀNH RIÊNG CHO BẠN</h2>
-        <div class="product-slider">
+        <!-- <div class="row"> -->
+        <div class="row ">
             @php
             $suggestedProducts = $relatedProducts
             ->where('id', '!=', $product->id)
@@ -668,53 +684,55 @@
             });
             @endphp
 
-            @foreach($suggestedProducts as $suggestedProduct)
-            <div class="product-card">
-                <a href="{{ route('products.show', $suggestedProduct['slug'] ?? $suggestedProduct['id']) }}" class="product-link">
-                    <div class="product-image">
-                        <img src="{{ $suggestedProduct['image'] }}" alt="{{ $suggestedProduct['name'] }}" class="card-img-top">
-                        @if($suggestedProduct['is_on_sale'])
-                        <div class="discount-tag">-{{ $suggestedProduct['discount_percentage'] }}%</div>
-                        @endif
-                    </div>
-
-                    <div class="product-info">
-                        <h3 class="product-name">{{ $suggestedProduct['name'] }}</h3>
-
-                        <div class="product-rating">
-                            <div class="stars">
-                                <span class="rating-score">{{ $suggestedProduct['rating'] }}</span>
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= $suggestedProduct['rating'] ? 'text-warning' : 'text-muted' }}"></i>
-                                    @endfor
-                                    <span class="rating-count">({{ $suggestedProduct['review_count'] }})</span>
-                            </div>
-                            @if($suggestedProduct['sold_count'])
-                            <div class="sold-count">{{ $suggestedProduct['sold_count'] }} đã bán</div>
-                            @endif
-                        </div>
-
-                        <div class="product-price">
+                @foreach($suggestedProducts as $suggestedProduct)
+                <div class="product-card col-6 col-lg-3 mx-0 mx-lg-3 mt-3">
+                    <a href="{{ route('products.show', $suggestedProduct['slug'] ?? $suggestedProduct['id']) }}" class="product-link">
+                        <div class="product-image">
+                            <img src="{{ $suggestedProduct['image'] }}" alt="{{ $suggestedProduct['name'] }}" class="card-img-top">
                             @if($suggestedProduct['is_on_sale'])
-                            <span class="sale-price">{{ number_format($suggestedProduct['sale_price']) }}đ</span>
-                            <span class="original-price">{{ number_format($suggestedProduct['price']) }}đ</span>
-                            <span class="discount-percent">{{ $suggestedProduct['discount_percentage'] }}%</span>
-                            @else
-                            <span class="sale-price">{{ number_format($suggestedProduct['price']) }}đ</span>
+                            <div class="discount-tag">-{{ $suggestedProduct['discount_percentage'] }}%</div>
                             @endif
                         </div>
 
-                        @if($suggestedProduct['coupon'])
-                        <div class="coupon-tag">
-                            <i class="fas fa-ticket-alt"></i> {{ $suggestedProduct['coupon'] }}
+                        <div class="product-info">
+                            <h3 class="product-name">{{ $suggestedProduct['name'] }}</h3>
+
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <span class="rating-score">{{ $suggestedProduct['rating'] }}</span>
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i class="fas fa-star {{ $i <= $suggestedProduct['rating'] ? 'text-warning' : 'text-muted' }}"></i>
+                                        @endfor
+                                        <span class="rating-count">({{ $suggestedProduct['review_count'] }})</span>
+                                </div>
+                                @if($suggestedProduct['sold_count'])
+                                <div class="sold-count">{{ $suggestedProduct['sold_count'] }} đã bán</div>
+                                @endif
+                            </div>
+
+                            <div class="product-price text-center">
+                                @if($suggestedProduct['is_on_sale'])
+                                <span class="sale-price">{{ number_format($suggestedProduct['sale_price']) }}đ</span>
+                                <span class="original-price">{{ number_format($suggestedProduct['price']) }}đ</span>
+                                <!-- <span class="discount-percent">{{ $suggestedProduct['discount_percentage'] }}%</span> -->
+                                @else
+                                <span class="sale-price">{{ number_format($suggestedProduct['price']) }}đ</span>
+                                @endif
+                            </div>
+
+                            @if($suggestedProduct['coupon'])
+                            <div class="coupon-tag">
+                                <i class="fas fa-ticket-alt"></i> {{ $suggestedProduct['coupon'] }}
+                            </div>
+                            @endif
                         </div>
-                        @endif
-                    </div>
-                </a>
-            </div>
-            @endforeach
+                    </a>
+                </div>
+                @endforeach
+
         </div>
     </div>
+    <!-- </div> -->
 </section>
 @endif
 
@@ -918,6 +936,282 @@
         object-fit: cover;
     }
 
+    /* Mobile Responsive for Product Gallery */
+    @media (max-width: 768px) {
+        /* Product Gallery Layout */
+        .product-gallery {
+            flex-direction: column !important;
+        }
+
+        .thumbnail-container {
+            width: 100% !important;
+            margin-right: 0 !important;
+            margin-bottom: 15px;
+            order: 2;
+            position: relative;
+        }
+
+        .thumbnail-wrapper {
+            flex-direction: row !important;
+            max-height: none !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            gap: 8px;
+            padding: 5px 0;
+            justify-content: flex-start;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .thumbnail-item {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            margin-bottom: 0 !important;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .thumbnail-item:hover {
+            transform: scale(1.05);
+        }
+
+        .main-image-container {
+            order: 1;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .main-image {
+            height: 300px;
+        }
+
+        /* Custom scrollbar for horizontal thumbnail scroll */
+        .thumbnail-wrapper::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .thumbnail-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 2px;
+        }
+
+        .thumbnail-wrapper::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 2px;
+        }
+
+        .thumbnail-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .thumbnail-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .thumbnail-wrapper {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Slider navigation dots */
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: #007bff;
+        }
+
+        /* Slider navigation arrows */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-nav:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-nav.prev {
+            left: 5px;
+        }
+
+        .slider-nav.next {
+            right: 5px;
+        }
+
+        .slider-nav i {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Product Info Layout */
+        .product-info .row {
+            flex-direction: column !important;
+        }
+
+        .product-info .col-md-8 {
+            width: 100% !important;
+            margin-bottom: 20px;
+        }
+
+        .product-info .col-md-4 {
+            width: 100% !important;
+        }
+
+        /* Hide delivery info on mobile to save space */
+        .delivery-info {
+            display: none !important;
+        }
+
+        /* Adjust spacing for mobile */
+        .product-detail-section {
+            padding: 20px 0 !important;
+        }
+
+        .product-info {
+            padding: 15px !important;
+        }
+
+        /* Product title responsive */
+        .product-title {
+            font-size: 1.3rem !important;
+            line-height: 1.4 !important;
+        }
+
+        /* Price responsive */
+        .current-price {
+            font-size: 1.3rem !important;
+        }
+
+        .original-price {
+            font-size: 1rem !important;
+        }
+
+        /* Action buttons responsive */
+        .action-buttons .btn-lg {
+            padding: 12px 20px !important;
+            font-size: 0.95rem !important;
+        }
+
+        /* Quantity controls responsive */
+        .quantity-section {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+        }
+
+        .quantity-controls {
+            align-self: flex-start !important;
+        }
+
+        /* Variants responsive */
+        .variants-container {
+            gap: 8px !important;
+        }
+
+        .variant-label {
+            padding: 12px !important;
+        }
+
+        .variant-info {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        /* Gallery responsive for small screens */
+        .main-image {
+            height: 250px;
+        }
+
+        .thumbnail-item {
+            width: 50px;
+            height: 50px;
+        }
+
+        .featured-badge {
+            top: 10px;
+            left: 10px;
+            padding: 6px 10px;
+            font-size: 0.7rem;
+        }
+
+        .sale-badge {
+            top: 10px;
+            right: 10px;
+            padding: 6px 10px;
+            font-size: 0.7rem;
+        }
+
+        /* Product info responsive for small screens */
+        .product-title {
+            font-size: 1.2rem !important;
+        }
+
+        .current-price {
+            font-size: 1.2rem !important;
+        }
+
+        .action-buttons .btn-lg {
+            padding: 10px 16px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .product-info {
+            padding: 10px !important;
+        }
+
+        .product-detail-section {
+            padding: 15px 0 !important;
+        }
+
+        /* Container padding for small screens */
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        /* Breadcrumb responsive */
+        .breadcrumb {
+            font-size: 0.85rem;
+        }
+
+        .breadcrumb-item {
+            margin-right: 5px;
+        }
+    }
+
     /* Custom scrollbar for thumbnail wrapper */
     .thumbnail-wrapper::-webkit-scrollbar {
         width: 6px;
@@ -980,10 +1274,10 @@
     .product-price {
         display: flex !important;
         flex-direction: column !important;
-        align-items: flex-start !important;
+        align-items: center !important;
         gap: 8px;
         text-align: left !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
         width: 100% !important;
     }
 
@@ -1726,7 +2020,7 @@
 
     .sale-price {
         font-weight: bold;
-        color: #dc3545;
+        color: #3498db;
         font-size: 1rem;
     }
 
@@ -1841,7 +2135,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
-        margin: 0 -10px;
+        /* margin: 0 -10px; */
     }
 
     .product-card {
@@ -1940,11 +2234,6 @@
         margin-bottom: 10px;
     }
 
-    .sale-price {
-        font-size: 1.1rem;
-        font-weight: bold;
-        color: #ff6b00;
-    }
 
     .original-price {
         font-size: 0.9rem;
@@ -2089,6 +2378,38 @@
         margin-top: 10px;
     }
 
+    /* Bootstrap Override for Mobile */
+    @media (max-width: 768px) {
+        /* Override Bootstrap grid system for mobile */
+        .col-lg-5 {
+            width: 100% !important;
+            margin-bottom: 20px;
+        }
+
+        .col-lg-7 {
+            width: 100% !important;
+        }
+
+        /* Ensure proper spacing */
+        .mb-4 {
+            margin-bottom: 1rem !important;
+        }
+
+        /* Fix flexbox issues */
+        .d-flex {
+            display: flex !important;
+        }
+
+        /* Ensure proper text alignment */
+        .text-center {
+            text-align: center !important;
+        }
+
+        .text-left {
+            text-align: left !important;
+        }
+    }
+
     .power-info {
         display: inline-flex;
         align-items: center;
@@ -2106,28 +2427,106 @@
 
     @media (max-width: 768px) {
         .product-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem !important;
         }
 
         .current-price {
-            font-size: 1.5rem;
+            font-size: 1.3rem !important;
         }
 
         .action-buttons {
-            flex-direction: column;
+            flex-direction: column !important;
         }
 
         .btn-lg {
-            width: 100%;
+            width: 100% !important;
         }
 
         .spec-row {
-            flex-direction: column;
+            flex-direction: column !important;
             gap: 5px;
         }
 
         .spec-label {
-            width: 100%;
+            width: 100% !important;
+        }
+
+        /* Product info responsive */
+        .product-info .row {
+            flex-direction: column !important;
+        }
+
+        .product-info .col-md-8 {
+            width: 100% !important;
+            margin-bottom: 20px;
+        }
+
+        .product-info .col-md-4 {
+            width: 100% !important;
+        }
+
+        /* Hide delivery info on mobile to save space */
+        .delivery-info {
+            display: none !important;
+        }
+
+        /* Adjust spacing for mobile */
+        .product-detail-section {
+            padding: 20px 0 !important;
+        }
+
+        .product-info {
+            padding: 15px !important;
+        }
+
+        /* Additional mobile fixes */
+        .product-rating {
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+        }
+
+        .stars {
+            flex-wrap: nowrap !important;
+        }
+
+        .rating-text,
+        .sold-count {
+            font-size: 0.8rem !important;
+        }
+
+        /* Fix power attribute on mobile */
+        .power-info {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 5px !important;
+        }
+
+        /* Fix variants on mobile */
+        .variant-item {
+            margin-bottom: 8px !important;
+        }
+
+        .variant-label {
+            padding: 10px !important;
+        }
+
+        .variant-name {
+            font-size: 0.9rem !important;
+        }
+
+        .variant-code {
+            font-size: 0.8rem !important;
+        }
+
+        /* Fix quantity controls on mobile */
+        .quantity-section {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 10px !important;
+        }
+
+        .quantity-controls {
+            align-self: flex-start !important;
         }
     }
 
@@ -2206,6 +2605,11 @@
         initializeProductDetail();
     });
 
+    // Handle window resize for mobile slider
+    window.addEventListener('resize', function() {
+        initializeMobileSlider();
+    });
+
     function initializeProductDetail() {
         // Image gallery functionality
         setupImageGallery();
@@ -2215,6 +2619,9 @@
 
         // Quantity controls
         setupQuantityControls();
+
+        // Initialize mobile slider
+        initializeMobileSlider();
     }
 
     function setupImageGallery() {
@@ -2269,6 +2676,88 @@
                 item.classList.remove('active');
             });
             thumbnailElement.classList.add('active');
+
+            // Update slider dots if on mobile
+            updateSliderDots(thumbnailElement);
+        }
+    }
+
+    // Slider functionality for mobile
+    function slideThumbnails(direction) {
+        const wrapper = document.getElementById('thumbnailWrapper');
+        if (!wrapper) return;
+
+        const scrollAmount = 200; // Adjust based on thumbnail width + gap
+        const currentScroll = wrapper.scrollLeft;
+
+        if (direction === 'prev') {
+            wrapper.scrollTo({
+                left: currentScroll - scrollAmount,
+                behavior: 'smooth'
+            });
+        } else {
+            wrapper.scrollTo({
+                left: currentScroll + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function slideToThumbnail(index) {
+        const wrapper = document.getElementById('thumbnailWrapper');
+        const thumbnails = wrapper.querySelectorAll('.thumbnail-item');
+
+        if (thumbnails[index]) {
+            // Click the thumbnail to change main image
+            thumbnails[index].click();
+
+            // Scroll to the thumbnail
+            thumbnails[index].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        }
+    }
+
+    function updateSliderDots(activeThumbnail) {
+        const dots = document.querySelectorAll('.slider-dot');
+        const thumbnails = document.querySelectorAll('.thumbnail-item');
+
+        // Find the index of the active thumbnail
+        const activeIndex = Array.from(thumbnails).indexOf(activeThumbnail);
+
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === activeIndex);
+        });
+    }
+
+    // Initialize slider on mobile
+    function initializeMobileSlider() {
+        if (window.innerWidth <= 768) {
+            const wrapper = document.getElementById('thumbnailWrapper');
+            if (wrapper) {
+                // Add touch/swipe support
+                let startX = 0;
+                let scrollLeft = 0;
+
+                wrapper.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].pageX - wrapper.offsetLeft;
+                    scrollLeft = wrapper.scrollLeft;
+                });
+
+                wrapper.addEventListener('touchmove', (e) => {
+                    if (!startX) return;
+                    const x = e.touches[0].pageX - wrapper.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    wrapper.scrollLeft = scrollLeft - walk;
+                });
+
+                wrapper.addEventListener('touchend', () => {
+                    startX = 0;
+                });
+            }
         }
     }
 
@@ -2729,7 +3218,7 @@
         const reviewsTab = document.getElementById('reviews-tab');
         const reviewsTabContent = document.querySelector('#reviews .tab-content-wrapper');
         const allTabs = document.querySelectorAll('#productTabs .nav-link');
-        
+
         if (reviewsTab && reviewsTabContent && allTabs.length > 0) {
             // Function to hide reviews content
             function hideReviewsContent() {
@@ -2738,7 +3227,7 @@
                     reviewsTabContent.style.display = 'none';
                 }, 300); // Wait for opacity transition to complete
             }
-            
+
             // Function to show reviews content
             function showReviewsContent() {
                 reviewsTabContent.style.display = '';
@@ -2746,12 +3235,12 @@
                     reviewsTabContent.style.opacity = '1';
                 }, 50);
             }
-            
+
             // Handle reviews tab click
             reviewsTab.addEventListener('click', function() {
                 showReviewsContent();
             });
-            
+
             // Handle other tabs click to hide reviews content
             allTabs.forEach(tab => {
                 if (tab.id !== 'reviews-tab') {
@@ -2760,7 +3249,7 @@
                     });
                 }
             });
-            
+
             // Set initial styles for smooth transition
             reviewsTabContent.style.opacity = '0';
             reviewsTabContent.style.transition = 'opacity 0.3s ease';

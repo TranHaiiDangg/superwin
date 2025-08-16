@@ -351,7 +351,7 @@
             </div>
             @endforeach
         </div>
-        
+
         <div class="text-center mt-4">
             <a href="{{ route('brands') }}" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-building me-2"></i>Xem tất cả thương hiệu
@@ -407,7 +407,7 @@
         </a>
         <div class="icon-tooltip">Chat Zalo</div>
     </div>
-    
+
     <!-- Phone Icon -->
     <div class="floating-icon phone-icon">
         <a href="tel:02862697382" title="Gọi ngay">
@@ -772,6 +772,16 @@
 <link rel="stylesheet" href="/css/trang_chu/container-menu.css">
 
 <style>
+    /*flash deal*/
+    #flashDealsNext,
+    #flashDealsPrev {
+        background-color: #e74c3c;
+    }
+
+    #flashDealsNext i,
+    #flashDealsPrev i {
+        color: white;
+    }
     .bg-gradient-primary {
         background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     }
@@ -2061,7 +2071,7 @@
         .brand-link-home {
             padding: 12px;
         }
-        
+
         .brand-name-overlay {
             font-size: 0.75rem;
             padding: 6px 8px 8px;

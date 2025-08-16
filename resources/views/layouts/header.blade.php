@@ -216,7 +216,7 @@
                     <!-- Dropdown Danh Mục -->
                     <div class="dropdown-custom">
                         <a href="#">
-                            <i class="fas fa-bars"></i>
+                            <i class="fas fa-bars" style="color: darkblue !important"></i>
                             Danh Mục
                         </a>
                         <div class="dropdown-content">
@@ -334,43 +334,54 @@
     <div class="search-overlay" id="searchOverlay">
         <div class="search-header">
             <div class="search-input-container">
-                <form action="{{ route('search') }}" method="GET">
-                    <input type="text" name="q" class="search-input" placeholder="Tìm kiếm sản phẩm, thương hiệu..." id="searchInput" value="{{ request('q') }}">
-                </form>
-                <button class="search-clear" id="clearBtn"></button>
-                <button class="cancel-btn" id="cancelBtn">&times;</button>
+                <input type="text" class="search-input" placeholder="Tìm kiếm sản phẩm, thương hiệu..." id="searchInput" value="{{ request('q') }}">
+                <button class="search-clear" id="clearBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="cancel-btn" id="cancelBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
             </div>
         </div>
         <div class="search-content">
-            <div class="search-section">
+            <!-- Search Results Section -->
+            <div class="search-results-section" id="searchResultsSection" style="display: none;">
+                <div class="section-title">Kết quả tìm kiếm</div>
+                <div class="search-results" id="searchResults">
+                    <!-- Dynamic search results will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Hot Keywords Section -->
+            <div class="search-section" id="hotKeywordsSection">
                 <div class="section-title">Từ Khóa HOT</div>
                 <div class="hot-keywords">
                     @if(isset($hotKeywords))
                         @foreach($hotKeywords as $keyword)
-                            <div class="keyword-tag">{{ $keyword }}</div>
+                            <div class="keyword-tag" onclick="searchKeyword('{{ $keyword }}')">{{ $keyword }}</div>
                         @endforeach
                     @else
-                        <div class="keyword-tag">SuperWin</div>
-                        <div class="keyword-tag">Bơm nước 1HP</div>
-                        <div class="keyword-tag">Quạt công nghiệp</div>
-                        <div class="keyword-tag">Bơm chìm</div>
-                        <div class="keyword-tag">Bơm Inox 304</div>
-                        <div class="keyword-tag">Bơm ABC</div>
-                        <div class="keyword-tag">Quạt Thông Gió</div>
-                        <div class="keyword-tag">Quạt Vuông</div>
-                        <div class="keyword-tag">Bơm Thả Chìm DC</div>
+                        <div class="keyword-tag" onclick="searchKeyword('SuperWin')">SuperWin</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Bơm nước 1HP')">Bơm nước 1HP</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Quạt công nghiệp')">Quạt công nghiệp</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Bơm chìm')">Bơm chìm</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Bơm Inox 304')">Bơm Inox 304</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Bơm ABC')">Bơm ABC</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Quạt Thông Gió')">Quạt Thông Gió</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Quạt Vuông')">Quạt Vuông</div>
+                        <div class="keyword-tag" onclick="searchKeyword('Bơm Thả Chìm DC')">Bơm Thả Chìm DC</div>
                     @endif
                 </div>
             </div>
-            <div class="search-section">
+
+            <!-- Categories Section -->
+            <div class="search-section" id="categoriesSection">
                 <div class="section-title">Danh Mục</div>
                 <div class="category-grid">
                     @if(isset($mainCategories) && $mainCategories->count() > 0)
                         @foreach($mainCategories->take(6) as $category)
-                            <div class="category-item">
-                                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}">
-                                    {{ $category->name }}
-                                </a>
+                            <div class="category-item" data-href="{{ route('categories.show', $category->slug ?? $category->id) }}">
+                                {{ $category->name }}
                             </div>
                         @endforeach
                     @else
@@ -381,24 +392,25 @@
                     @endif
                 </div>
             </div>
-            <div class="search-section">
+
+            <!-- Brands Section -->
+            <div class="search-section" id="brandsSection">
                 <div class="section-title">Thương Hiệu</div>
                 <div class="brand-grid">
                     @if(isset($brands))
                         @foreach($brands as $brand)
-                            <div class="brand-item">{{ $brand->name }}</div>
+                            <div class="brand-item" onclick="searchKeyword('{{ $brand->name }}')">{{ $brand->name }}</div>
                         @endforeach
                     @else
-                        <div class="brand-item">SuperWin</div>
-                        <div class="brand-item">VinaPump</div>
-                        <div class="brand-item">Deton</div>
-                        <div class="brand-item">Quạt Inverter</div>
-                        <div class="brand-item">STHC</div>
+                        <div class="brand-item" onclick="searchKeyword('SuperWin')">SuperWin</div>
+                        <div class="brand-item" onclick="searchKeyword('VinaPump')">VinaPump</div>
+                        <div class="brand-item" onclick="searchKeyword('Deton')">Deton</div>
+                        <div class="brand-item" onclick="searchKeyword('Quạt Inverter')">Quạt Inverter</div>
+                        <div class="brand-item" onclick="searchKeyword('STHC')">STHC</div>
                     @endif
                 </div>
             </div>
         </div>
-        <div class="search-blur-bg"></div>
     </div>
 
 <!-- Flash Messages -->
@@ -438,7 +450,7 @@
 <style>
 /* Header Styling */
 .navbar {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    /* background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important; */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 8px 0;
     transition: all 0.3s ease;
@@ -459,7 +471,7 @@
     margin: 0 auto;
 }
 
-.search-input {
+/* .search-input {
     border: none !important;
     border-radius: 25px !important;
     padding: 12px 20px 12px 45px !important;
@@ -468,7 +480,7 @@
     transition: all 0.3s ease !important;
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px) !important;
-}
+} */
 
 .search-input:focus {
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15) !important;
@@ -646,7 +658,7 @@
     .navbar {
         padding: 6px 0 !important;
     }
-    
+
     .container {
         align-items: center !important;
     }
@@ -662,19 +674,19 @@
         margin-right: 15px !important;
         order: 2;
     }
-    
+
     .search-container {
         flex: 1 1 auto;
         margin: 0 !important;
         min-width: 0;
         order: 3;
     }
-    
+
     .search-input {
         padding: 10px 15px 10px 40px !important;
         font-size: 0.9rem !important;
     }
-    
+
     .navbar-brand img {
         height: 50px !important;
         margin-left: 0 !important;
@@ -695,11 +707,11 @@
         padding: 8px 12px 8px 35px !important;
         font-size: 0.85rem !important;
     }
-    
+
     .search-icon {
         left: 12px !important;
     }
-    
+
     .navbar-brand img {
         height: 45px !important;
         margin-left: 0 !important;
@@ -896,20 +908,20 @@
         margin-top: 5px !important;
         max-height: 400px !important;
     }
-    
+
     .suggestions-content {
         padding: 10px !important;
     }
-    
+
     .suggestion-item img {
         width: 35px !important;
         height: 35px !important;
     }
-    
+
     .suggestions-grid {
         grid-template-columns: 1fr !important;
     }
-    
+
     .product-name,
     .item-name,
     .keyword-text {
@@ -1090,6 +1102,7 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/trang_chu/search-and-menu.js') }}"></script>
 <script>
 // Hàm cập nhật giỏ hàng toàn cục
 window.updateCartCount = function(count) {

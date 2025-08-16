@@ -114,9 +114,9 @@
 
         .search-input {
             border-radius: 30px !important;
-            border: 2px solid rgba(56, 189, 248, 0.2) !important;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
-            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.1), inset 0 1px 3px rgba(255, 255, 255, 0.9) !important;
+            /* border: 2px solid rgba(56, 189, 248, 0.2) !important; */
+            /* background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important; */
+            /* box-shadow: 0 6px 20px rgba(56, 189, 248, 0.1), inset 0 1px 3px rgba(255, 255, 255, 0.9) !important; */
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             height: 52px !important;
             font-weight: 600;
@@ -124,9 +124,9 @@
         }
 
         .search-input:focus {
-            border: 2px solid #38bdf8 !important;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
-            box-shadow: 0 10px 35px rgba(56, 189, 248, 0.2), 0 0 0 4px rgba(56, 189, 248, 0.1) !important;
+            /* border: 2px solid #38bdf8 !important; */
+            /* background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important; */
+            /* box-shadow: 0 10px 35px rgba(56, 189, 248, 0.2), 0 0 0 4px rgba(56, 189, 248, 0.1) !important; */
             outline: none;
             transform: translateY(-2px) scale(1.01);
         }
@@ -416,16 +416,16 @@
                 height: 54px !important;
                 font-size: 16px !important;
                 font-weight: 600 !important;
-                border: 3px solid rgba(56, 189, 248, 0.25) !important;
-                background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
-                box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9) !important;
+                /* border: 3px solid rgba(56, 189, 248, 0.25) !important; */
+                /* background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important; */
+                /* box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9) !important; */
                 border-radius: 32px !important;
             }
 
             .search-input:focus {
-                border: 3px solid #38bdf8 !important;
-                background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
-                box-shadow: 0 12px 40px rgba(56, 189, 248, 0.25), 0 0 0 6px rgba(56, 189, 248, 0.15) !important;
+                /* border: 3px solid #38bdf8 !important; */
+                /* background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important; */
+                /* box-shadow: 0 12px 40px rgba(56, 189, 248, 0.25), 0 0 0 6px rgba(56, 189, 248, 0.15) !important; */
                 transform: translateY(-2px) scale(1.02);
             }
 
@@ -442,7 +442,7 @@
                 color: #38bdf8;
                 opacity: 0.8;
             }
-            
+
             .main-search-suggestions {
                 left: -15px;
                 right: -15px;
@@ -451,31 +451,31 @@
                 box-shadow: 0 15px 50px rgba(56, 189, 248, 0.2), 0 6px 20px rgba(0, 0, 0, 0.08);
                 border-top: 4px solid #38bdf8;
             }
-            
+
             .main-search-suggestions .product-suggestion {
                 padding: 12px 16px;
                 gap: 12px;
             }
-            
+
             .main-search-suggestions .product-suggestion img {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .main-search-suggestions .product-name {
                 font-size: 13px;
                 -webkit-line-clamp: 1;
             }
-            
+
             .main-search-suggestions .product-price {
                 font-size: 13px;
             }
-            
+
             .main-search-suggestions .product-brand {
                 font-size: 9px;
                 padding: 2px 8px;
             }
-            
+
             .main-search-suggestions .keyword-item {
                 font-size: 14px;
                 padding: 12px 20px;
@@ -484,16 +484,16 @@
                 box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
             }
         }
-        
+
         /* Hot Search Suggestions Styles */
         .suggestions-section {
             margin-bottom: 15px;
         }
-        
+
         .suggestions-section:last-child {
             margin-bottom: 0;
         }
-        
+
         .section-header {
             display: flex;
             align-items: center;
@@ -506,26 +506,26 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .section-header i {
             color: #007bff;
             margin-right: 8px;
         }
-        
+
         .suggestions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 10px;
             padding: 15px 20px;
         }
-        
+
         .suggestions-keywords {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             padding: 15px 20px;
         }
-        
+
         /* Hot Category Items */
         .hot-category-item,
         .hot-brand-item {
@@ -538,14 +538,14 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .hot-category-item:hover,
         .hot-brand-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
             border-color: #007bff;
         }
-        
+
         .hot-category-item img,
         .hot-brand-item img {
             width: 40px;
@@ -554,25 +554,25 @@
             object-fit: cover;
             margin-right: 12px;
         }
-        
+
         .item-info {
             flex: 1;
         }
-        
+
         .item-name {
             font-weight: 600;
             font-size: 14px;
             color: #212529;
             margin-bottom: 2px;
         }
-        
+
         .item-type {
             font-size: 11px;
             color: #6c757d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         /* Hot Product Items */
         .hot-product-item {
             display: flex;
@@ -582,16 +582,16 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        
+
         .hot-product-item:last-child {
             border-bottom: none;
         }
-        
+
         .hot-product-item:hover {
             background: linear-gradient(135deg, #fff5f5, #fff0f0);
             transform: translateX(5px);
         }
-        
+
         .hot-product-item img {
             width: 50px;
             height: 50px;
@@ -599,7 +599,7 @@
             object-fit: cover;
             margin-right: 15px;
         }
-        
+
         .hot-badge {
             background: linear-gradient(135deg, #ff6b6b, #ff8e53);
             color: white;
@@ -609,19 +609,19 @@
             font-weight: 600;
             margin-right: 8px;
         }
-        
+
         .product-price-sale {
             color: #dc3545;
             font-weight: 600;
             margin-right: 5px;
         }
-        
+
         .product-price-old {
             color: #6c757d;
             text-decoration: line-through;
             font-size: 12px;
         }
-        
+
         /* Hot Keyword Items */
         .hot-keyword-item {
             display: flex;
@@ -634,13 +634,13 @@
             cursor: pointer;
             margin-bottom: 5px;
         }
-        
+
         .hot-keyword-item:hover {
             background: linear-gradient(135deg, #2196f3, #9c27b0);
             color: white;
             transform: scale(1.05);
         }
-        
+
         .keyword-icon {
             width: 24px;
             height: 24px;
@@ -651,35 +651,35 @@
             justify-content: center;
             margin-right: 10px;
         }
-        
+
         .keyword-icon i {
             font-size: 10px;
             color: #2196f3;
         }
-        
+
         .hot-keyword-item:hover .keyword-icon {
             background: rgba(255, 255, 255, 0.2);
         }
-        
+
         .hot-keyword-item:hover .keyword-icon i {
             color: white;
         }
-        
+
         .keyword-info {
             flex: 1;
         }
-        
+
         .keyword-text {
             font-weight: 500;
             font-size: 13px;
             margin-bottom: 1px;
         }
-        
+
         .keyword-type {
             font-size: 10px;
             opacity: 0.7;
         }
-        
+
         /* Block Loading Styles */
         .block-loading {
             padding: 20px;
@@ -688,7 +688,7 @@
             border-radius: 8px;
             margin: 10px 20px;
         }
-        
+
         .loading-content {
             display: flex;
             align-items: center;
@@ -697,21 +697,21 @@
             color: #6c757d;
             font-size: 13px;
         }
-        
+
         .loading-content i {
             color: #007bff;
             font-size: 16px;
         }
-        
+
         .block-loading {
             animation: fadeInOut 1.5s ease-in-out infinite alternate;
         }
-        
+
         @keyframes fadeInOut {
             0% { opacity: 0.6; }
             100% { opacity: 1; }
         }
-        
+
         /* Shimmer effect for loading */
         .block-loading::before {
             content: '';
@@ -723,17 +723,17 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             animation: shimmer 2s infinite;
         }
-        
+
         .block-loading {
             position: relative;
             overflow: hidden;
         }
-        
+
         @keyframes shimmer {
             0% { left: -100%; }
             100% { left: 100%; }
         }
-        
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .suggestions-grid {
@@ -741,35 +741,35 @@
                 gap: 8px;
                 padding: 10px 15px;
             }
-            
+
             .section-header {
                 padding: 6px 15px;
                 font-size: 12px;
             }
-            
+
             .hot-category-item,
             .hot-brand-item {
                 padding: 10px;
             }
-            
+
             .hot-product-item {
                 padding: 10px 15px;
             }
-            
+
             .suggestions-keywords {
                 padding: 10px 15px;
             }
-            
+
             .hot-keyword-item {
                 font-size: 12px;
                 padding: 6px 12px;
             }
-            
+
             .block-loading {
                 margin: 8px 15px;
                 padding: 15px;
             }
-            
+
             .loading-content {
                 font-size: 12px;
                 gap: 8px;
