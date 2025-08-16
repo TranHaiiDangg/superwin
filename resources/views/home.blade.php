@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section with Banner Slider -->
-<section class="hero-section py-5">
+<section class="hero-section">
     <div class="container-fluid">
         <div class="banner-wrapper">
             <div class="banner-grid">
@@ -70,190 +70,142 @@
 <!-- Container Menu -->
 @if($mainCategories->count() > 0)
 <div class="container-menu">
-    <div class="container">
-        <div class="row g-2 g-md-3 justify-content-center align-items-stretch">
-            @foreach($mainCategories as $category)
-            <div class="col-3 d-flex justify-content-center align-items-stretch">
-                <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="menu-item">
-                    <div class="icon-container">
-                        @if($category->image)
-                        <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="menu-img" />
-                        @else
-                        <img src="/image/bom.png" alt="{{ $category->name }}" class="menu-img" />
-                        @endif
-                    </div>
-                    <p class="mb-0">{{ $category->name }}</p>
-                </a>
-            </div>
-            @endforeach
+    @foreach($mainCategories as $category)
+    <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="menu-item">
+        <div class="icon-container">
+            @if($category->image)
+            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="menu-img" />
+            @else
+            <img src="/image/bom.png" alt="{{ $category->name }}" class="menu-img" />
+            @endif
         </div>
-    </div>
+        <p>{{ $category->name }}</p>
+    </a>
+    @endforeach
 </div>
 @endif
 <!-- Flash Deals Section -->
 @if($saleProducts->count() > 0)
-<div class="container">
-    <section class="flash-deals-section py-4">
-        <div class="container">
-            <div class="flash-deals-header d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center">
-                    <h2 class="fw-bold text-white mb-0 me-3 flash-deal-title">
-                        Flash Deal
-                    </h2>
-                    <div class="countdown-timer">
-                        <span class="timer-label text-black me-2">Kết thúc trong:</span>
-                        <div class="timer-display">
-                            <span class="time-unit" id="hours">02</span>
-                            <span class="time-unit" id="minutes">52</span>
-                            <span class="time-unit" id="seconds">52</span>
-                        </div>
-                    </div>
+<div class="flash-deal-container">
+    <div class="flash-deal-header">
+        <div class="flash-deal-left">
+            <h1 class="flash-deal-title">Flash Deal</h1>
+            <div class="flash-deal-timer">
+                <span class="timer-label">Kết thúc trong:</span>
+                <div class="timer-display">
+                    <div class="timer-unit" id="hours">00</div>
+                    <div class="timer-unit" id="minutes">00</div>
+                    <div class="timer-unit" id="seconds">00</div>
                 </div>
-                <a href="{{ route('deals') }}" class="btn btn-outline-light btn-sm flash-deal-view-all">
-                    Xem tất cả
-                </a>
-            </div>
-
-            <div class="flash-deals-slider">
-                <button class="slider-nav prev" id="flashDealsPrev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-
-                <div class="slider-container">
-                    <div class="slider-track" id="flashDealsTrack">
-                        @foreach($saleProducts->take(10) as $index => $product)
-                        <div class="deal-item">
-                            <div class="deal-card">
-                                <div class="discount-badge">
-                                    -{{ $product->discount_percentage }}%
-                                </div>
-
-                                <div class="product-image">
-                                    <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
-                                        @if($product->baseImage)
-                                        <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
-                                        @else
-                                        <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
-                                        @endif
-                                    </a>
-                                </div>
-
-                                <div class="deal-content">
-                                    <h6 class="product-name">{{ $product->name }}</h6>
-
-                                    <div class="price-section d-flex justify-content-center align-items-center">
-                                        <div class="sale-price">{{ number_format($product->price) }}đ</div>
-                                        <!-- <div class="ms-2 original-price">{{ number_format($product->price) }}đ</div> -->
-                                    </div>
-
-                                    @php
-                                    $soldCount = $product->sold_count ?? rand(20, 80);
-                                    $totalStock = $product->stock_quantity + $soldCount;
-                                    $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
-                                    @endphp
-
-                                    <div class="progress-section text-center">
-                                        <div class="sold-info">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: {{ $progress }}%"></div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <button class="slider-nav next" id="flashDealsNext">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
         </div>
-    </section>
+        <a href="{{ route('deals') }}" class="flash-deal-view-all">Xem tất cả</a>
+    </div>
+    
+    <button id="flashDealsPrev" class="flash-deal-nav prev">‹</button>
+    <button id="flashDealsNext" class="flash-deal-nav next">›</button>
+
+    <div class="flash-deal-grid" id="flashDealsTrack">
+        @foreach($saleProducts->take(10) as $index => $product)
+        <div class="flash-deal-card deal-item">
+            <div class="flash-deal-discount">-{{ $product->discount_percentage }}%</div>
+            
+            <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                @if($product->baseImage)
+                <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="flash-deal-img">
+                @else
+                <img src="/image/sp1.png" alt="{{ $product->name }}" class="flash-deal-img">
+                @endif
+            </a>
+            
+            <div class="flash-deal-title-product">{{ $product->name }}</div>
+            
+            <div class="flash-deal-price">
+                <span class="flash-deal-price-current">{{ number_format($product->price) }}đ</span>
+                @if($product->original_price && $product->original_price > $product->price)
+                <span class="flash-deal-price-original">{{ number_format($product->original_price) }}đ</span>
+                @endif
+            </div>
+            
+            @php
+            $soldCount = $product->sold_count ?? rand(20, 80);
+            $totalStock = $product->stock_quantity + $soldCount;
+            $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
+            @endphp
+            
+            <div class="flash-deal-progress">
+                <div class="flash-deal-progress-label">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
+                <div class="flash-deal-progress-bar">
+                    <div class="flash-deal-progress-fill" style="width: {{ $progress }}%"></div>
+                </div>
+            </div>
+            <div class="flash-deal-sold">{{ $soldCount }} đã bán</div>
+        </div>
+        @endforeach
+    </div>
 </div>
 @endif
 
 <!-- Category Products Sections -->
 @if(count($categoryProducts) > 0)
-@foreach($categoryProducts as $categoryData)
-<section class="py-4">
-    <div class="container">
-        <div class="category-section-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h3 class="fw-bold mb-0 normal-product-title">{{ $categoryData['category']->name }}</h3>
-                </div>
-                <a href="{{ route('categories.show', $categoryData['category']->id) }}" class="btn btn-sm normal-product-view-all">
-                    Xem tất cả
+    @foreach($categoryProducts as $categoryData)
+    <div class="normal-product-container">
+        <div class="normal-product-header">
+            <h1 class="normal-product-title">{{ $categoryData['category']->name }}</h1>
+            <a href="{{ route('categories.show', $categoryData['category']->id) }}" class="normal-product-view-all">
+                Xem tất cả
+            </a>
+        </div>
+        
+        <button class="normal-product-nav prev" data-category="{{ $categoryData['category']->id }}" data-direction="prev">‹</button>
+        <button class="normal-product-nav next" data-category="{{ $categoryData['category']->id }}" data-direction="next">›</button>
+
+        <div class="normal-product-grid" data-category-grid="{{ $categoryData['category']->id }}">
+            @foreach($categoryData['products'] as $product)
+            <div class="normal-product-card">
+                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                    @if($product->baseImage)
+                    <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="normal-product-img">
+                    @else
+                    <img src="/image/sp1.png" alt="{{ $product->name }}" class="normal-product-img">
+                    @endif
+                    
+                    @if($product->isOnSale)
+                    <span class="product-discount-badge">
+                        -{{ $product->discount_percentage }}%
+                    </span>
+                    @endif
                 </a>
-            </div>
 
-            <div class="category-products-slider" data-category="{{ $categoryData['category']->id }}">
-                <button class="category-slider-nav normal-product-nav prev" data-direction="prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-
-                <div class="category-slider-container">
-                    <div class="category-slider-track">
-                        @foreach($categoryData['products'] as $product)
-                        <div class="category-product-item">
-                            <div class="category-product-card">
-                                <div class="category-product-image">
-                                    <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
-                                        @if($product->baseImage)
-                                        <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
-                                        @else
-                                        <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
-                                        @endif
-                                    </a>
-
-                                    @if($product->isOnSale)
-                                    <span class="category-discount-badge">
-                                        -{{ $product->discount_percentage }}%
-                                    </span>
-                                    @endif
-                                </div>
-
-                                <div class="category-product-content">
-                                    <h6 class="category-product-name">{{ $product->name }}</h6>
-
-                                    <div class="category-price-section text-center">
-                                        @if($product->isOnSale)
-                                        <div class="category-regular-price">{{ number_format($product->sale_price) }}đ</div>
-                                        <div class="category-original-price">{{ number_format($product->price) }}đ</div>
-                                        @else
-                                        <div class="category-regular-price">{{ number_format($product->price) }}đ</div>
-                                        @endif
-                                    </div>
-
-                                    <div class="category-stock-info  d-flex justify-content-center align-items-center ">
-                                        @if($product->stock_quantity > 0)
-                                        <span class=" small normal-product-sold">
-                                            <i class="fas fa-check-circle"></i> Còn hàng
-                                        </span>
-                                        @else
-                                        <span class="text-danger small">
-                                            <i class="fas fa-times-circle"></i> Hết hàng
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
+                <div class="normal-product-title-product">{{ $product->name }}</div>
+                
+                <div class="normal-product-price">
+                    @if($product->isOnSale)
+                    <span class="normal-product-price-current">{{ number_format($product->sale_price) }}đ</span>
+                   
+                    @else
+                    <span class="normal-product-price-current">{{ number_format($product->price) }}đ</span>
+                    @endif
                 </div>
 
-                <button class="category-slider-nav normal-product-nav next" data-direction="next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                <div class="normal-product-sold">
+                    @if($product->stock_quantity > 0)
+                    <i class="fas fa-check-circle"></i> Còn hàng
+                    @else
+                    <span class="text-danger">
+                        <i class="fas fa-times-circle"></i> Hết hàng
+                    </span>
+                    @endif
+                </div>
             </div>
+            @endforeach
         </div>
     </div>
-</section>
-@endforeach
+    @endforeach
+@else
+    <div class="no-products-message">
+        <p>Hiện tại chưa có sản phẩm nào.</p>
+    </div>
 @endif
 
 <!-- Suggested Products Section -->
@@ -807,309 +759,219 @@
         font-size: 0.75rem;
     }
 
-    /* Banner Slider Styles */
-    .banner-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 15px;
-    }
-
-    .banner-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        gap: 15px;
-        height: 320px;
-    }
-
-    .main-banner {
-        grid-row: 1 / 3;
-        position: relative;
-        overflow: hidden;
-        border-radius: 12px;
-    }
-
-    .slider-column {
-        height: 100%;
-        position: relative;
-    }
-
-    .main-slider {
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .slide-container {
-        display: flex;
-        height: 100%;
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .slide {
-        min-width: 100%;
-        height: 100%;
-    }
-
-    .slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .slider-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.8);
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.3s ease;
-    }
-
-    .slider-nav:hover {
-        background: rgba(255, 255, 255, 1);
-    }
-
-    .slider-nav.prev {
-        left: 15px;
-    }
-
-    .slider-nav.next {
-        right: 15px;
-    }
-
-    .pagination-dots {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 8px;
-        z-index: 10;
-    }
-
-    .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .dot.active {
-        background: rgba(255, 255, 255, 1);
-    }
-
-    .side-banner-1,
-    .side-banner-2 {
-        overflow: hidden;
-        border-radius: 12px;
-    }
-
-    .image-box {
-        height: 100%;
-    }
-
-    .image-box img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .image-box:hover img {
-        transform: scale(1.05);
-    }
-
-    /* Container Menu Styles */
-    .container-menu {
-        background: white;
-        padding: 0 0;
-        border-bottom: 1px solid #eee;
-    }
-
-    .menu-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: #333;
-        padding: 15px 10px;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        text-align: center;
-        min-height: 100px;
-        width: 100%;
-        height: 100%;
-    }
-
-    .menu-item:hover {
-        /* background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white; */
-        transform: translateY(-10px);
-        /* box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3); */
-    }
-
-    .icon-container {
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 10px;
-        background: rgba(79, 172, 254, 0.1);
-        border-radius: 50%;
-        transition: all 0.3s ease;
-    }
-
-    .menu-item:hover .icon-container {
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    .menu-img {
-        max-width: 100%;
-        max-height: 100%;
-        transition: all 0.3s ease;
-    }
-
-    .menu-item p {
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin: 0;
-        line-height: 1.2;
-    }
-
-    /* Custom Bootstrap classes for better responsive */
 
 
-    /* Menu items - 4 columns layout for all screen sizes */
-    .col-3 {
-        display: flex;
-        align-items: stretch;
-        min-height: 120px;
-    }
-
-    .col-3 .menu-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .banner-grid {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto auto;
-            height: auto;
-        }
-
-        .main-banner {
-            grid-row: 1;
-            height: 250px;
-        }
-
-        .side-banner-1,
-        .side-banner-2 {
-            height: 150px;
-        }
-
-        /* Tablet adjustments */
-        .col-3 {
-            min-height: 100px;
-        }
-
-        .menu-item {
-            min-height: 80px;
-            padding: 15px 8px;
-        }
-
-        .icon-container {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 8px;
-        }
-
-        .menu-item p {
-            font-size: 0.8rem;
-            line-height: 1.2;
-        }
-    }
-
-    /* Mobile adjustments - màn hình nhỏ hơn */
-    @media (max-width: 576px) {
-        .col-3 {
-            min-height: 85px;
-        }
-
-        .menu-item {
-            min-height: 65px;
-            padding: 10px 6px;
-        }
-
-        .icon-container {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 6px;
-        }
-
-        .menu-item p {
-            font-size: 0.7rem;
-            line-height: 1.1;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
-            height: 2.2em;
-        }
-    }
-
-    /* Extra small mobile - màn hình rất nhỏ */
-    @media (max-width: 400px) {
-        .col-3 {
-            min-height: 75px;
-        }
-
-        .menu-item {
-            min-height: 55px;
-            padding: 8px 4px;
-        }
-
-        .icon-container {
-            width: 35px;
-            height: 35px;
-            margin-bottom: 4px;
-        }
-
-        .menu-item p {
-            font-size: 0.65rem;
-            line-height: 1.0;
-            height: 2.0em;
-        }
-    }
+   /* Container-menu*/
+   .container-menu {
+                width: 1280px;
+                margin: 0 auto;
+                display: flex;
+                gap: 60px;
+                padding: 15px 0 10px 0  ;
+                background-color: #fff;
+                justify-content: center;
+            }
+    
+            .menu-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                width: 120px;
+                text-decoration: none;
+                color: inherit;
+                white-space: nowrap;
+                transition: transform 0.3s ease;
+            }
+    
+            .menu-item:hover {
+                text-decoration: none;
+                color: inherit;
+                transform: scale(1.1);
+            }
+    
+            .menu-item:hover .icon-container {
+                transform: scale(1.1);
+            }
+    
+            .icon-container {
+                background: none;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 8px;
+                padding: 0;
+                box-shadow: none;
+                transition: none;
+            }
+    
+            .menu-img {
+                width: auto;
+                height: 50px;
+                object-fit: contain;
+                border-radius: 50%;
+                display: block;
+            }
+    
+            /* Icon colors */
+            .menu-item:nth-child(1) .menu-icon {
+                color: #ff6b6b;
+            }
+    
+            .menu-item:nth-child(2) .menu-icon {
+                color: #4ecdc4;
+            }
+    
+            .menu-item:nth-child(3) .menu-icon {
+                color: #45b7d1;
+            }
+    
+            .menu-item:nth-child(4) .menu-icon {
+                color: #96ceb4;
+            }
+    
+            .menu-item:nth-child(5) .menu-icon {
+                color: #ff9f1c;
+            }
+    
+            .menu-item:nth-child(6) .menu-icon {
+                color: #e76f51;
+            }
+    
+            /* Hover effects */
+            .menu-item:hover .icon-container {
+                background: none;
+            }
+    
+            .menu-item:hover .menu-icon {
+                transform: scale(1.1);
+            }
+    
+            .menu-item p {
+                font-size: 13px;
+                color: #333;
+                margin: 0;
+            }
+    
+            /* Responsive - Tablet (768px - 1024px) */
+            @media (max-width: 1024px) and (min-width: 768px) {
+                .container-menu {
+                    width: 100%;
+                    max-width: 100%;
+                    gap: 15px;
+                    padding: 20px 16px;
+                    justify-content: center;
+                    flex-wrap: nowrap;
+                }
+                
+                .menu-item {
+                    width: 100px;
+                    min-width: 100px;
+                    flex: 0 0 auto;
+                }
+                
+                .icon-container {
+                    width: 50px;
+                    height: 50px;
+                }   
+                
+                .menu-icon {
+                    font-size: 20px;
+                }
+                
+                .menu-item p {
+                    font-size: 11px;
+                    line-height: 1.2;
+                }
+            }
+    
+            /* Responsive - Mobile (ẩn menu trên mobile) */
+            @media (max-width: 767px) {
+                .container-menu {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    width: 370px;
+                    gap: 0;
+                    padding: 0;
+                    row-gap: 10px;
+                }
+                .container-menu .menu-item {
+                    width: 25%;
+                    flex: 0 0 25%;
+                    box-sizing: border-box;
+                    margin-bottom: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+            @media (max-width: 767px) {
+                .container-menu {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    width: 100%;
+                    padding: 0;
+                    row-gap: 10px;
+                }
+            
+                .container-menu .menu-item {
+                    width: 25%; /* Mặc định 4 items mỗi hàng */
+                    flex: 0 0 25%;
+                    box-sizing: border-box;
+                    margin-bottom: 0;
+                    padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+            }
+            
+            /* iPhone 5 (<=320px): chỉ hiển thị 2 item mỗi hàng */
+            @media (max-width: 320px) {
+                .container-menu .menu-item {
+                    width: 50%;
+                    flex: 0 0 50%;
+                }
+            }
 
     /* Flash Deals Section Styles */
-    .flash-deals-section {
-        background: #FFE5B4;
-        border-radius: 16px;
-        margin: 20px 0;
-    }
+    /* ===== FLASH DEAL STYLES ===== */
+.flash-deal-container {
+    max-width: 1280px;
+    margin: 25px auto;
+    background: #FFE5B4; /* Cam nhạt */
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
 
-    .flash-deal-title {
+.flash-deal-container.active {
+    display: block; /* Hiện khi có sự kiện */
+}
+
+.flash-deal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.flash-deal-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: nowrap;
+    flex: 1;
+}
+
+.flash-deal-title {
     font-size: 20px;
     color: #fff;
     font-weight: 700;
@@ -1122,39 +984,245 @@
     white-space: nowrap;
     height: 40px;
     box-sizing: border-box;
-    }
+}
 
-    .time-unit {
-        background: #FF6B35;
-        color: #fff;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 700;
-        font-size: 14px;
-        min-width: 30px;
-        text-align: center;
-    }
-    .flash-deal-view-all{
+.flash-deal-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #fff;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.timer-label {
+    font-size: 12px;
+    color: #000;
+}
+
+.timer-display {
+    display: flex;
+    gap: 4px;
+}
+
+.timer-unit {
     background: #FF6B35;
     color: #fff;
-    padding: 10px 20px !important;
-    border: none;
-    border-radius: 25px !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 700;
     font-size: 14px;
-    font-weight: 600 !important;
+    min-width: 30px;
+    text-align: center;
+}
+
+.flash-deal-view-all {
+    background: #FF6B35;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
     box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
     white-space: nowrap;
     flex-shrink: 0;
-    }
-    .normal-product-title{
+}
+
+.flash-deal-view-all:hover {
+    background: #E55A2B;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.flash-deal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 107, 53, 0.9);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-deal-nav:hover {
+    background: #FF6B35;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.flash-deal-nav.prev {
+    left: 10px;
+}
+
+.flash-deal-nav.next {
+    right: 10px;
+}
+
+.flash-deal-grid {
+    display: flex;
+    gap: 15px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+}
+
+.flash-deal-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.flash-deal-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    min-width: 250px;
+    flex: 0 0 250px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.flash-deal-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.flash-deal-card:hover {
+    transform: translateY(-2px);
+}
+
+.flash-deal-discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #FF6B35;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.flash-deal-img {
+    width: 100%;
+    height: 260px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.flash-deal-title-product {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-deal-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.flash-deal-price-current {
+    font-size: 16px;
+    color: #FF6B35;
+    font-weight: 700;
+}
+
+.flash-deal-price-original {
+    font-size: 12px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.flash-deal-progress {
+    margin-bottom: 10px;
+}
+
+.flash-deal-progress-label {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.flash-deal-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.flash-deal-progress-fill {
+    height: 100%;
+    background: #FF6B35;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.flash-deal-sold {
+    font-size: 11px;
+    color: #FF6B35;
+    font-weight: 600;
+    background: #FFF3E0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* ===== NORMAL PRODUCTS STYLES ===== */
+.normal-product-container {
+    max-width: 1280px;
+    margin: 25px auto;
+    background: #ffffff; /* Trắng */
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.normal-product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.normal-product-title {
     font-size: 20px;
     color: #fff;
     font-weight: 700;
-    background: #4facfe;
+    background: #4facfe; /* Xanh dương */
     padding: 8px 16px;
     border-radius: 6px;
     display: flex;
@@ -1162,301 +1230,355 @@
     gap: 8px;
     white-space: nowrap;
     height: 40px;
-    box-sizing: border-box;}
-    .normal-product-nav{
+    box-sizing: border-box;
+}
 
-    background: rgba(79, 172, 254, 0.9) !important;
-    color: white;
-    border: none !important;
-    width: 40px !important;
-    height: 40px !important;
-    transition: all 0.3s ease;
-
-    }
-    .normal-product-view-all{
+.normal-product-view-all {
     background: #4facfe;
     color: #fff;
-    padding: 10px 20px !important;
+    padding: 10px 20px;
     border: none;
-    border-radius: 25px !important;
+    border-radius: 25px;
     font-size: 14px;
-    font-weight: 600 !important;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
     box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
     white-space: nowrap;
     flex-shrink: 0;
-    }
-    .flash-deals-header {
-        position: relative;
-        z-index: 2;
+}
+
+.normal-product-view-all:hover {
+    background: #3a8bdb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.normal-product-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(79, 172, 254, 0.9);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.normal-product-nav:hover {
+    background: #4facfe;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.normal-product-nav.prev {
+    left: 10px;
+}
+
+.normal-product-nav.next {
+    right: 10px;
+}
+
+.normal-product-grid {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: space-between;
+}
+
+.normal-product-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.normal-product-card {
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    min-width: 200px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.product-discount-badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #FF6B35;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.normal-product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.1);
+    border-color: #4facfe;
+}
+
+.normal-product-img {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    padding: 10px;
+}
+
+.normal-product-title-product {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.normal-product-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.normal-product-price-current {
+    font-size: 16px;
+    color: #4facfe;
+    font-weight: 700;
+}
+
+.normal-product-sold {
+    font-size: 11px;
+    color: #4facfe;
+    font-weight: 600;
+    background: #e3f2fd;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* ===== RESPONSIVE CHO FLASH DEAL ===== */
+@media (max-width: 896px) {
+    .flash-deal-container {
+        padding: 15px;
+        margin: 25px 5px;
     }
 
-    .countdown-timer {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    .flash-deal-header {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .flash-deal-left {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .flash-deal-title {
+        font-size: 16px;
+        padding: 6px 10px;
+        flex-shrink: 0;
+        height: 32px;
+    }
+
+    .flash-deal-timer {
+        padding: 6px 8px;
+        flex-shrink: 0;
+        height: 32px;
     }
 
     .timer-label {
-        font-size: 0.9rem;
-        font-weight: 500;
+        display: none;
     }
 
-    .timer-display {
-        display: flex;
-        gap: 4px;
+    .timer-unit {
+        font-size: 12px;
+        padding: 3px 6px;
+        min-width: 25px;
     }
 
-
-    .flash-deals-slider {
-        position: relative;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .slider-container {
-        flex: 1;
-        overflow: hidden;
-        position: relative;
-        margin: 0 10px;
-    }
-
-    .slider-track {
-        display: flex;
-        transition: transform 0.5s ease;
-        gap: 15px;
-    }
-
-    .deal-item {
-        flex: 0 0 250px;
-        min-width: 250px;
-    }
-
-    .deal-card {
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        height: 100%;
-        position: relative;
-    }
-
-    .deal-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .discount-badge {
-        position: absolute;
-        top: 8px;
-        left: 8px;
-        background: #ff4757;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: bold;
-        z-index: 3;
-    }
-
-    .product-image {
-        position: relative;
-        height: 160px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f8f9fa;
-    }
-
-    .product-image img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        transition: transform 0.3s ease;
-    }
-
-    .deal-card:hover .product-image img {
-        transform: scale(1.05);
-    }
-
-    .deal-content {
-        padding: 12px;
-    }
-
-    .product-name {
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 8px;
-        line-height: 1.3;
-        color: #2c3e50;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        line-clamp: 2;
-        overflow: hidden;
-        height: 2.34em;
-        /* Cố định chiều cao cho 2 dòng (0.9rem * 1.3 line-height * 2 dòng) */
-        text-overflow: ellipsis;
-        word-wrap: break-word;
-        word-break: break-word;
-    }
-
-    .price-section {
-        margin-bottom: 12px;
-    }
-
-    .sale-price {
-        color: #e74c3c;
-        font-weight: bold;
-        font-size: 1.1rem;
-        display: block;
-    }
-
-    .original-price {
-        text-decoration: line-through;
-        color: #95a5a6;
-        font-size: 0.8rem;
-        margin-top: 2px;
-    }
-
-    .progress-section {
-        margin-top: 10px;
-    }
-
-    .progress-bar {
-        background: #ecf0f1;
-        height: 6px;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-bottom: 6px;
-        position: relative;
-    }
-
-    .progress-fill {
-        background: linear-gradient(90deg, #ff6b35, #f7931e);
-        height: 100%;
-        border-radius: 3px;
-        transition: width 0.3s ease;
-    }
-
-    .sold-info {
-        font-size: 0.75rem;
-        color: #666;
-        text-align: center;
-    }
-
-    .deal-button {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: auto;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-    }
-
-    .deal-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-    }
-
-    .flash-deals-slider .slider-nav {
-        background: rgba(255, 255, 255, 0.9);
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        color: #333;
+    .flash-deal-view-all {
+        padding: 6px 12px;
+        font-size: 12px;
         flex-shrink: 0;
     }
 
-    .flash-deals-slider .slider-nav:hover {
-        background: white;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transform: scale(1.05);
+    .flash-deal-nav {
+        display: none;
     }
 
-    .flash-deals-slider .slider-nav:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    .flash-deal-card {
+        width: calc(20% - 10px);
+        min-width: 160px;
+        padding: 12px;
     }
 
-    .flash-deals-slider .slider-nav:disabled:hover {
-        transform: none;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    .flash-deal-img {
+        height: 135px;
     }
 
-    /* Flash Deals Responsive */
-    @media (max-width: 768px) {
-        .flash-deals-header {
-            flex-direction: column;
-            gap: 15px;
-            text-align: center;
-        }
-
-        .countdown-timer {
-            justify-content: center;
-        }
-
-        .deal-item {
-            flex: 0 0 220px;
-            min-width: 220px;
-        }
-
-        .flash-deals-slider .slider-nav {
-            width: 35px;
-            height: 35px;
-        }
-
-        .flash-deals-slider {
-            gap: 10px;
-        }
-
-        .slider-container {
-            margin: 0 5px;
-        }
+    .flash-deal-title-product {
+        font-size: 12px;
+        height: 32px;
     }
 
-    @media (max-width: 576px) {
-        .deal-item {
-            flex: 0 0 200px;
-            min-width: 200px;
-        }
-
-        .product-image {
-            height: 140px;
-        }
-
-        .product-name {
-            font-size: 0.8rem;
-            height: 2.08em;
-            /* Điều chỉnh chiều cao cho mobile (0.8rem * 1.3 line-height * 2 dòng) */
-        }
-
-        .sale-price {
-            font-size: 1rem;
-        }
+    .flash-deal-price-current {
+        font-size: 14px;
     }
+}
+
+/* ===== RESPONSIVE CHO NORMAL PRODUCTS ===== */
+@media (max-width: 896px) {
+    .normal-product-container {
+        padding: 15px;
+        margin: 25px 5px;
+    }
+
+    .normal-product-header {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .normal-product-title {
+        font-size: 16px;
+        padding: 6px 10px;
+        flex-shrink: 0;
+        height: 32px;
+    }
+
+    .normal-product-view-all {
+        padding: 6px 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .normal-product-nav {
+        display: none;
+    }
+
+    .normal-product-card {
+        width: calc(20% - 10px);
+        min-width: 160px;
+        padding: 12px;
+    }
+
+    .normal-product-img {
+        height: 100px;
+    }
+
+    .normal-product-title-product {
+        font-size: 12px;
+        height: 32px;
+    }
+
+    .normal-product-price-current {
+        font-size: 14px;
+    }
+}
+
+/* iPhone 5/SE (320px) */
+@media (max-width: 375px) {
+    .flash-deal-container, .normal-product-container {
+        padding: 10px;
+        margin: 2px;
+    }
+
+    .flash-deal-header, .normal-product-header {
+        gap: 6px;
+    }
+
+    .flash-deal-left {
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .flash-deal-title, .normal-product-title {
+        font-size: 14px;
+        padding: 4px 8px;
+        flex-shrink: 0;
+        height: 28px;
+    }
+
+    .flash-deal-timer {
+        padding: 4px 6px;
+        flex-shrink: 0;
+        height: 28px;
+    }
+
+    .timer-unit {
+        font-size: 10px;
+        padding: 2px 4px;
+        min-width: 20px;
+    }
+
+    .flash-deal-view-all, .normal-product-view-all {
+        padding: 4px 8px;
+        font-size: 10px;
+        flex-shrink: 0;
+    }
+
+    .flash-deal-card, .normal-product-card {
+        width: calc(60% - 10px);
+        min-width: 140px;
+        padding: 10px;
+    }
+
+    .flash-deal-img, .normal-product-img {
+        height: 150px;
+    }
+
+    .flash-deal-title-product, .normal-product-title-product {
+        font-size: 11px;
+        height: 28px;
+    }
+
+    .flash-deal-price-current, .normal-product-price-current {
+        font-size: 13px;
+    }
+
+    .flash-deal-price-original {
+        font-size: 10px;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .flash-deal-nav, .normal-product-nav {
+        display: none;
+    }
+    
+    .flash-deal-container, .normal-product-container {
+        padding: 20px;
+    }
+    
+    .flash-deal-card, .normal-product-card {
+        min-width: 220px;
+    }
+}   
 
     /* Category Products Sections Styles */
     .category-section-wrapper {

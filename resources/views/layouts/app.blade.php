@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/css/trang_chu/header.css">
     <link rel="stylesheet" href="/css/trang_chu/footer.css">
     <link rel="stylesheet" href="/css/trang_chu/product.css">
-
+    
     @stack('styles')
 
     <style>

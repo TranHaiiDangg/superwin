@@ -1,8 +1,8 @@
 // Flash Deals Slider Functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const sliderTrack = document.querySelector('.flash-deals-slider .slider-track');
-    const prevBtn = document.getElementById('flashDealsPrev');
-    const nextBtn = document.getElementById('flashDealsNext');
+    const sliderTrack = document.querySelector('.flash-deal-grid');
+    const prevBtn = document.getElementById('flash-prev');
+    const nextBtn = document.getElementById('flash-next');
     
     if (!sliderTrack) return;
     
@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
     sliderTrack.addEventListener('mouseleave', startAutoScroll);
     
     // Countdown Timer Functionality
-    const hoursElement = document.querySelector('.hours');
-    const minutesElement = document.querySelector('.minutes');
-    const secondsElement = document.querySelector('.seconds');
+    const hoursElement = document.getElementById('hours');
+    const minutesElement = document.getElementById('minutes');
+    const secondsElement = document.getElementById('seconds');
     
     if (hoursElement && minutesElement && secondsElement) {
         // Set countdown time (6 hours 50 minutes from now)

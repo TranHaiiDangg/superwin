@@ -17,7 +17,7 @@
 </nav>
 
 <!-- Product Detail Section -->
-<section class="product-detail-section py-5">
+<section class="product-detail-section">
     <div class="container">
         <div class="row">
             <!-- Product Images -->
