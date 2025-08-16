@@ -64,7 +64,7 @@
                         @endif
                     </div>
                 </div>
-                
+
                 <!-- Customer Photos Gallery -->
                 <div class="customer-photos-section mt-4" id="customerPhotosSection" style="display: none;">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -403,13 +403,13 @@
                 <div class="product-tabs">
                     <ul class="nav nav-tabs" id="productTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
-                                Mô tả sản phẩm
+                            <button class="nav-link active" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
+                                Thông số kỹ thuật
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
-                                Thông số kỹ thuật
+                            <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                                Mô tả sản phẩm
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
@@ -428,7 +428,7 @@
 
                     <div class="tab-content" id="productTabsContent">
                         <!-- Description Tab -->
-                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                        <div class="tab-pane fade" id="description" role="tabpanel">
                             <div class="tab-content-wrapper">
                                 <div class="product-description">
                                     {!! $product->description !!}
@@ -437,7 +437,7 @@
                         </div>
 
                         <!-- Specifications Tab -->
-                        <div class="tab-pane fade" id="specifications" role="tabpanel">
+                        <div class="tab-pane fade show active" id="specifications" role="tabpanel">
                             <div class="tab-content-wrapper">
                                 <div class="specifications-table">
                                     @if($product->attributes && $product->attributes->count() > 0)
@@ -594,15 +594,15 @@
                         <div class="review-content">
                             {{ $review->comment }}
                         </div>
-                        
+
                         <!-- Review Images -->
                         @if($review->images && count($review->images) > 0)
                         <div class="review-images mt-3">
                             <div class="review-images-grid">
                                 @foreach($review->images as $image)
                                 <div class="review-image-item">
-                                    <img src="{{ $image['thumbnail'] ?? $image['original'] ?? $image }}" 
-                                         alt="Ảnh đánh giá" 
+                                    <img src="{{ $image['thumbnail'] ?? $image['original'] ?? $image }}"
+                                         alt="Ảnh đánh giá"
                                          class="review-image-thumb"
                                          onclick="openImageModal('{{ $image['original'] ?? $image }}', '{{ $review->customer_name }}', '{{ $review->created_at->format('d/m/Y') }}')">
                                 </div>
@@ -860,7 +860,7 @@
                             </div>
                             <div class="invalid-feedback" id="imagesError"></div>
                         </div>
-                        
+
                         <!-- Preview Images -->
                         <div class="preview-images mt-3" id="previewImages" style="display: none;">
                             <div class="preview-images-grid"></div>
@@ -4093,7 +4093,7 @@
 
     function handleFileSelect(files) {
         const fileArray = Array.from(files);
-        
+
         // Check total count
         if (selectedImages.length + fileArray.length > maxImages) {
             showNotification(`Tối đa ${maxImages} ảnh được phép tải lên`, 'warning');
@@ -4312,7 +4312,7 @@
         // Create new review element
         const reviewElement = document.createElement('div');
         reviewElement.className = 'review-item';
-        
+
         let imagesHtml = '';
         if (review.images && review.images.length > 0) {
             imagesHtml = `
@@ -4320,8 +4320,8 @@
                     <div class="review-images-grid">
                         ${review.images.map(image => `
                             <div class="review-image-item">
-                                <img src="${image.thumbnail || image.original || image}" 
-                                     alt="Ảnh đánh giá" 
+                                <img src="${image.thumbnail || image.original || image}"
+                                     alt="Ảnh đánh giá"
                                      class="review-image-thumb"
                                      onclick="openImageModal('${image.original || image}', '${review.customer_name}', '${review.created_at}')">
                             </div>
