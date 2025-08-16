@@ -220,6 +220,7 @@ Route::get('/warranty', [WarrantyController::class, 'index'])->name('warranty');
 // Review routes
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 Route::get('/products/{product}/reviews', [ReviewController::class, 'getProductReviews'])->name('reviews.product');
+Route::get('/products/{product}/review-images', [ReviewController::class, 'getProductReviewImages'])->name('reviews.images');
 
 // API routes cho search suggestions (nếu cần)
 Route::prefix('api')->group(function () {

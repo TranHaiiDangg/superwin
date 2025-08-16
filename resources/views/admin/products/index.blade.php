@@ -31,7 +31,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
                     <select name="category_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Tất cả danh mục</option>
-                        @foreach(\App\Models\Category::active()->get() as $category)
+                        @foreach(\App\Models\Category::active()->root()->get() as $category)
                             <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>

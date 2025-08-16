@@ -311,8 +311,8 @@ class ProductController extends Controller
         // Build products query for hot deals (products with sale_price)
         $query = Product::with(['category', 'brand', 'images', 'baseImage'])
             ->where('status', true)
-            ->whereNotNull('sale_price')
-            ->where('sale_price', '>', 0)
+            // ->whereNotNull('sale_price')
+            // ->where('sale_price', '>', 0)
             ->where('is_sale', true); // Sử dụng is_sale flag
 
         // Apply category filter

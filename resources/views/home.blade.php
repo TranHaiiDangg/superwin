@@ -101,7 +101,7 @@
         </div>
         <a href="{{ route('deals') }}" class="flash-deal-view-all">Xem tất cả</a>
     </div>
-    
+
     <button id="flashDealsPrev" class="flash-deal-nav prev">‹</button>
     <button id="flashDealsNext" class="flash-deal-nav next">›</button>
 
@@ -109,7 +109,7 @@
         @foreach($saleProducts->take(10) as $index => $product)
         <div class="flash-deal-card deal-item">
             <div class="flash-deal-discount">-{{ $product->discount_percentage }}%</div>
-            
+
             <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
                 @if($product->baseImage)
                 <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="flash-deal-img">
@@ -117,22 +117,22 @@
                 <img src="/image/sp1.png" alt="{{ $product->name }}" class="flash-deal-img">
                 @endif
             </a>
-            
+
             <div class="flash-deal-title-product">{{ $product->name }}</div>
-            
+
             <div class="flash-deal-price">
                 <span class="flash-deal-price-current">{{ number_format($product->price) }}đ</span>
                 @if($product->original_price && $product->original_price > $product->price)
                 <span class="flash-deal-price-original">{{ number_format($product->original_price) }}đ</span>
                 @endif
             </div>
-            
+
             @php
             $soldCount = $product->sold_count ?? rand(20, 80);
             $totalStock = $product->stock_quantity + $soldCount;
             $progress = $totalStock > 0 ? round(($soldCount / $totalStock) * 100) : 0;
             @endphp
-            
+
             <div class="flash-deal-progress">
                 <div class="flash-deal-progress-label">Đã bán {{ $soldCount }}/{{ $totalStock }}</div>
                 <div class="flash-deal-progress-bar">
@@ -156,7 +156,7 @@
                 Xem tất cả
             </a>
         </div>
-        
+
         <button class="normal-product-nav prev" data-category="{{ $categoryData['category']->id }}" data-direction="prev">‹</button>
         <button class="normal-product-nav next" data-category="{{ $categoryData['category']->id }}" data-direction="next">›</button>
 
@@ -169,7 +169,7 @@
                     @else
                     <img src="/image/sp1.png" alt="{{ $product->name }}" class="normal-product-img">
                     @endif
-                    
+
                     @if($product->isOnSale)
                     <span class="product-discount-badge">
                         -{{ $product->discount_percentage }}%
@@ -178,11 +178,11 @@
                 </a>
 
                 <div class="normal-product-title-product">{{ $product->name }}</div>
-                
+
                 <div class="normal-product-price">
                     @if($product->isOnSale)
                     <span class="normal-product-price-current">{{ number_format($product->sale_price) }}đ</span>
-                   
+
                     @else
                     <span class="normal-product-price-current">{{ number_format($product->price) }}đ</span>
                     @endif
@@ -204,7 +204,7 @@
     @endforeach
 @else
     <div class="no-products-message">
-        <p>Hiện tại chưa có sản phẩm nào.</p>
+{{--        <p>Hiện tại chưa có sản phẩm nào.</p>--}}
     </div>
 @endif
 
@@ -771,7 +771,7 @@
                 background-color: #fff;
                 justify-content: center;
             }
-    
+
             .menu-item {
                 display: flex;
                 flex-direction: column;
@@ -783,17 +783,17 @@
                 white-space: nowrap;
                 transition: transform 0.3s ease;
             }
-    
+
             .menu-item:hover {
                 text-decoration: none;
                 color: inherit;
                 transform: scale(1.1);
             }
-    
+
             .menu-item:hover .icon-container {
                 transform: scale(1.1);
             }
-    
+
             .icon-container {
                 background: none;
                 border-radius: 0;
@@ -805,7 +805,7 @@
                 box-shadow: none;
                 transition: none;
             }
-    
+
             .menu-img {
                 width: auto;
                 height: 50px;
@@ -813,47 +813,47 @@
                 border-radius: 50%;
                 display: block;
             }
-    
+
             /* Icon colors */
             .menu-item:nth-child(1) .menu-icon {
                 color: #ff6b6b;
             }
-    
+
             .menu-item:nth-child(2) .menu-icon {
                 color: #4ecdc4;
             }
-    
+
             .menu-item:nth-child(3) .menu-icon {
                 color: #45b7d1;
             }
-    
+
             .menu-item:nth-child(4) .menu-icon {
                 color: #96ceb4;
             }
-    
+
             .menu-item:nth-child(5) .menu-icon {
                 color: #ff9f1c;
             }
-    
+
             .menu-item:nth-child(6) .menu-icon {
                 color: #e76f51;
             }
-    
+
             /* Hover effects */
             .menu-item:hover .icon-container {
                 background: none;
             }
-    
+
             .menu-item:hover .menu-icon {
                 transform: scale(1.1);
             }
-    
+
             .menu-item p {
                 font-size: 13px;
                 color: #333;
                 margin: 0;
             }
-    
+
             /* Responsive - Tablet (768px - 1024px) */
             @media (max-width: 1024px) and (min-width: 768px) {
                 .container-menu {
@@ -864,28 +864,28 @@
                     justify-content: center;
                     flex-wrap: nowrap;
                 }
-                
+
                 .menu-item {
                     width: 100px;
                     min-width: 100px;
                     flex: 0 0 auto;
                 }
-                
+
                 .icon-container {
                     width: 50px;
                     height: 50px;
-                }   
-                
+                }
+
                 .menu-icon {
                     font-size: 20px;
                 }
-                
+
                 .menu-item p {
                     font-size: 11px;
                     line-height: 1.2;
                 }
             }
-    
+
             /* Responsive - Mobile (ẩn menu trên mobile) */
             @media (max-width: 767px) {
                 .container-menu {
@@ -917,7 +917,7 @@
                     padding: 0;
                     row-gap: 10px;
                 }
-            
+
                 .container-menu .menu-item {
                     width: 25%; /* Mặc định 4 items mỗi hàng */
                     flex: 0 0 25%;
@@ -929,7 +929,7 @@
                     align-items: center;
                 }
             }
-            
+
             /* iPhone 5 (<=320px): chỉ hiển thị 2 item mỗi hàng */
             @media (max-width: 320px) {
                 .container-menu .menu-item {
@@ -1570,15 +1570,15 @@
     .flash-deal-nav, .normal-product-nav {
         display: none;
     }
-    
+
     .flash-deal-container, .normal-product-container {
         padding: 20px;
     }
-    
+
     .flash-deal-card, .normal-product-card {
         min-width: 220px;
     }
-}   
+}
 
     /* Category Products Sections Styles */
     .category-section-wrapper {

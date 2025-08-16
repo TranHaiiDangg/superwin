@@ -64,6 +64,23 @@
                         @endif
                     </div>
                 </div>
+                
+                <!-- Customer Photos Gallery -->
+                <div class="customer-photos-section mt-4" id="customerPhotosSection" style="display: none;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="mb-0">
+                            <i class="fas fa-camera me-2 text-primary"></i>
+                            Ảnh từ khách hàng (<span id="customerPhotosCount">0</span>)
+                        </h6>
+                        <button class="btn btn-sm btn-outline-primary" onclick="toggleCustomerPhotos()">
+                            <span id="togglePhotosText">Xem tất cả</span>
+                            <i class="fas fa-chevron-down ms-1" id="togglePhotosIcon"></i>
+                        </button>
+                    </div>
+                    <div class="customer-photos-grid" id="customerPhotosGrid">
+                        <!-- Photos will be loaded here -->
+                    </div>
+                </div>
             </div>
 
             <!-- Product Info -->
@@ -271,7 +288,7 @@
 
 
                             <!-- Sản phẩm cùng thương hiệu -->
-                            @if($sameBrandProducts->count() > 0)
+                            <!-- @if($sameBrandProducts->count() > 0)
                             <div class="related-products mb-5 mt-5">
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <h4 class="mb-0 text-center">Sản phẩm cùng thương hiệu {{ $product->brand ? $product->brand->name : '' }}</h4>
@@ -320,10 +337,10 @@
                                     @endforeach
                                 </div>
                             </div>
-                            @endif
+                            @endif -->
 
                             <!-- Sản phẩm cùng danh mục -->
-                            @if($sameCategoryProducts->count() > 0)
+                            <!-- @if($sameCategoryProducts->count() > 0)
                             <div class="related-products mb-5 mt-5">
                                 <div class="d-flex align-items-center justify-content-between mb-4">
                                     <h4 class="mb-0 text-center">Sản phẩm cùng danh mục {{ $product->category ? $product->category->name : '' }}</h4>
@@ -372,7 +389,7 @@
                                     @endforeach
                                 </div>
                             </div>
-                            @endif
+                            @endif -->
                             </div>
 
                         </div>
@@ -400,13 +417,13 @@
                                 Đánh giá ({{ $product->reviews_count }})
                             </button>
                         </li>
-                        @if($product->activeVariants && $product->activeVariants->count() > 0)
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">
-                                Phiên bản ({{ $product->activeVariants->count() }})
-                            </button>
-                        </li>
-                        @endif
+{{--                        @if($product->activeVariants && $product->activeVariants->count() > 0)--}}
+{{--                        <li class="nav-item" role="presentation">--}}
+{{--                            <button class="nav-link" id="variants-tab" data-bs-toggle="tab" data-bs-target="#variants" type="button" role="tab">--}}
+{{--                                Phiên bản ({{ $product->activeVariants->count() }})--}}
+{{--                            </button>--}}
+{{--                        </li>--}}
+{{--                        @endif--}}
                     </ul>
 
                     <div class="tab-content" id="productTabsContent">
@@ -577,6 +594,22 @@
                         <div class="review-content">
                             {{ $review->comment }}
                         </div>
+                        
+                        <!-- Review Images -->
+                        @if($review->images && count($review->images) > 0)
+                        <div class="review-images mt-3">
+                            <div class="review-images-grid">
+                                @foreach($review->images as $image)
+                                <div class="review-image-item">
+                                    <img src="{{ $image['thumbnail'] ?? $image['original'] ?? $image }}" 
+                                         alt="Ảnh đánh giá" 
+                                         class="review-image-thumb"
+                                         onclick="openImageModal('{{ $image['original'] ?? $image }}', '{{ $review->customer_name }}', '{{ $review->created_at->format('d/m/Y') }}')">
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     @endforeach
                 </div>
@@ -747,7 +780,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="reviewForm" action="{{ route('reviews.store') }}" method="POST">
+            <form id="reviewForm" action="{{ route('reviews.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
 
@@ -806,6 +839,34 @@
                         <div class="invalid-feedback" id="commentError"></div>
                     </div>
 
+                    <!-- Images Upload -->
+                    <div class="mb-4">
+                        <label for="reviewImages" class="form-label fw-bold">
+                            <i class="fas fa-images me-1"></i>Hình ảnh (tùy chọn)
+                        </label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-dropzone" id="imageDropzone">
+                                <div class="dropzone-content">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                    <p class="mb-2">Kéo thả ảnh vào đây hoặc</p>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('reviewImages').click()">
+                                        <i class="fas fa-plus me-1"></i>Chọn ảnh
+                                    </button>
+                                </div>
+                                <input type="file" id="reviewImages" name="images[]" multiple accept="image/*" class="d-none">
+                            </div>
+                            <div class="form-text">
+                                Tối đa 5 ảnh, mỗi ảnh không quá 5MB. Định dạng: JPG, PNG, GIF
+                            </div>
+                            <div class="invalid-feedback" id="imagesError"></div>
+                        </div>
+                        
+                        <!-- Preview Images -->
+                        <div class="preview-images mt-3" id="previewImages" style="display: none;">
+                            <div class="preview-images-grid"></div>
+                        </div>
+                    </div>
+
                     <!-- Review Guidelines -->
                     <div class="review-guidelines">
                         <h6 class="text-primary">
@@ -833,6 +894,29 @@
     </div>
 </div>
 @endauth
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">
+                    <i class="fas fa-image me-2"></i>Ảnh từ khách hàng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Ảnh đánh giá" class="img-fluid">
+                <div class="mt-3">
+                    <div class="reviewer-info">
+                        <strong id="modalReviewerName"></strong>
+                        <small class="text-muted ms-2" id="modalReviewDate"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('styles')
@@ -2594,6 +2678,205 @@
     .custom-notification .btn-close {
         filter: brightness(0) invert(1);
     }
+
+    /* Image Upload Styles */
+    .image-upload-dropzone {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #f8f9fa;
+    }
+
+    .image-upload-dropzone:hover,
+    .image-upload-dropzone.dragover {
+        border-color: #007bff;
+        background: #e3f2fd;
+    }
+
+    .dropzone-content {
+        pointer-events: none;
+    }
+
+    .preview-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .preview-image-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid #dee2e6;
+    }
+
+    .preview-image-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .preview-image-remove {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .preview-image-remove:hover {
+        background: rgba(220, 53, 69, 1);
+        transform: scale(1.1);
+    }
+
+    /* Review Images Styles */
+    .review-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        max-width: 400px;
+    }
+
+    .review-image-item {
+        aspect-ratio: 1;
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .review-image-item:hover {
+        transform: scale(1.05);
+    }
+
+    .review-image-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Customer Photos Gallery */
+    .customer-photos-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+    }
+
+    .customer-photos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .customer-photos-grid.expanded {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .customer-photo-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .customer-photo-item:hover {
+        transform: scale(1.05);
+        border-color: #007bff;
+    }
+
+    .customer-photo-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .customer-photo-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+        color: white;
+        padding: 5px 8px;
+        font-size: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .customer-photo-item:hover .customer-photo-overlay {
+        opacity: 1;
+    }
+
+    /* Mobile Responsive for Image Features */
+    @media (max-width: 768px) {
+        .image-upload-dropzone {
+            padding: 20px;
+        }
+
+        .preview-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+
+        .review-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 6px;
+        }
+
+        .customer-photos-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+
+        .customer-photos-section {
+            margin-left: -15px;
+            margin-right: -15px;
+            border-radius: 0;
+        }
+
+        .modal-dialog {
+            margin: 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .preview-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        }
+
+        .review-images-grid {
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        }
+
+        .customer-photos-grid {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        }
+    }
 </style>
 @endpush
 
@@ -3760,6 +4043,338 @@
                     star.classList.add('text-muted');
                 }
             });
+        }
+    }
+
+    // ===== IMAGE UPLOAD FUNCTIONS =====
+
+    let selectedImages = [];
+    const maxImages = 5;
+
+    // Initialize image upload functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeImageUpload();
+        loadCustomerPhotos();
+    });
+
+    function initializeImageUpload() {
+        const dropzone = document.getElementById('imageDropzone');
+        const fileInput = document.getElementById('reviewImages');
+
+        if (!dropzone || !fileInput) return;
+
+        // File input change event
+        fileInput.addEventListener('change', function(e) {
+            handleFileSelect(e.target.files);
+        });
+
+        // Drag and drop events
+        dropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            handleFileSelect(e.dataTransfer.files);
+        });
+
+        // Click to select files
+        dropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+    }
+
+    function handleFileSelect(files) {
+        const fileArray = Array.from(files);
+        
+        // Check total count
+        if (selectedImages.length + fileArray.length > maxImages) {
+            showNotification(`Tối đa ${maxImages} ảnh được phép tải lên`, 'warning');
+            return;
+        }
+
+        fileArray.forEach(file => {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotification(`File "${file.name}" không phải là ảnh`, 'error');
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification(`Ảnh "${file.name}" vượt quá 5MB`, 'error');
+                return;
+            }
+
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImages.push({
+                    file: file,
+                    preview: e.target.result
+                });
+                updateImagePreview();
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function updateImagePreview() {
+        const previewContainer = document.getElementById('previewImages');
+        const previewGrid = previewContainer.querySelector('.preview-images-grid');
+
+        if (selectedImages.length === 0) {
+            previewContainer.style.display = 'none';
+            return;
+        }
+
+        previewContainer.style.display = 'block';
+        previewGrid.innerHTML = '';
+
+        selectedImages.forEach((imageData, index) => {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-image-item';
+            previewItem.innerHTML = `
+                <img src="${imageData.preview}" alt="Preview">
+                <button type="button" class="preview-image-remove" onclick="removePreviewImage(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            previewGrid.appendChild(previewItem);
+        });
+
+        // Update file input
+        updateFileInput();
+    }
+
+    function removePreviewImage(index) {
+        selectedImages.splice(index, 1);
+        updateImagePreview();
+    }
+
+    function updateFileInput() {
+        const fileInput = document.getElementById('reviewImages');
+        const dt = new DataTransfer();
+
+        selectedImages.forEach(imageData => {
+            dt.items.add(imageData.file);
+        });
+
+        fileInput.files = dt.files;
+    }
+
+    // Reset image upload when form is reset
+    function resetImageUpload() {
+        selectedImages = [];
+        updateImagePreview();
+        document.getElementById('reviewImages').value = '';
+    }
+
+    // ===== CUSTOMER PHOTOS GALLERY =====
+
+    function loadCustomerPhotos() {
+        const productId = document.querySelector('[data-product-id]')?.dataset.productId;
+        if (!productId) return;
+
+        fetch(`/products/${productId}/review-images`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.images.length > 0) {
+                    displayCustomerPhotos(data.images);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading customer photos:', error);
+            });
+    }
+
+    function displayCustomerPhotos(images) {
+        const section = document.getElementById('customerPhotosSection');
+        const grid = document.getElementById('customerPhotosGrid');
+        const count = document.getElementById('customerPhotosCount');
+
+        if (!section || !grid || !count) return;
+
+        count.textContent = images.length;
+        section.style.display = 'block';
+
+        grid.innerHTML = '';
+        images.forEach(image => {
+            const photoItem = document.createElement('div');
+            photoItem.className = 'customer-photo-item';
+            photoItem.innerHTML = `
+                <img src="${image.thumbnail}" alt="Ảnh từ khách hàng" class="customer-photo-thumb"
+                     onclick="openImageModal('${image.original}', '${image.customer_name}', '${image.created_at}')">
+                <div class="customer-photo-overlay">
+                    <div>${image.customer_name}</div>
+                    <div>${image.created_at}</div>
+                </div>
+            `;
+            grid.appendChild(photoItem);
+        });
+    }
+
+    function toggleCustomerPhotos() {
+        const grid = document.getElementById('customerPhotosGrid');
+        const toggleText = document.getElementById('togglePhotosText');
+        const toggleIcon = document.getElementById('togglePhotosIcon');
+
+        if (!grid || !toggleText || !toggleIcon) return;
+
+        const isExpanded = grid.classList.contains('expanded');
+
+        if (isExpanded) {
+            grid.classList.remove('expanded');
+            toggleText.textContent = 'Xem tất cả';
+            toggleIcon.classList.remove('fa-chevron-up');
+            toggleIcon.classList.add('fa-chevron-down');
+        } else {
+            grid.classList.add('expanded');
+            toggleText.textContent = 'Thu gọn';
+            toggleIcon.classList.remove('fa-chevron-down');
+            toggleIcon.classList.add('fa-chevron-up');
+        }
+    }
+
+    // ===== IMAGE MODAL FUNCTIONS =====
+
+    function openImageModal(imageSrc, customerName, reviewDate) {
+        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        const modalImage = document.getElementById('modalImage');
+        const modalReviewerName = document.getElementById('modalReviewerName');
+        const modalReviewDate = document.getElementById('modalReviewDate');
+
+        modalImage.src = imageSrc;
+        modalReviewerName.textContent = customerName || 'Khách hàng';
+        modalReviewDate.textContent = reviewDate || '';
+
+        modal.show();
+    }
+
+    // ===== ENHANCED REVIEW FORM FUNCTIONS =====
+
+    // Override existing resetReviewForm function
+    function resetReviewForm() {
+        const form = document.getElementById('reviewForm');
+        if (!form) return;
+
+        form.reset();
+
+        // Reset rating
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('ratingInput');
+        const ratingText = document.querySelector('.rating-text');
+
+        if (stars.length) {
+            stars.forEach(star => {
+                star.classList.remove('active');
+            });
+        }
+
+        if (ratingInput) {
+            ratingInput.value = '';
+        }
+
+        if (ratingText) {
+            ratingText.textContent = 'Chọn số sao';
+        }
+
+        // Reset comment count
+        const commentCount = document.getElementById('commentCount');
+        if (commentCount) {
+            commentCount.textContent = '0';
+        }
+
+        // Reset image upload
+        resetImageUpload();
+
+        // Clear validation errors
+        clearValidationErrors();
+    }
+
+    // Enhanced addNewReviewToList function to handle images
+    function addNewReviewToList(review) {
+        const reviewsList = document.getElementById('reviewsList');
+        const noReviews = document.querySelector('.no-reviews');
+
+        // Hide no reviews message if exists
+        if (noReviews) {
+            noReviews.style.display = 'none';
+        }
+
+        // Create new review element
+        const reviewElement = document.createElement('div');
+        reviewElement.className = 'review-item';
+        
+        let imagesHtml = '';
+        if (review.images && review.images.length > 0) {
+            imagesHtml = `
+                <div class="review-images mt-3">
+                    <div class="review-images-grid">
+                        ${review.images.map(image => `
+                            <div class="review-image-item">
+                                <img src="${image.thumbnail || image.original || image}" 
+                                     alt="Ảnh đánh giá" 
+                                     class="review-image-thumb"
+                                     onclick="openImageModal('${image.original || image}', '${review.customer_name}', '${review.created_at}')">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        reviewElement.innerHTML = `
+            <div class="review-header">
+                <div class="reviewer-info">
+                    <div class="reviewer-name">${review.customer_name}</div>
+                    <div class="review-date">${review.created_at}</div>
+                </div>
+                <div class="review-rating">
+                    ${generateStarRating(review.rating)}
+                </div>
+            </div>
+            ${review.title ? `<div class="review-title"><strong>${review.title}</strong></div>` : ''}
+            <div class="review-content">${review.comment}</div>
+            ${imagesHtml}
+        `;
+
+        // Add to top of reviews list
+        if (reviewsList) {
+            const firstReview = reviewsList.querySelector('.review-item');
+            if (firstReview) {
+                reviewsList.insertBefore(reviewElement, firstReview);
+            } else {
+                reviewsList.appendChild(reviewElement);
+            }
+        } else {
+            // Create reviews section if it doesn't exist
+            const reviewsTab = document.getElementById('reviews');
+            const newReviewsSection = document.createElement('div');
+            newReviewsSection.className = 'reviews-section mt-4';
+            newReviewsSection.id = 'reviewsList';
+            newReviewsSection.innerHTML = `
+                <h4 class="mb-3">1 bình luận cho sản phẩm này</h4>
+            `;
+            newReviewsSection.appendChild(reviewElement);
+            reviewsTab.querySelector('.tab-content-wrapper').appendChild(newReviewsSection);
+        }
+
+        // Update review count
+        updateReviewCount();
+
+        // Reload customer photos if images were added
+        if (review.images && review.images.length > 0) {
+            setTimeout(() => {
+                loadCustomerPhotos();
+            }, 1000);
         }
     }
 </script>

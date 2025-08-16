@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+// use Intervention\Image\ImageManager;
+// use Intervention\Image\Drivers\Imagick\Driver;
 
 class ReviewController extends Controller
 {
@@ -43,6 +46,8 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'title' => 'nullable|string|max:255',
             'comment' => 'required|string|min:10|max:1000',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // Max 5MB per image
         ], [
             'product_id.required' => 'Sản phẩm không hợp lệ.',
             'product_id.exists' => 'Sản phẩm không tồn tại.',
@@ -54,6 +59,10 @@ class ReviewController extends Controller
             'comment.required' => 'Vui lòng nhập nội dung bình luận.',
             'comment.min' => 'Bình luận phải có ít nhất 10 ký tự.',
             'comment.max' => 'Bình luận không được vượt quá 1000 ký tự.',
+            'images.max' => 'Tối đa 5 ảnh được phép tải lên.',
+            'images.*.image' => 'File phải là ảnh.',
+            'images.*.mimes' => 'Ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'images.*.max' => 'Ảnh không được vượt quá 5MB.',
         ]);
 
         if ($validator->fails()) {
@@ -104,6 +113,12 @@ class ReviewController extends Controller
         }
 
         try {
+            // Xử lý upload ảnh
+            $imageUrls = [];
+            if ($request->hasFile('images')) {
+                $imageUrls = $this->uploadReviewImages($request->file('images'));
+            }
+
             // Tạo review mới
             $review = Review::create([
                 'product_id' => $request->product_id,
@@ -111,6 +126,7 @@ class ReviewController extends Controller
                 'rating' => $request->rating,
                 'title' => $request->title,
                 'comment' => $request->comment,
+                'images' => $imageUrls, // Lưu array ảnh
                 'is_approved' => true, // Tự động approve, có thể thay đổi thành false nếu cần duyệt
             ]);
             
@@ -141,6 +157,7 @@ class ReviewController extends Controller
                         'rating' => $review->rating,
                         'title' => $review->title,
                         'comment' => $review->comment,
+                        'images' => $review->images,
                         'created_at' => $review->created_at->format('d/m/Y'),
                     ],
                     'updated_rating' => $updatedRating
@@ -224,5 +241,80 @@ class ReviewController extends Controller
         }
 
         return view('products.reviews', compact('product', 'reviews'));
+    }
+
+
+
+    /**
+     * Lấy ảnh đánh giá của sản phẩm (cho gallery)
+     */
+    public function getProductReviewImages($productId)
+    {
+        $reviews = Review::where('product_id', $productId)
+                        ->where('is_approved', true)
+                        ->whereNotNull('images')
+                        ->where('images', '!=', '[]')
+                        ->with('customer')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        
+        $images = [];
+        foreach ($reviews as $review) {
+            if ($review->images && is_array($review->images)) {
+                foreach ($review->images as $image) {
+                    $images[] = [
+                        'original' => $image['original'] ?? $image,
+                        'thumbnail' => $image['thumbnail'] ?? $image,
+                        'customer_name' => $review->customer_name,
+                        'rating' => $review->rating,
+                        'comment' => $review->comment,
+                        'created_at' => $review->created_at->format('d/m/Y')
+                    ];
+                }
+            }
+        }
+        
+        return response()->json([
+            'success' => true,
+            'images' => $images,
+            'total' => count($images)
+        ]);
+    }
+
+    /**
+     * Upload review images - Simple approach like admin
+     */
+    private function uploadReviewImages($images)
+    {
+        $imageUrls = [];
+        
+        foreach ($images as $index => $image) {
+            try {
+                // Tạo tên file unique
+                $filename = time() . '_' . $index . '_' . $image->getClientOriginalName();
+                
+                // Lưu trực tiếp vào public/images/reviews/
+                $destinationPath = public_path('images/reviews');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                
+                // Move file (không resize)
+                $image->move($destinationPath, $filename);
+                
+                // Sử dụng cùng 1 file cho cả original và thumbnail
+                $imageUrl = '/images/reviews/' . $filename;
+                $imageUrls[] = [
+                    'original' => $imageUrl,
+                    'thumbnail' => $imageUrl
+                ];
+                
+            } catch (\Exception $e) {
+                Log::error('Error uploading review image: ' . $e->getMessage());
+                continue;
+            }
+        }
+        
+        return $imageUrls;
     }
 }
