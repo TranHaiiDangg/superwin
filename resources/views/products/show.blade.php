@@ -2,6 +2,384 @@
 
 @section('title', $product->name . ' - SuperWin')
 
+@push('styles')
+<!-- Lightbox2 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+<style>
+    /* Custom Lightbox Styles */
+    .main-image-link {
+        display: block;
+        cursor: zoom-in;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .main-image-link::after {
+        content: '\f00e';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+
+    .main-image-link:hover::after {
+        opacity: 1;
+    }
+
+    .main-image-link:hover .main-image {
+        transform: scale(1.05);
+    }
+
+    /* Lightbox Customization */
+    .lb-outerContainer {
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+
+    .lb-container {
+        position: relative;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .lb-dataContainer {
+        border-radius: 0 0 12px 12px;
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .lb-nav a.lb-prev,
+    .lb-nav a.lb-next {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+    .lb-nav a.lb-prev:hover,
+    .lb-nav a.lb-next:hover {
+        opacity: 1;
+    }
+
+    .lb-closeContainer {
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1001;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .lb-closeContainer:hover {
+        background: rgba(0, 0, 0, 0.95);
+        transform: scale(1.1);
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .lb-close {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Mobile Responsive Lightbox */
+    @media (max-width: 768px) {
+        .main-image-link::after {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
+            top: 10px;
+            right: 10px;
+        }
+
+        .lb-outerContainer {
+            margin: 10px;
+            padding: 0 60px;
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+
+        .lb-imageContainer {
+            text-align: center;
+            justify-content: center;
+            padding: 15px;
+            margin: 0;
+            min-height: 250px;
+        }
+
+        .lb-imageContainer img {
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            padding: 0;
+            border-radius: 6px;
+        }
+
+        .lb-nav a.lb-prev,
+        .lb-nav a.lb-next {
+            width: 45px;
+            height: 45px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lb-nav a.lb-prev {
+            left: 10px;
+        }
+
+        .lb-nav a.lb-next {
+            right: 10px;
+        }
+
+        .lb-nav a.lb-prev:hover,
+        .lb-nav a.lb-next:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .lb-closeContainer {
+            width: 40px;
+            height: 40px;
+            top: 10px;
+            right: 10px;
+            position: absolute;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lb-closeContainer:hover {
+            background: rgba(0, 0, 0, 0.95);
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .lb-close {
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Ensure navigation arrows are visible */
+        .lb-nav a.lb-prev::before,
+        .lb-nav a.lb-next::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        .lb-nav a.lb-prev::before {
+            border-right: 12px solid white;
+            margin-left: -4px;
+        }
+
+        .lb-nav a.lb-next::before {
+            border-left: 12px solid white;
+            margin-right: -4px;
+        }
+    }
+
+    /* Lightbox loading animation */
+    .lb-loader {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Lightbox overlay enhancement */
+    .lb-overlay {
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Lightbox positioning */
+    .lb-outerContainer {
+        margin: 0 auto;
+        max-width: 95vw;
+        max-height: 95vh;
+        padding: 20px;
+    }
+
+    .lb-dataContainer {
+        border-radius: 0 0 12px 12px;
+        background: rgba(0, 0, 0, 0.8);
+        text-align: left;
+    }
+
+    /* Lightbox image container enhancement */
+    .lb-image {
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: 0 auto;
+        width: auto;
+        height: auto;
+    }
+
+    /* Lightbox image positioning - Center aligned */
+    .lb-imageContainer {
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        margin: 0 !important;
+        width: 100%;
+        height: 100%;
+        min-height: 300px;
+    }
+
+    .lb-imageContainer img {
+        object-fit: contain;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        display: block;
+        width: auto;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    /* Lightbox data container enhancement */
+    .lb-data .lb-caption {
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .lb-data .lb-number {
+        font-size: 14px;
+        color: #ccc;
+        margin-top: 5px;
+    }
+
+    /* Lightbox navigation enhancement */
+    .lb-nav a.lb-prev,
+    .lb-nav a.lb-next {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1000;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .lb-nav a.lb-prev {
+        left: 20px;
+    }
+
+    .lb-nav a.lb-next {
+        right: 20px;
+    }
+
+    .lb-nav a.lb-prev:hover,
+    .lb-nav a.lb-next:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: translateY(-50%) scale(1.1);
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .lb-nav a.lb-prev::before,
+    .lb-nav a.lb-next::before {
+        content: '';
+        width: 0;
+        height: 0;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+    }
+
+    .lb-nav a.lb-prev::before {
+        border-right: 12px solid white;
+        margin-left: -4px;
+    }
+
+    .lb-nav a.lb-next::before {
+        border-left: 12px solid white;
+        margin-right: -4px;
+    }
+</style>
+@endpush
+
 @section('content')
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb" class="py-3">
@@ -39,6 +417,12 @@
                             <div class="thumbnail-item mb-2 {{ $index === 0 ? 'active' : '' }}"
                                 onclick="changeMainImage('{{ $image->url }}', this)">
                                 <img src="{{ $image->url }}" alt="{{ $product->name }}" class="thumbnail-image">
+                                <!-- Hidden lightbox link for thumbnails -->
+                                <a href="{{ $image->url }}"
+                                   data-lightbox="product-gallery"
+                                   data-title="{{ $product->name }}"
+                                   class="lightbox-hidden-link"
+                                   style="display: none;"></a>
                             </div>
                             @endforeach
                         </div>
@@ -52,15 +436,42 @@
                     </div>
                     @endif
 
-                    <!-- Main Image -->
+                                        <!-- Main Image -->
                     <div class="main-image-container">
-                        <img id="mainImage" src="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}"
-                            alt="{{ $product->name }}" class="main-image">
+                        <a href="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}"
+                           data-lightbox="product-gallery"
+                           data-title="{{ $product->name }}"
+                           class="main-image-link">
+                            <img id="mainImage" src="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}"
+                                alt="{{ $product->name }}" class="main-image">
+                        </a>
 
                         @if($product->is_featured)
                         <div class="featured-badge">
                             <i class="fas fa-star"></i> Nổi bật
                         </div>
+                        @endif
+
+                        <!-- View All Images Button -->
+                        @if($product->images && $product->images->count() > 1)
+                        <div class="view-all-images-btn">
+                            <button type="button" class="btn btn-outline-light btn-sm" onclick="openAllImages()">
+                                <i class="fas fa-images me-1"></i>Xem tất cả ({{ $product->images->count() }})
+                            </button>
+                        </div>
+                        @endif
+
+                        <!-- Hidden lightbox links for all product images -->
+                        @if($product->images && $product->images->count() > 0)
+                            @foreach($product->images as $image)
+                                @if($image->url !== ($product->baseImage ? $product->baseImage->url : '/image/sp1.png'))
+                                <a href="{{ $image->url }}"
+                                   data-lightbox="product-gallery"
+                                   data-title="{{ $product->name }}"
+                                   class="lightbox-hidden-link"
+                                   style="display: none;"></a>
+                                @endif
+                            @endforeach
                         @endif
                     </div>
                 </div>
@@ -69,11 +480,11 @@
             <!-- Product Info -->
             <div class="col-lg-7">
                 <div class="product-info"
-                     data-product-id="{{ $product->id }}"
-                     data-product-name="{{ $product->name }}"
-                     data-product-model="{{ $product->sku ?? 'SW-' . $product->id }}"
-                     data-product-price="{{ $product->sale_price ?? $product->price }}"
-                     data-product-image="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}">
+                    data-product-id="{{ $product->id }}"
+                    data-product-name="{{ $product->name }}"
+                    data-product-model="{{ $product->sku ?? 'SW-' . $product->id }}"
+                    data-product-price="{{ $product->sale_price ?? $product->price }}"
+                    data-product-image="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}">
                     <div class="row">
                         <div class="col-md-8">
                             <h1 class="product-title">{{ $product->name }}</h1>
@@ -129,11 +540,11 @@
                                 <div class="variants-container">
                                     <!-- Option to deselect variants -->
                                     <div class="variant-item variant-none"
-                                         data-variant-id="none"
-                                         data-variant-price="{{ $product->sale_price ?? $product->price }}"
-                                         data-variant-stock="{{ $product->stock_quantity ?? 999 }}"
-                                         data-variant-name="{{ $product->name }}"
-                                         data-variant-code="{{ $product->sku ?? '' }}">
+                                        data-variant-id="none"
+                                        data-variant-price="{{ $product->sale_price ?? $product->price }}"
+                                        data-variant-stock="{{ $product->stock_quantity ?? 999 }}"
+                                        data-variant-name="{{ $product->name }}"
+                                        data-variant-code="{{ $product->sku ?? '' }}">
                                         <input type="radio" name="selected_variant" id="variant_none" value="none" class="variant-radio" checked>
                                         <label for="variant_none" class="variant-label">
                                             <div class="variant-info">
@@ -147,11 +558,11 @@
 
                                     @foreach($product->activeVariants as $variant)
                                     <div class="variant-item"
-                                         data-variant-id="{{ $variant->id }}"
-                                         data-variant-price="{{ $variant->final_price }}"
-                                         data-variant-stock="{{ $variant->quantity }}"
-                                         data-variant-name="{{ $variant->name }}"
-                                         data-variant-code="{{ $variant->code }}">
+                                        data-variant-id="{{ $variant->id }}"
+                                        data-variant-price="{{ $variant->final_price }}"
+                                        data-variant-stock="{{ $variant->quantity }}"
+                                        data-variant-name="{{ $variant->name }}"
+                                        data-variant-code="{{ $variant->code }}">
                                         <input type="radio" name="selected_variant" id="variant_{{ $variant->id }}" value="{{ $variant->id }}" class="variant-radio">
                                         <label for="variant_{{ $variant->id }}" class="variant-label">
                                             <div class="variant-info">
@@ -180,15 +591,17 @@
 
                             <!-- Action Buttons -->
                             <div class="action-buttons mb-4">
-                                <div class="d-grid gap-2 d-md-flex">
-                                    <button class="btn btn-primary btn-lg flex-fill me-md-2" onclick="addToCart({{ $product->id }})">
-                                        <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ
-                                    </button>
-                                    <button class="btn btn-outline-primary btn-lg flex-fill me-md-2" onclick="buyNow()">
-                                        <i class="fas fa-bolt me-2"></i>Mua ngay
-                                    </button>
-
+                                <div class="row">
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-primary btn-lg flex-fill" onclick="addToCart({{ $product->id }})">
+                                            <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-lg flex-fill" onclick="buyNow()">
+                                            <i class="fas fa-bolt me-2"></i>Mua ngay
+                                        </button>
+                                    </div>
                                 </div>
+
                             </div>
 
                         </div>
@@ -206,7 +619,8 @@
                                             </div>
                                             <div class="icon-box-text last-reset">
                                                 <p><strong>Giao hàng nhanh chóng</strong><br>
-                                                <span style="font-size: 85%;">chỉ trong vòng 24 giờ</span></p>
+                                                    <span style="font-size: 85%;">chỉ trong vòng 24 giờ</span>
+                                                </p>
                                             </div>
                                         </div>
 
@@ -222,7 +636,8 @@
                                             </div>
                                             <div class="icon-box-text last-reset">
                                                 <p><strong>Sản phẩm chính hãng</strong><br>
-                                                <span style="font-size: 85%;">sản phẩm nhập khẩu 100%</span></p>
+                                                    <span style="font-size: 85%;">sản phẩm nhập khẩu 100%</span>
+                                                </p>
                                             </div>
                                         </div>
 
@@ -258,121 +673,121 @@
                                     </div>
                                 </aside>
                                 @if($product->brand)
-                            <div class="brand-info mt-3">
-                                <div class="brand-item">
-                                    <i class="fas fa-trademark"></i>
-                                    <div class="brand-text">
-                                        <strong>Thương hiệu</strong>
-                                        <span>{{ $product->brand->name }}</span>
+                                <div class="brand-info mt-3">
+                                    <div class="brand-item">
+                                        <i class="fas fa-trademark"></i>
+                                        <div class="brand-text">
+                                            <strong>Thương hiệu</strong>
+                                            <span>{{ $product->brand->name }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            @endif
+                                @endif
 
 
-                            <!-- Sản phẩm cùng thương hiệu -->
-                            @if($sameBrandProducts->count() > 0)
-                            <div class="related-products mb-5 mt-5">
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <h4 class="mb-0 text-center">Sản phẩm cùng thương hiệu {{ $product->brand ? $product->brand->name : '' }}</h4>
-                                    @if($product->brand && $product->brand->slug)
-                                    <a href="{{ route('products.brand', ['slug' => $product->brand->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                                    @endif
-                                </div>
-                                <div class="row g-4">
-                                    @foreach($sameBrandProducts as $brandProduct)
-                                    <div class="col">
-                                        <div class="card h-100 border-0 shadow-sm product-card">
-                                            <div class="position-relative">
-                                                <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none">
-                                                    @if($brandProduct->baseImage)
-                                                    <img src="{{ $brandProduct->baseImage->url }}" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                    @else
-                                                    <img src="/image/sp1.png" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                    @endif
-                                                </a>
-
-                                                @if($brandProduct->isOnSale)
-                                                <span class="badge discount-tag position-absolute top-0 end-0 m-2">
-                                                    -{{ $brandProduct->discount_percentage }}%
-                                                </span>
-                                                @endif
-                                            </div>
-
-                                            <div class="card-body d-flex flex-column p-3">
-                                                <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none text-dark">
-                                                    <h6 class="card-title small mb-2">{{ Str::limit($brandProduct->name, 50) }}</h6>
-                                                </a>
-
-                                                <div class="mt-auto">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        @if($brandProduct->isOnSale)
-                                                        <span class="sale-price fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
-                                                        <span class="text-muted small ms-1 text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
+                                <!-- Sản phẩm cùng thương hiệu -->
+                                @if($sameBrandProducts->count() > 0)
+                                <div class="related-products mb-5 mt-5">
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="mb-0 text-center">Sản phẩm cùng thương hiệu {{ $product->brand ? $product->brand->name : '' }}</h4>
+                                        @if($product->brand && $product->brand->slug)
+                                        <a href="{{ route('products.brand', ['slug' => $product->brand->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+                                        @endif
+                                    </div>
+                                    <div class="row g-4">
+                                        @foreach($sameBrandProducts as $brandProduct)
+                                        <div class="col">
+                                            <div class="card h-100 border-0 shadow-sm product-card">
+                                                <div class="position-relative">
+                                                    <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none">
+                                                        @if($brandProduct->baseImage)
+                                                        <img src="{{ $brandProduct->baseImage->url }}" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
                                                         @else
-                                                        <span class="text-primary fw-bold small">{{ number_format($brandProduct->price) }}đ</span>
+                                                        <img src="/image/sp1.png" class="card-img-top" alt="{{ $brandProduct->name }}" style="height: 150px; object-fit: cover;">
                                                         @endif
+                                                    </a>
+
+                                                    @if($brandProduct->isOnSale)
+                                                    <span class="badge discount-tag position-absolute top-0 end-0 m-2">
+                                                        -{{ $brandProduct->discount_percentage }}%
+                                                    </span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="card-body d-flex flex-column p-3">
+                                                    <a href="{{ route('products.show', $brandProduct->slug ?? $brandProduct->id) }}" class="text-decoration-none text-dark">
+                                                        <h6 class="card-title small mb-2">{{ Str::limit($brandProduct->name, 50) }}</h6>
+                                                    </a>
+
+                                                    <div class="mt-auto">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            @if($brandProduct->isOnSale)
+                                                            <span class="sale-price fw-bold small">{{ number_format($brandProduct->sale_price) }}đ</span>
+                                                            <span class="text-muted small ms-1 text-decoration-line-through">{{ number_format($brandProduct->price) }}đ</span>
+                                                            @else
+                                                            <span class="text-primary fw-bold small">{{ number_format($brandProduct->price) }}đ</span>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        @endforeach
                                     </div>
-                                    @endforeach
                                 </div>
-                            </div>
-                            @endif
+                                @endif
 
-                            <!-- Sản phẩm cùng danh mục -->
-                            @if($sameCategoryProducts->count() > 0)
-                            <div class="related-products mb-5 mt-5">
-                                <div class="d-flex align-items-center justify-content-between mb-4">
-                                    <h4 class="mb-0 text-center">Sản phẩm cùng danh mục {{ $product->category ? $product->category->name : '' }}</h4>
-                                    @if($product->category && $product->category->slug)
-                                    <a href="{{ route('products.category', ['slug' => $product->category->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                                    @endif
-                                </div>
-                                <div class="row g-4">
-                                    @foreach($sameCategoryProducts as $categoryProduct)
-                                    <div class="col">
-                                        <div class="card h-100 border-0 shadow-sm product-card">
-                                            <div class="position-relative">
-                                                <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none">
-                                                    @if($categoryProduct->baseImage)
-                                                    <img src="{{ $categoryProduct->baseImage->url }}" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                    @else
-                                                    <img src="/image/sp1.png" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
-                                                    @endif
-                                                </a>
-
-                                                @if($categoryProduct->isOnSale)
-                                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
-                                                    -{{ $categoryProduct->discount_percentage }}%
-                                                </span>
-                                                @endif
-                                            </div>
-
-                                            <div class="card-body d-flex flex-column p-3">
-                                                <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none text-dark">
-                                                    <h6 class="card-title small mb-2">{{ Str::limit($categoryProduct->name, 50) }}</h6>
-                                                </a>
-
-                                                <div class="mt-auto">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        @if($categoryProduct->isOnSale)
-                                                        <span class="text-danger fw-bold small">{{ number_format($categoryProduct->sale_price) }}đ</span>
-                                                        <span class="text-muted small text-decoration-line-through">{{ number_format($categoryProduct->price) }}đ</span>
+                                <!-- Sản phẩm cùng danh mục -->
+                                @if($sameCategoryProducts->count() > 0)
+                                <div class="related-products mb-5 mt-5">
+                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="mb-0 text-center">Sản phẩm cùng danh mục {{ $product->category ? $product->category->name : '' }}</h4>
+                                        @if($product->category && $product->category->slug)
+                                        <a href="{{ route('products.category', ['slug' => $product->category->slug]) }}" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
+                                        @endif
+                                    </div>
+                                    <div class="row g-4">
+                                        @foreach($sameCategoryProducts as $categoryProduct)
+                                        <div class="col">
+                                            <div class="card h-100 border-0 shadow-sm product-card">
+                                                <div class="position-relative">
+                                                    <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none">
+                                                        @if($categoryProduct->baseImage)
+                                                        <img src="{{ $categoryProduct->baseImage->url }}" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
                                                         @else
-                                                        <span class="text-primary fw-bold small">{{ number_format($categoryProduct->price) }}đ</span>
+                                                        <img src="/image/sp1.png" class="card-img-top" alt="{{ $categoryProduct->name }}" style="height: 150px; object-fit: cover;">
                                                         @endif
+                                                    </a>
+
+                                                    @if($categoryProduct->isOnSale)
+                                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                                        -{{ $categoryProduct->discount_percentage }}%
+                                                    </span>
+                                                    @endif
+                                                </div>
+
+                                                <div class="card-body d-flex flex-column p-3">
+                                                    <a href="{{ route('products.show', $categoryProduct->slug ?? $categoryProduct->id) }}" class="text-decoration-none text-dark">
+                                                        <h6 class="card-title small mb-2">{{ Str::limit($categoryProduct->name, 50) }}</h6>
+                                                    </a>
+
+                                                    <div class="mt-auto">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            @if($categoryProduct->isOnSale)
+                                                            <span class="text-danger fw-bold small">{{ number_format($categoryProduct->sale_price) }}đ</span>
+                                                            <span class="text-muted small text-decoration-line-through">{{ number_format($categoryProduct->price) }}đ</span>
+                                                            @else
+                                                            <span class="text-primary fw-bold small">{{ number_format($categoryProduct->price) }}đ</span>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        @endforeach
                                     </div>
-                                    @endforeach
                                 </div>
-                            </div>
-                            @endif
+                                @endif
                             </div>
 
                         </div>
@@ -386,15 +801,16 @@
                 <div class="product-tabs">
                     <ul class="nav nav-tabs" id="productTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
-                                Mô tả sản phẩm
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
+                            <button class="nav-link active" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
                                 Thông số kỹ thuật
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                                Mô tả sản phẩm
+                            </button>
+                        </li>
+
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
                                 Đánh giá ({{ $product->reviews_count }})
@@ -411,7 +827,7 @@
 
                     <div class="tab-content" id="productTabsContent">
                         <!-- Description Tab -->
-                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                        <div class="tab-pane fade " id="description" role="tabpanel">
                             <div class="tab-content-wrapper">
                                 <div class="product-description">
                                     {!! $product->description !!}
@@ -420,7 +836,7 @@
                         </div>
 
                         <!-- Specifications Tab -->
-                        <div class="tab-pane fade" id="specifications" role="tabpanel">
+                        <div class="tab-pane fade show active" id="specifications" role="tabpanel">
                             <div class="tab-content-wrapper">
                                 <div class="specifications-table">
                                     @if($product->attributes && $product->attributes->count() > 0)
@@ -474,12 +890,12 @@
                             @endif
                             @endforeach
                         </div>
-                        <div class="text-center mt-3">
+                        <!-- <div class="text-center mt-3">
                             <button class="btn btn-outline-primary btn-sm" onclick="toggleSpecifications()">
                                 <span class="show-more">Xem chi tiết thông số kỹ thuật <i class="fas fa-chevron-down"></i></span>
                                 <span class="show-less" style="display: none;">Thu gọn <i class="fas fa-chevron-up"></i></span>
                             </button>
-                        </div>
+                        </div> -->
                         @endif
                         @else
                         <p class="text-muted">Chưa có thông số kỹ thuật</p>
@@ -566,7 +982,7 @@
                             <div class="review-rating">
                                 @for($i = 1; $i <= 5; $i++)
                                     <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
-                                @endfor
+                                    @endfor
                             </div>
                         </div>
                         @if($review->title)
@@ -613,13 +1029,13 @@
                             </div>
                             <div class="variant-col-price">
                                 @if($variant->isOnSale)
-                                    <div class="price-info">
-                                        <span class="sale-price">{{ number_format($variant->price_sale) }}₫</span>
-                                        <span class="original-price">{{ number_format($variant->price) }}₫</span>
-                                        <span class="discount-badge">-{{ $variant->discount_percentage }}%</span>
-                                    </div>
+                                <div class="price-info">
+                                    <span class="sale-price">{{ number_format($variant->price_sale) }}₫</span>
+                                    <span class="original-price">{{ number_format($variant->price) }}₫</span>
+                                    <span class="discount-badge">-{{ $variant->discount_percentage }}%</span>
+                                </div>
                                 @else
-                                    <span class="normal-price">{{ number_format($variant->price) }}₫</span>
+                                <span class="normal-price">{{ number_format($variant->price) }}₫</span>
                                 @endif
                                 <div class="vat-notice-variant">
                                     <small class="text-muted">Chưa bao gồm VAT 8%</small>
@@ -627,16 +1043,16 @@
                             </div>
                             <div class="variant-col-stock">
                                 @if($variant->isInStock)
-                                    <span class="stock-available">{{ $variant->quantity }} sản phẩm</span>
+                                <span class="stock-available">{{ $variant->quantity }} sản phẩm</span>
                                 @else
-                                    <span class="stock-unavailable">Hết hàng</span>
+                                <span class="stock-unavailable">Hết hàng</span>
                                 @endif
                             </div>
                             <div class="variant-col-status">
                                 @if($variant->is_active)
-                                    <span class="status-active">Đang bán</span>
+                                <span class="status-active">Đang bán</span>
                                 @else
-                                    <span class="status-inactive">Tạm ngưng</span>
+                                <span class="status-inactive">Tạm ngưng</span>
                                 @endif
                             </div>
                         </div>
@@ -647,7 +1063,7 @@
         </div>
         @endif
     </div>
-</div>
+    </div>
 </section>
 
 
@@ -684,51 +1100,51 @@
             });
             @endphp
 
-                @foreach($suggestedProducts as $suggestedProduct)
-                <div class="product-card col-6 col-lg-3 mx-0 mx-lg-3 mt-3">
-                    <a href="{{ route('products.show', $suggestedProduct['slug'] ?? $suggestedProduct['id']) }}" class="product-link">
-                        <div class="product-image">
-                            <img src="{{ $suggestedProduct['image'] }}" alt="{{ $suggestedProduct['name'] }}" class="card-img-top">
+            @foreach($suggestedProducts as $suggestedProduct)
+            <div class="product-card col-6 col-lg-3 mx-0 mx-lg-3 mt-3">
+                <a href="{{ route('products.show', $suggestedProduct['slug'] ?? $suggestedProduct['id']) }}" class="product-link">
+                    <div class="product-image">
+                        <img src="{{ $suggestedProduct['image'] }}" alt="{{ $suggestedProduct['name'] }}" class="card-img-top">
+                        @if($suggestedProduct['is_on_sale'])
+                        <div class="discount-tag">-{{ $suggestedProduct['discount_percentage'] }}%</div>
+                        @endif
+                    </div>
+
+                    <div class="product-info">
+                        <h3 class="product-name">{{ $suggestedProduct['name'] }}</h3>
+
+                        <div class="product-rating">
+                            <div class="stars">
+                                <span class="rating-score">{{ $suggestedProduct['rating'] }}</span>
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star {{ $i <= $suggestedProduct['rating'] ? 'text-warning' : 'text-muted' }}"></i>
+                                    @endfor
+                                    <span class="rating-count">({{ $suggestedProduct['review_count'] }})</span>
+                            </div>
+                            @if($suggestedProduct['sold_count'])
+                            <div class="sold-count">{{ $suggestedProduct['sold_count'] }} đã bán</div>
+                            @endif
+                        </div>
+
+                        <div class="product-price text-center">
                             @if($suggestedProduct['is_on_sale'])
-                            <div class="discount-tag">-{{ $suggestedProduct['discount_percentage'] }}%</div>
+                            <span class="sale-price">{{ number_format($suggestedProduct['sale_price']) }}đ</span>
+                            <span class="original-price">{{ number_format($suggestedProduct['price']) }}đ</span>
+                            <!-- <span class="discount-percent">{{ $suggestedProduct['discount_percentage'] }}%</span> -->
+                            @else
+                            <span class="sale-price">{{ number_format($suggestedProduct['price']) }}đ</span>
                             @endif
                         </div>
 
-                        <div class="product-info">
-                            <h3 class="product-name">{{ $suggestedProduct['name'] }}</h3>
-
-                            <div class="product-rating">
-                                <div class="stars">
-                                    <span class="rating-score">{{ $suggestedProduct['rating'] }}</span>
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star {{ $i <= $suggestedProduct['rating'] ? 'text-warning' : 'text-muted' }}"></i>
-                                        @endfor
-                                        <span class="rating-count">({{ $suggestedProduct['review_count'] }})</span>
-                                </div>
-                                @if($suggestedProduct['sold_count'])
-                                <div class="sold-count">{{ $suggestedProduct['sold_count'] }} đã bán</div>
-                                @endif
-                            </div>
-
-                            <div class="product-price text-center">
-                                @if($suggestedProduct['is_on_sale'])
-                                <span class="sale-price">{{ number_format($suggestedProduct['sale_price']) }}đ</span>
-                                <span class="original-price">{{ number_format($suggestedProduct['price']) }}đ</span>
-                                <!-- <span class="discount-percent">{{ $suggestedProduct['discount_percentage'] }}%</span> -->
-                                @else
-                                <span class="sale-price">{{ number_format($suggestedProduct['price']) }}đ</span>
-                                @endif
-                            </div>
-
-                            @if($suggestedProduct['coupon'])
-                            <div class="coupon-tag">
-                                <i class="fas fa-ticket-alt"></i> {{ $suggestedProduct['coupon'] }}
-                            </div>
-                            @endif
+                        @if($suggestedProduct['coupon'])
+                        <div class="coupon-tag">
+                            <i class="fas fa-ticket-alt"></i> {{ $suggestedProduct['coupon'] }}
                         </div>
-                    </a>
-                </div>
-                @endforeach
+                        @endif
+                    </div>
+                </a>
+            </div>
+            @endforeach
 
         </div>
     </div>
@@ -775,8 +1191,8 @@
                         <div class="rating-input d-flex align-items-center">
                             <div class="star-rating me-3">
                                 @for($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star star-item" data-rating="{{ $i }}"></i>
-                                @endfor
+                                    <i class="fas fa-star star-item" data-rating="{{ $i }}"></i>
+                                    @endfor
                             </div>
                             <span class="rating-text text-muted">Chọn số sao</span>
                         </div>
@@ -872,12 +1288,39 @@
     .main-image {
         width: 100%;
         height: 400px;
-        object-fit: cover;
+        object-fit: contain;
         transition: transform 0.3s ease;
+        border-radius: 8px;
     }
 
-    .main-image:hover {
+    .main-image-link:hover .main-image {
         transform: scale(1.05);
+    }
+
+    /* View All Images Button */
+    .view-all-images-btn {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        z-index: 15;
+    }
+
+    .view-all-images-btn .btn {
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .view-all-images-btn .btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .sale-badge,
@@ -934,10 +1377,19 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
     }
+
+    .thumbnail-image:hover {
+        transform: scale(1.05);
+    }
+
+
 
     /* Mobile Responsive for Product Gallery */
     @media (max-width: 768px) {
+
         /* Product Gallery Layout */
         .product-gallery {
             flex-direction: column !important;
@@ -1150,6 +1602,7 @@
     }
 
     @media (max-width: 576px) {
+
         /* Gallery responsive for small screens */
         .main-image {
             height: 250px;
@@ -1172,6 +1625,60 @@
             right: 10px;
             padding: 6px 10px;
             font-size: 0.7rem;
+        }
+
+        /* View all images button responsive */
+        .view-all-images-btn {
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .view-all-images-btn .btn {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+        }
+
+        /* Lightbox responsive for very small screens */
+        .lb-nav a.lb-prev,
+        .lb-nav a.lb-next {
+            width: 40px;
+            height: 40px;
+        }
+
+        .lb-nav a.lb-prev {
+            left: 5px;
+        }
+
+        .lb-nav a.lb-next {
+            right: 5px;
+        }
+
+        .lb-closeContainer {
+            width: 35px;
+            height: 35px;
+            top: 5px;
+            right: 5px;
+        }
+
+        .lb-close {
+            font-size: 16px;
+        }
+
+        .lb-imageContainer {
+            text-align: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+            min-height: 200px;
+        }
+
+        .lb-imageContainer img {
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            padding: 0;
+            border-radius: 4px;
         }
 
         /* Product info responsive for small screens */
@@ -1428,7 +1935,7 @@
         background: #e8f5e8;
     }
 
-    .variant-none .variant-radio:checked + .variant-label {
+    .variant-none .variant-radio:checked+.variant-label {
         border-color: #28a745;
         background: #d4edda;
         box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
@@ -1453,7 +1960,7 @@
         background: #f8f9fa;
     }
 
-    .variant-radio:checked + .variant-label {
+    .variant-radio:checked+.variant-label {
         border-color: #007bff;
         background: #e3f2fd;
         box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
@@ -2069,6 +2576,7 @@
     }
 
     @media (max-width: 768px) {
+
         .variants-header,
         .variant-row {
             grid-template-columns: 1fr;
@@ -2303,7 +2811,7 @@
         transform: scale(1.1);
     }
 
-    .star-rating .star-item:hover ~ .star-item {
+    .star-rating .star-item:hover~.star-item {
         color: #e9ecef;
         transform: scale(1);
     }
@@ -2380,6 +2888,7 @@
 
     /* Bootstrap Override for Mobile */
     @media (max-width: 768px) {
+
         /* Override Bootstrap grid system for mobile */
         .col-lg-5 {
             width: 100% !important;
@@ -2532,12 +3041,19 @@
 
     /* Cart Animation */
     @keyframes cartBounce {
-        0%, 20%, 50%, 80%, 100% {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
             transform: translateY(0);
         }
+
         40% {
             transform: translateY(-10px);
         }
+
         60% {
             transform: translateY(-5px);
         }
@@ -2558,8 +3074,13 @@
     }
 
     @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     /* Notification Animations */
@@ -2568,6 +3089,7 @@
             transform: translateX(100%);
             opacity: 0;
         }
+
         to {
             transform: translateX(0);
             opacity: 1;
@@ -2579,6 +3101,7 @@
             transform: translateX(0);
             opacity: 1;
         }
+
         to {
             transform: translateX(100%);
             opacity: 0;
@@ -2598,11 +3121,16 @@
 @endpush
 
 @push('scripts')
+<!-- Lightbox2 JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
 <script>
     // Product Detail JavaScript
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize product detail functionality
         initializeProductDetail();
+
+        // Initialize Lightbox
+        initializeLightbox();
     });
 
     // Handle window resize for mobile slider
@@ -2638,38 +3166,43 @@
         }
     }
 
-    function toggleSpecifications() {
-        const fullSpecs = document.querySelector('.full-specs');
-        const showMore = document.querySelector('.show-more');
-        const showLess = document.querySelector('.show-less');
+    // function toggleSpecifications() {
+    //     const fullSpecs = document.querySelector('.full-specs');
+    //     const showMore = document.querySelector('.show-more');
+    //     const showLess = document.querySelector('.show-less');
 
-        if (fullSpecs.style.display === 'none') {
-            fullSpecs.style.display = 'flex';
-            showMore.style.display = 'none';
-            showLess.style.display = 'inline';
+    //     if (fullSpecs.style.display === 'none') {
+    //         fullSpecs.style.display = 'flex';
+    //         showMore.style.display = 'none';
+    //         showLess.style.display = 'inline';
 
-            // Scroll to full specs
-            fullSpecs.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        } else {
-            fullSpecs.style.display = 'none';
-            showMore.style.display = 'inline';
-            showLess.style.display = 'none';
+    //         // Scroll to full specs
+    //         fullSpecs.scrollIntoView({
+    //             behavior: 'smooth',
+    //             block: 'start'
+    //         });
+    //     } else {
+    //         fullSpecs.style.display = 'none';
+    //         showMore.style.display = 'inline';
+    //         showLess.style.display = 'none';
 
-            // Scroll back to basic specs
-            document.querySelector('.basic-specs').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    }
+    //         // Scroll back to basic specs
+    //         document.querySelector('.basic-specs').scrollIntoView({
+    //             behavior: 'smooth',
+    //             block: 'start'
+    //         });
+    //     }
+    // }
 
     function changeMainImage(imageSrc, thumbnailElement) {
         const mainImage = document.getElementById('mainImage');
-        if (mainImage) {
+        const mainImageLink = document.querySelector('.main-image-link');
+
+        if (mainImage && mainImageLink) {
             mainImage.src = imageSrc;
+
+            // Update lightbox link href
+            mainImageLink.href = imageSrc;
 
             // Update active thumbnail
             document.querySelectorAll('.thumbnail-item').forEach(item => {
@@ -3466,111 +3999,111 @@
 
         // Submit via AJAX
         fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
 
-            if (!response.ok) {
-                // Try to get error message from response
-                return response.text().then(text => {
-                    let errorMessage = `HTTP error! status: ${response.status}`;
+                if (!response.ok) {
+                    // Try to get error message from response
+                    return response.text().then(text => {
+                        let errorMessage = `HTTP error! status: ${response.status}`;
 
-                    // Try to parse JSON error message
-                    try {
-                        const errorData = JSON.parse(text);
-                        console.log('Error response data:', errorData);
+                        // Try to parse JSON error message
+                        try {
+                            const errorData = JSON.parse(text);
+                            console.log('Error response data:', errorData);
 
-                        if (errorData.message) {
-                            errorMessage = errorData.message;
-                        }
+                            if (errorData.message) {
+                                errorMessage = errorData.message;
+                            }
 
-                        // Handle validation errors specifically
-                        if (errorData.errors && response.status === 422) {
-                            const firstError = Object.values(errorData.errors)[0];
-                            if (firstError && firstError[0]) {
-                                errorMessage = firstError[0];
+                            // Handle validation errors specifically
+                            if (errorData.errors && response.status === 422) {
+                                const firstError = Object.values(errorData.errors)[0];
+                                if (firstError && firstError[0]) {
+                                    errorMessage = firstError[0];
+                                }
+                            }
+                        } catch (e) {
+                            // If not JSON, use status-based message
+                            if (response.status === 419) {
+                                errorMessage = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.';
+                            } else if (response.status === 422) {
+                                errorMessage = 'Dữ liệu không hợp lệ.';
+                            } else if (response.status === 401) {
+                                errorMessage = 'Bạn cần đăng nhập để thực hiện thao tác này.';
+                            } else if (response.status === 500) {
+                                errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
                             }
                         }
-                    } catch (e) {
-                        // If not JSON, use status-based message
-                        if (response.status === 419) {
-                            errorMessage = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.';
-                        } else if (response.status === 422) {
-                            errorMessage = 'Dữ liệu không hợp lệ.';
-                        } else if (response.status === 401) {
-                            errorMessage = 'Bạn cần đăng nhập để thực hiện thao tác này.';
-                        } else if (response.status === 500) {
-                            errorMessage = 'Lỗi server. Vui lòng thử lại sau.';
+
+                        throw new Error(errorMessage);
+                    });
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    // Close modal
+                    const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+                    reviewModal.hide();
+
+                    // Show success message
+                    showNotification(data.message, 'success');
+
+                    // Add new review to the list
+                    if (data.review) {
+                        addNewReviewToList(data.review);
+                        // Update rating display if provided
+                        if (data.updated_rating) {
+                            updateRatingDisplay(data.updated_rating);
                         }
                     }
 
-                    throw new Error(errorMessage);
-                });
-            }
+                    // Reset form
+                    resetReviewForm();
 
-            return response.json();
-        })
-        .then(data => {
-            console.log('Response data:', data);
-            if (data.success) {
-                // Close modal
-                const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
-                reviewModal.hide();
+                } else {
+                    console.log('Review submission failed:', data);
 
-                // Show success message
-                showNotification(data.message, 'success');
+                    // Show error message
+                    let errorMessage = data.message || 'Có lỗi xảy ra khi gửi đánh giá';
 
-                // Add new review to the list
-                if (data.review) {
-                    addNewReviewToList(data.review);
-                    // Update rating display if provided
-                    if (data.updated_rating) {
-                        updateRatingDisplay(data.updated_rating);
+                    // If there are specific validation errors, show the first one
+                    if (data.errors && Object.keys(data.errors).length > 0) {
+                        const firstErrorField = Object.keys(data.errors)[0];
+                        const firstErrorMessage = data.errors[firstErrorField][0];
+                        errorMessage = firstErrorMessage;
+
+                        // Also show field-specific errors
+                        showValidationErrors(data.errors);
                     }
+
+                    showNotification(errorMessage, 'error');
                 }
+            })
+            .catch(error => {
+                console.error('Error submitting review:', error);
 
-                // Reset form
-                resetReviewForm();
-
-            } else {
-                console.log('Review submission failed:', data);
-
-                // Show error message
-                let errorMessage = data.message || 'Có lỗi xảy ra khi gửi đánh giá';
-
-                // If there are specific validation errors, show the first one
-                if (data.errors && Object.keys(data.errors).length > 0) {
-                    const firstErrorField = Object.keys(data.errors)[0];
-                    const firstErrorMessage = data.errors[firstErrorField][0];
-                    errorMessage = firstErrorMessage;
-
-                    // Also show field-specific errors
-                    showValidationErrors(data.errors);
-                }
-
+                // Use error message if available, otherwise default
+                const errorMessage = error.message || 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.';
                 showNotification(errorMessage, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error submitting review:', error);
-
-            // Use error message if available, otherwise default
-            const errorMessage = error.message || 'Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.';
-            showNotification(errorMessage, 'error');
-        })
-        .finally(() => {
-            // Reset button state
-            submitBtn.classList.remove('btn-loading');
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Gửi đánh giá';
-        });
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Gửi đánh giá';
+            });
     }
 
     function validateReviewForm() {
@@ -3760,6 +4293,223 @@
                     star.classList.add('text-muted');
                 }
             });
+        }
+    }
+
+    // Initialize Lightbox functionality
+    function initializeLightbox() {
+        // Configure Lightbox options
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'albumLabel': 'Hình ảnh %1 / %2',
+            'fadeDuration': 300,
+            'imageFadeDuration': 300,
+            'positionFromTop': 50,
+            'showImageNumberLabel': true,
+            'enableKeyboardNav': true,
+            'disableScrolling': true,
+            'fitImagesInViewport': true,
+            'maxWidth': 1200,
+            'maxHeight': 800,
+            'imageFadeDuration': 300,
+            'resizeDuration': 200,
+            'fadeDuration': 300,
+            'positionFromTop': 50,
+            'showImageNumberLabel': true,
+            'enableKeyboardNav': true,
+            'disableScrolling': true,
+            'fitImagesInViewport': true
+        });
+
+                // Ensure navigation buttons are visible after lightbox opens
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('[data-lightbox]')) {
+                setTimeout(() => {
+                    const prevBtn = document.querySelector('.lb-nav a.lb-prev');
+                    const nextBtn = document.querySelector('.lb-nav a.lb-next');
+                    const closeBtn = document.querySelector('.lb-closeContainer');
+                    const imageContainer = document.querySelector('.lb-imageContainer');
+                    const image = document.querySelector('.lb-image');
+
+                    if (prevBtn) {
+                        prevBtn.style.display = 'flex';
+                        prevBtn.style.opacity = '1';
+                        prevBtn.style.visibility = 'visible';
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.style.display = 'flex';
+                        nextBtn.style.opacity = '1';
+                        nextBtn.style.visibility = 'visible';
+                    }
+
+                    if (closeBtn) {
+                        closeBtn.style.display = 'flex';
+                        closeBtn.style.opacity = '1';
+                        closeBtn.style.visibility = 'visible';
+                    }
+
+                    // Ensure image is positioned correctly
+                    if (imageContainer) {
+                        imageContainer.style.textAlign = 'center';
+                        imageContainer.style.justifyContent = 'center';
+                        imageContainer.style.alignItems = 'center';
+                        imageContainer.style.padding = '20px';
+                        imageContainer.style.margin = '0';
+                        imageContainer.style.minHeight = '300px';
+                    }
+
+                    if (image) {
+                        image.style.objectFit = 'contain';
+                        image.style.maxWidth = '100%';
+                        image.style.maxHeight = '100%';
+                        image.style.margin = '0 auto';
+                        image.style.padding = '0';
+                        image.style.display = 'block';
+                        image.style.width = 'auto';
+                        image.style.height = 'auto';
+                        image.style.borderRadius = '8px';
+                    }
+                }, 100);
+            }
+        });
+
+        // Add custom event listeners for lightbox
+        document.addEventListener('click', function(e) {
+            // Handle thumbnail clicks to open lightbox
+            if (e.target.closest('.thumbnail-item')) {
+                const thumbnailItem = e.target.closest('.thumbnail-item');
+                const lightboxLink = thumbnailItem.querySelector('.lightbox-hidden-link');
+
+                if (lightboxLink) {
+                    // Prevent the default thumbnail click behavior
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Open lightbox with the clicked image
+                    lightboxLink.click();
+                }
+            }
+        });
+
+        // Add keyboard shortcuts for lightbox
+        document.addEventListener('keydown', function(e) {
+            // Only handle keyboard events when lightbox is open
+            if (document.querySelector('.lb-outerContainer')) {
+                switch(e.key) {
+                    case 'Escape':
+                        // Close lightbox
+                        const closeButton = document.querySelector('.lb-close');
+                        if (closeButton) closeButton.click();
+                        break;
+                    case 'ArrowLeft':
+                        // Previous image
+                        const prevButton = document.querySelector('.lb-prev');
+                        if (prevButton) prevButton.click();
+                        break;
+                    case 'ArrowRight':
+                        // Next image
+                        const nextButton = document.querySelector('.lb-next');
+                        if (nextButton) nextButton.click();
+                        break;
+                }
+            }
+        });
+
+        // Add touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            if (document.querySelector('.lb-outerContainer')) {
+                touchStartX = e.changedTouches[0].screenX;
+            }
+        }, false);
+
+        document.addEventListener('touchend', function(e) {
+            if (document.querySelector('.lb-outerContainer')) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }
+        }, false);
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next image
+                    const nextButton = document.querySelector('.lb-next');
+                    if (nextButton) nextButton.click();
+                } else {
+                    // Swipe right - previous image
+                    const prevButton = document.querySelector('.lb-prev');
+                    if (prevButton) prevButton.click();
+                }
+            }
+        }
+
+        // Add loading indicator
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('[data-lightbox]')) {
+                showLightboxLoading();
+            }
+        });
+
+        // Handle lightbox events
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.lb-close')) {
+                hideLightboxLoading();
+            }
+        });
+    }
+
+    // Show loading indicator for lightbox
+    function showLightboxLoading() {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'lightbox-loading';
+        loadingDiv.innerHTML = '<div class="lb-loader"></div>';
+        loadingDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        document.body.appendChild(loadingDiv);
+
+        // Remove loading after a short delay
+        setTimeout(() => {
+            const loading = document.getElementById('lightbox-loading');
+            if (loading) {
+                loading.remove();
+            }
+        }, 1000);
+    }
+
+    // Hide loading indicator
+    function hideLightboxLoading() {
+        const loading = document.getElementById('lightbox-loading');
+        if (loading) {
+            loading.remove();
+        }
+    }
+
+    // Open all images in lightbox gallery
+    function openAllImages() {
+        // Find the first lightbox link and click it to open the gallery
+        const firstLightboxLink = document.querySelector('[data-lightbox="product-gallery"]');
+        if (firstLightboxLink) {
+            firstLightboxLink.click();
         }
     }
 </script>
