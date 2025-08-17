@@ -14,7 +14,7 @@
 
         <div class="row">
             <!-- Left Side - Main Content -->
-            <div class="col-lg-8">
+            <div class="col-lg-8 col-md-12">
                 <div class="checkout-form">
                     <form id="checkoutForm" method="POST" action="{{ route('orders.store') }}">
                         @csrf
@@ -39,7 +39,9 @@
 
                         <!-- Địa chỉ nhận hàng -->
                         <div class="form-section mb-4">
-                            <h4 class="section-title">Địa chỉ nhận hàng</h4>
+                            <h4 class="section-title">
+                                <i class="fas fa-map-marker-alt me-2"></i>Địa chỉ nhận hàng
+                            </h4>
                             <div class="shipping-address-box">
                                 <div class="address-content">
                                     <div class="customer-info">
@@ -67,7 +69,9 @@
 
                         <!-- Phương thức thanh toán -->
                         <div class="form-section mb-4">
-                            <h4 class="section-title">Phương thức thanh toán</h4>
+                            <h4 class="section-title">
+                                <i class="fas fa-credit-card me-2"></i>Phương thức thanh toán
+                            </h4>
                             <div class="payment-methods">
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="cod" value="cod" checked>
@@ -90,7 +94,9 @@
 
                         <!-- Ghi chú đơn hàng -->
                         <div class="form-section mb-4">
-                            <h4 class="section-title">Ghi chú đơn hàng</h4>
+                            <h4 class="section-title">
+                                <i class="fas fa-sticky-note me-2"></i>Ghi chú đơn hàng
+                            </h4>
                             <div class="form-group">
                                 <textarea class="form-control" id="customer_note" name="customer_note" rows="4"
                                           placeholder="Nhập ghi chú cho đơn hàng (không bắt buộc)">{{ old('customer_note') }}</textarea>
@@ -101,10 +107,11 @@
             </div>
 
             <!-- Right Side - Order Summary -->
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-12">
                 <div class="order-summary">
                     <div class="summary-header">
                         <h4 class="summary-title">
+                            <i class="fas fa-shopping-bag me-2"></i>
                             @if(isset($isBuyNow) && $isBuyNow)
                                 Mua ngay
                             @else
@@ -112,7 +119,9 @@
                             @endif
                         </h4>
                         @if(!isset($isBuyNow) || !$isBuyNow)
-                            <a href="{{ route('cart.index') }}" class="change-link">Thay đổi</a>
+                            <a href="{{ route('cart.index') }}" class="change-link">
+                                <i class="fas fa-edit me-1"></i>Thay đổi
+                            </a>
                         @endif
                     </div>
 
@@ -192,7 +201,7 @@
 
 <!-- Update Address Modal -->
 <div class="modal fade" id="updateAddressModal" tabindex="-1" aria-labelledby="updateAddressModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateAddressModalLabel">
@@ -203,7 +212,7 @@
             <div class="modal-body">
                 <form id="updateAddressForm">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <div class="mb-3">
                                 <label for="modal_name" class="form-label">Họ và tên *</label>
                                 <div class="input-group">
@@ -239,7 +248,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-12">
                             <div class="mb-3">
                                 <label for="modal_city" class="form-label">Tỉnh/Thành phố *</label>
                                 <div class="input-group">
@@ -296,6 +305,18 @@
 .checkout-page {
     background: #f8f9fa;
     min-height: 100vh;
+}
+
+/* Mobile-first improvements */
+@media (max-width: 768px) {
+    .checkout-page {
+        background: white;
+    }
+
+    .form-section, .order-summary {
+        box-shadow: none;
+        border: 1px solid #e9ecef;
+    }
 }
 
 .section-title {
@@ -599,12 +620,22 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .checkout-page {
+        padding: 10px 0;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
     .form-section, .order-summary {
         margin-bottom: 15px;
+        padding: 20px 15px;
     }
 
     .order-summary {
         position: static;
+        margin-top: 20px;
     }
 
     .summary-header {
@@ -618,8 +649,268 @@
         gap: 5px;
     }
 
+    .shipping-address-box {
+        padding: 15px;
+    }
+
+    .customer-info {
+        font-size: 1rem;
+    }
+
+    .address-details {
+        font-size: 0.9rem;
+    }
+
+    .summary-item {
+        padding: 12px 0;
+    }
+
+    .item-image {
+        width: 50px;
+        height: 50px;
+        margin-right: 12px;
+    }
+
+    .item-name {
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        font-size: 0.85rem;
+    }
+
+    .total-row {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .total-final {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
     .modal-body {
         padding: 1rem;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .payment-methods .form-check {
+        padding: 12px;
+    }
+
+    .form-control {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .checkout-page {
+        padding: 5px 0;
+    }
+
+    .form-section, .order-summary {
+        padding: 15px 10px;
+        border-radius: 6px;
+    }
+
+    .shipping-address-box {
+        padding: 12px;
+    }
+
+    .address-actions {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .btn-link {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #007bff;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .btn-link:hover {
+        background: #0056b3;
+        color: white;
+        text-decoration: none;
+    }
+
+    .summary-items {
+        margin: 15px 0;
+    }
+
+    .summary-item {
+        padding: 10px 0;
+    }
+
+    .item-image {
+        width: 45px;
+        height: 45px;
+        margin-right: 10px;
+    }
+
+    .item-details {
+        min-width: 0;
+    }
+
+    .item-name {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+    .item-price {
+        font-size: 0.8rem;
+    }
+
+    .total-row {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+
+    .total-final {
+        font-size: 0.95rem;
+        padding-top: 12px;
+    }
+
+    .btn-primary {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .modal-dialog {
+        margin: 5px;
+    }
+
+    .modal-body {
+        padding: 15px 10px;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .payment-methods .form-check {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .alert {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-page {
+        padding: 0;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .form-section, .order-summary {
+        padding: 12px 8px;
+        margin-bottom: 10px;
+    }
+
+    .shipping-address-box {
+        padding: 10px;
+    }
+
+    .customer-info {
+        font-size: 0.95rem;
+    }
+
+    .address-details {
+        font-size: 0.85rem;
+    }
+
+    .summary-item {
+        padding: 8px 0;
+    }
+
+    .item-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+
+    .item-name {
+        font-size: 0.8rem;
+    }
+
+    .item-price {
+        font-size: 0.75rem;
+    }
+
+    .total-row {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+    }
+
+    .total-final {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    .payment-methods .form-check {
+        padding: 8px;
+    }
+
+    .form-control {
+        padding: 6px;
+        font-size: 0.85rem;
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+    }
+
+    .alert {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .modal-dialog {
+        margin: 2px;
+    }
+
+    .modal-body {
+        padding: 12px 8px;
     }
 }
 </style>
@@ -994,6 +1285,8 @@ function showToast(message, type = 'info') {
     z-index: 9999;
     transform: translateX(100%);
     transition: transform 0.3s ease;
+    max-width: 300px;
+    word-wrap: break-word;
 }
 
 .toast-notification.show {
@@ -1010,6 +1303,31 @@ function showToast(message, type = 'info') {
 
 .toast-info {
     background: #17a2b8;
+}
+
+/* Mobile toast improvements */
+@media (max-width: 768px) {
+    .toast-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        transform: translateY(-100%);
+    }
+
+    .toast-notification.show {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .toast-notification {
+        top: 5px;
+        right: 5px;
+        left: 5px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
 }
 </style>
 @endpush
