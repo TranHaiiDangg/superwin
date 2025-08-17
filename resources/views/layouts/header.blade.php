@@ -303,7 +303,7 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Trang chủ</a></li>
-                <!-- <li class="nav-item"><a class="nav-link" href="{{ route('products.index') }}">Sản phẩm</a></li> -->
+                <li class="nav-item"><a class="nav-link" href="{{ route('cart.index') }}"">Giỏ hàng</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('support') }}">Hỗ trợ</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Liên hệ</a></li>
             </ul>
