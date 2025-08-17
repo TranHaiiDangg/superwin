@@ -3,12 +3,12 @@
 @section('title', 'Thương Hiệu - SuperWin')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row">
         <!-- Header -->
         <div class="col-12">
             <div class="brands-header">
-                <div class="text-center mb-5">
+                <div class="text-center">
                     <h2 class="brands-main-title">Thương Hiệu Nổi Bật</h2>
                     <!-- <p class="brands-subtitle">Khám phá các thương hiệu uy tín hàng đầu về máy bơm nước và quạt thông gió</p> -->
                 </div>
@@ -145,11 +145,16 @@
 
 @push('styles')
 <style>
+
+    .container-fluid{
+        margin: 10px auto;
+        width: 1320px;
+    }
 /* Brands Index Page Styles */
 .brands-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 16px;
-    padding: 60px 30px;
+    padding: 15px 30px;
     color: white;
     margin-bottom: 40px;
     text-align: center;
@@ -159,7 +164,6 @@
 .brands-main-title {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 15px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -174,7 +178,7 @@
 
 .brands-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
     gap: 30px;
     margin-bottom: 40px;
 }
@@ -417,21 +421,53 @@
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+/* Responsive styles for Mobile and Tablet */
+
+/* Large Desktop (1200px and up) */
+@media (min-width: 1200px) {
     .brands-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
+        grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+        gap: 30px;
     }
 }
 
-@media (max-width: 992px) {
+/* Desktop (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .container-fluid {
+        width: 100%;
+        max-width: 1140px;
+        padding: 0 15px;
+    }
+    
     .brands-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+    }
+    
+    .brands-main-title {
+        font-size: 2.2rem;
+    }
+}
+
+/* Tablet Landscape (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .container-fluid {
+        width: 100%;
+        max-width: 960px;
+        padding: 0 15px;
+        margin: 10px auto;
+    }
+    
+    .brands-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên 1 hàng */
         gap: 20px;
+        margin-bottom: 35px;
     }
     
     .brands-header {
-        padding: 40px 20px;
+        padding: 35px 20px;
+        margin: 35px;
+        border-radius: 14px;
     }
     
     .brands-main-title {
@@ -441,75 +477,403 @@
     .brands-subtitle {
         font-size: 1rem;
     }
-}
-
-@media (max-width: 768px) {
-    .brands-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-    }
-    
-    .brands-header {
-        padding: 30px 15px;
-        margin-bottom: 30px;
-    }
-    
-    .brands-main-title {
-        font-size: 1.8rem;
-    }
-    
-    .brand-content {
-        padding: 20px;
-    }
-    
-    .custom-pagination .page-link {
-        padding: 10px 12px;
-        font-size: 14px;
-        min-width: 40px;
-    }
-}
-
-@media (max-width: 576px) {
-    .brands-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .brands-header {
-        padding: 25px 15px;
-        border-radius: 12px;
-    }
-    
-    .brands-main-title {
-        font-size: 1.6rem;
-    }
-    
-    .brands-subtitle {
-        font-size: 0.95rem;
-    }
     
     .brand-image {
         height: 160px;
     }
     
     .brand-content {
-        padding: 18px;
+        padding: 20px;
+    }
+    
+    .brand-name {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+    
+    .brand-description {
+        font-size: 0.9rem;
+        margin-bottom: 18px;
+        min-height: 2.7em;
+    }
+    
+    .brand-stats {
+        margin-bottom: 18px;
+        padding: 12px;
+    }
+    
+    .stat-item strong {
+        font-size: 1.4rem;
+    }
+    
+    .view-products-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet Portrait (576px to 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+    .container-fluid {
+        width: 100%;
+        max-width: 720px;
+        padding: 0 15px;
+        margin: 10px auto;
+    }
+    
+    .brands-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên 1 hàng */
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .brands-header {
+        padding: 30px 15px;
+        margin: 30px;
+        border-radius: 12px;
+    }
+    
+    .brands-main-title {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    
+    .brands-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .brand-image {
+        height: 140px;
+    }
+    
+    .brand-image img {
+        max-width: 65%;
+        max-height: 65%;
+    }
+    
+    .brand-placeholder {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .brand-content {
+        padding: 18px 15px;
     }
     
     .brand-name {
         font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .brand-description {
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        min-height: 2.5em;
+        -webkit-line-clamp: 2;
+    }
+    
+    .brand-stats {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    
+    .stat-item strong {
+        font-size: 1.3rem;
+    }
+    
+    .stat-item span {
+        font-size: 0.85rem;
+    }
+    
+    .view-products-btn {
+        padding: 9px 18px;
+        font-size: 0.85rem;
+        border-radius: 20px;
+    }
+    
+    .custom-pagination .page-link {
+        padding: 8px 12px;
+        font-size: 14px;
+        min-width: 38px;
+    }
+}
+
+/* Mobile Large (480px to 575px) */
+@media (max-width: 575px) and (min-width: 480px) {
+    .container-fluid {
+        width: 100%;
+        padding: 0 15px;
+        margin: 8px auto;
+    }
+    
+    .brands-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên 1 hàng */
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    
+    .brands-header {
+        padding: 25px 15px;
+        margin: 25px;
+        border-radius: 10px;
+    }
+    
+    .brands-main-title {
+        font-size: 1.6rem;
+        line-height: 1.2;
+    }
+    
+    .brands-subtitle {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .brand-card {
+        border-radius: 12px;
+    }
+    
+    .brand-image {
+        height: 120px;
+    }
+    
+    .brand-image img {
+        max-width: 60%;
+        max-height: 60%;
+    }
+    
+    .brand-placeholder {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .brand-content {
+        padding: 15px 12px;
+    }
+    
+    .brand-name {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+    
+    .brand-description {
+        font-size: 0.8rem;
+        margin-bottom: 12px;
+        min-height: 2.4em;
+        -webkit-line-clamp: 2;
+        line-height: 1.4;
+    }
+    
+    .brand-stats {
+        margin-bottom: 12px;
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    .stat-item strong {
+        font-size: 1.2rem;
+        margin-bottom: 1px;
+    }
+    
+    .stat-item span {
+        font-size: 0.8rem;
+    }
+    
+    .view-products-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+        border-radius: 18px;
+    }
+    
+    .empty-state {
+        padding: 60px 15px;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h5 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+    
+    .empty-state p {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .pagination-wrapper {
+        margin-top: 40px;
     }
     
     .custom-pagination .pagination {
-        gap: 6px;
+        gap: 5px;
         flex-wrap: wrap;
         justify-content: center;
     }
     
     .custom-pagination .page-link {
-        padding: 8px 10px;
+        padding: 7px 10px;
         font-size: 13px;
         min-width: 35px;
+    }
+}
+
+/* Mobile Small (320px to 479px) */
+@media (max-width: 479px) {
+    .container-fluid {
+        width: 100%;
+        padding: 0 12px;
+        margin: 5px auto;
+    }
+    
+    .brands-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sản phẩm trên 1 hàng */
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .brands-header {
+        padding: 20px 12px;
+        margin: 20px;
+        border-radius: 8px;
+    }
+    
+    .brands-main-title {
+        font-size: 1.4rem;
+        line-height: 1.1;
+    }
+    
+    .brands-subtitle {
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+    
+    .brand-card {
+        border-radius: 10px;
+    }
+    
+    .brand-image {
+        height: 100px;
+    }
+    
+    .brand-image img {
+        max-width: 55%;
+        max-height: 55%;
+    }
+    
+    .brand-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .brand-content {
+        padding: 12px 8px;
+    }
+    
+    .brand-name {
+        font-size: 1rem;
+        margin-bottom: 6px;
+        line-height: 1.1;
+    }
+    
+    .brand-description {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+        min-height: 2.2em;
+        -webkit-line-clamp: 2;
+        line-height: 1.3;
+    }
+    
+    .brand-stats {
+        margin-bottom: 10px;
+        padding: 6px;
+        border-radius: 6px;
+    }
+    
+    .stat-item strong {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+    
+    .stat-item span {
+        font-size: 0.75rem;
+    }
+    
+    .view-products-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        border-radius: 15px;
+    }
+    
+    .brand-card:hover {
+        transform: translateY(-4px);
+    }
+    
+    .empty-state {
+        padding: 50px 12px;
+    }
+    
+    .empty-state i {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state h5 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+    
+    .pagination-wrapper {
+        margin-top: 30px;
+    }
+    
+    .custom-pagination .pagination {
+        gap: 3px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .custom-pagination .page-link {
+        padding: 6px 8px;
+        font-size: 12px;
+        min-width: 32px;
+    }
+}
+
+/* Extra responsive adjustments */
+@media (max-width: 360px) {
+    .brands-grid {
+        gap: 8px;
+    }
+    
+    .brand-content {
+        padding: 10px 6px;
+    }
+    
+    .brand-name {
+        font-size: 0.95rem;
+    }
+    
+    .brand-description {
+        font-size: 0.7rem;
+    }
+    
+    .view-products-btn {
+        padding: 5px 10px;
+        font-size: 0.7rem;
     }
 }
 </style>
