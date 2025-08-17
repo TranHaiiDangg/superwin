@@ -813,7 +813,7 @@ function startDealTimers() {
 startDealTimers();
 </script>
 @endpush
-
+    
 @push('styles')
 <style>
 /* Deal Page Styles - Extended from Brand Page */
