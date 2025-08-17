@@ -17,7 +17,6 @@ class Product extends Model
         'slug',
         'category_id',
         'brand_id',
-        'product_type',
         'description',
         'short_description',
         'price',
@@ -99,6 +98,16 @@ class Product extends Model
         return $this->hasMany(ProductAttribute::class);
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    public function activeVariants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class)->where('is_active', true)->ordered();
+    }
+
     // Product type specific relationships
     public function bomDetails(): HasOne
     {
@@ -165,8 +174,41 @@ class Product extends Model
         return $this->sale_price && $this->sale_price < $this->price;
     }
 
+    // Get display image (base image first, then first image)
+    public function getDisplayImageAttribute()
+    {
+        return $this->baseImage ?? $this->images->first() ?? null;
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        // Return cached rating_average if available
+        if ($this->rating_average !== null) {
+            return $this->rating_average;
+        }
+
+        // Calculate from reviews if not cached
+        $approvedReviews = $this->reviews()->where('is_approved', true)->get();
+        if ($approvedReviews->count() > 0) {
+            return round($approvedReviews->avg('rating'), 1);
+        }
+
+        return 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        // Return cached rating_count if available
+        if ($this->rating_count !== null) {
+            return $this->rating_count;
+        }
+
+        // Calculate from reviews if not cached
+        return $this->reviews()->where('is_approved', true)->count();
+    }
+
     // Static method to generate unique SKU
-    public static function generateSKU($categoryId = null, $brandId = null, $productType = null)
+    public static function generateSKU($categoryId = null, $brandId = null)
     {
         $prefix = 'SP';
 
@@ -186,18 +228,6 @@ class Product extends Model
             }
         }
 
-        // Add product type prefix
-        if ($productType) {
-            $typeMap = [
-                'bom' => 'BM',
-                'quat' => 'QT',
-                'motor' => 'MT',
-                'bom_chim' => 'BC',
-                'quat_tron' => 'QR'
-            ];
-            $prefix .= $typeMap[$productType] ?? 'SP';
-        }
-
         // Generate unique number
         $counter = 1;
         do {
@@ -212,6 +242,23 @@ class Product extends Model
     // Method to auto-generate SKU for current product
     public function generateUniqueSKU()
     {
-        return self::generateSKU($this->category_id, $this->brand_id, $this->product_type);
+        $baseSKU = $this->generateSKU($this->category_id, $this->brand_id);
+        $counter = 1;
+        $uniqueSKU = $baseSKU;
+
+        while (static::where('sku', $uniqueSKU)->where('id', '!=', $this->id)->exists()) {
+            $uniqueSKU = $baseSKU . '-' . $counter;
+            $counter++;
+        }
+
+        return $uniqueSKU;
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
     }
 }

@@ -83,6 +83,19 @@ QUEUE_CONNECTION=redis
 REDIS_HOST=redis
 REDIS_PASSWORD=null
 REDIS_PORT=6379
+
+## tạo app password google
+## link tạo app: https://myaccount.google.com/apppasswords?rapt=AEjHL4OFrpsqRUOYQXs6cWDQtaBT9xWR0V-TCZQ0NgStyVRBfKzlKrKFBt9eiSFvMmnUXp1wn9km0l7lENymojcLBVYH2jpWZBQkYIFgDaL47N8a5r8wQFI
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=465
+MAIL_USERNAME= email của bạn @gmail.com
+MAIL_PASSWORD= password app của bạn
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=email của bạn @gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+
 ```
 
 ## Lệnh Docker hữu ích

@@ -3,87 +3,214 @@
 @section('title', $category->name . ' - SuperWin')
 
 @section('content')
-<div class="container py-5">
+<div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-lg-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Danh mục</h5>
-
-                    @if($category->children->count() > 0)
-                    <div class="list-group list-group-flush">
-                        @foreach($category->children as $child)
-                        <a href="{{ route('categories.show', $child->slug) }}"
-                           class="list-group-item list-group-item-action">
-                            {{ $child->name }}
-                        </a>
+        <!-- Sidebar Filter (Desktop) -->
+        <div class="col-lg-3 col-md-4 d-none d-md-block">
+            <div class="category-sidebar">
+                <!-- Category Filter -->
+                @if($categories->count() > 0)
+                <div class="filter-section">
+                    <h6 class="filter-subtitle">DANH MỤC</h6>
+                    <div class="filter-content">
+                            @foreach($categories as $cat)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{ $cat->id }}" id="cat{{ $cat->id }}" name="category_id" {{ request('category_id') == $cat->id ? 'checked' : '' }}>
+                            <label class="form-check-label" for="cat{{ $cat->id }}">
+                                {{ $cat->name }}
+                            </label>
+                        </div>
                         @endforeach
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="catAll" name="category_id" {{ !request('category_id') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="catAll">Tất cả danh mục</label>
+                        </div>
+                        </div>
                     </div>
                     @endif
+
+                <!-- Brand Filter -->
+                    @if($brands->count() > 0)
+                <div class="filter-section">
+                    <h6 class="filter-subtitle">THƯƠNG HIỆU</h6>
+                    <div class="filter-content">
+                            @foreach($brands as $brand)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{ $brand->id }}" id="brand{{ $brand->id }}" name="brand_id" {{ request('brand_id') == $brand->id ? 'checked' : '' }}>
+                            <label class="form-check-label" for="brand{{ $brand->id }}">
+                                {{ $brand->name }}
+                            </label>
+                        </div>
+                            @endforeach
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="brandAll" name="brand_id" {{ !request('brand_id') ? 'checked' : '' }}>
+                                <label class="form-check-label" for="brandAll">Tất cả thương hiệu</label>
+                            </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Price Filter -->
+                <div class="filter-section">
+                    <h6 class="filter-subtitle">KHOẢNG GIÁ</h6>
+                    <div class="filter-content">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="0-1000000" id="price1" name="price_range" {{ request('price_range') == '0-1000000' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="price1">Dưới 1.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="1000000-3000000" id="price2" name="price_range" {{ request('price_range') == '1000000-3000000' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="price2">1.000.000đ - 3.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="3000000-5000000" id="price3" name="price_range" {{ request('price_range') == '3000000-5000000' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="price3">3.000.000đ - 5.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="5000000-10000000" id="price4" name="price_range" {{ request('price_range') == '5000000-10000000' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="price4">5.000.000đ - 10.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="10000000+" id="price5" name="price_range" {{ request('price_range') == '10000000+' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="price5">Trên 10.000.000đ</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" value="" id="priceAll" name="price_range" {{ !request('price_range') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="priceAll">Tất cả</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-primary btn-sm w-100 mb-2" onclick="applyFilters()">
+                        <i class="fas fa-filter me-2"></i>Áp dụng bộ lọc
+                    </button>
+                    <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-secondary btn-sm w-100">
+                        <i class="fas fa-refresh me-2"></i>Xóa bộ lọc
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Products -->
-        <div class="col-lg-9">
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8 col-12">
+            <!-- Mobile Filter Button -->
+            <div class="mobile-filter-section mb-3">
+                                 <div class="d-flex justify-content-between align-items-center">
+                    <button class="mobile-filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#categoryShowFilterOffcanvas" aria-controls="categoryShowFilterOffcanvas">
+                        <i class="fas fa-sliders-h me-2"></i>
+                        <span>Bộ lọc</span>
+                    </button>
+                    <div class="mobile-sort-options">
+                        <select class="form-select form-select-sm" id="mobileSortBy">
+                            <option value="newest" {{ request('sort_by') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
+                            <option value="bestseller" {{ request('sort_by') == 'bestseller' ? 'selected' : '' }}>Bán chạy</option>
+                            <option value="price_low" {{ request('sort_by') == 'price_low' ? 'selected' : '' }}>Giá thấp</option>
+                            <option value="price_high" {{ request('sort_by') == 'price_high' ? 'selected' : '' }}>Giá cao</option>
+                            <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Tên sản phẩm</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <!-- Header -->
-            <div class="mb-4">
-                <h2 class="fw-bold">{{ $category->name }}</h2>
-                <p class="text-muted">{{ $category->description }}</p>
-                <p class="text-muted">{{ $products->total() }} sản phẩm</p>
+            <div class="category-header">
+                <!-- Title Section -->
+                <div class="header-top mb-3">
+                    <h3 class="category-title">{{ $category->name }}</h3>
+                    <p class="category-subtitle">({{ $products->total() }} sản phẩm)</p>
+                </div>
+
+                <!-- Controls Section -->
+                <div class="header-controls d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+                    <!-- Quick Filters -->
+                    <div class="quick-filters">
+                        <button class="quick-filter-btn {{ !request('filter') && request('sort_by') != 'bestseller' ? 'active' : '' }}" data-filter="all">Tất cả</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'sale' ? 'active' : '' }}" data-filter="sale">Đang giảm giá</button>
+                        <button class="quick-filter-btn {{ request('filter') == 'featured' ? 'active' : '' }}" data-filter="featured">Nổi bật</button>
+                        <button class="quick-filter-btn {{ request('sort_by') == 'bestseller' ? 'active' : '' }}" data-filter="bestseller">Bán chạy</button>
+                    </div>
+                    
+                    <!-- Sort Options -->
+                    <div class="sort-options d-flex gap-2 align-items-center">
+                        <select class="form-select form-select-sm" id="perPage">
+                            <option value="6" {{ request('per_page') == 6 ? 'selected' : '' }}>6 sản phẩm</option>
+                            <option value="12" {{ request('per_page', 12) == 12 ? 'selected' : '' }}>12 sản phẩm</option>
+                            <option value="24" {{ request('per_page') == 24 ? 'selected' : '' }}>24 sản phẩm</option>
+                            <option value="48" {{ request('per_page') == 48 ? 'selected' : '' }}>48 sản phẩm</option>
+                        </select>
+                        <select class="form-select form-select-sm" id="sortBy">
+                            <option value="newest" {{ request('sort_by', 'newest') == 'newest' ? 'selected' : '' }}>Mới nhất</option>
+                            <option value="bestseller" {{ request('sort_by') == 'bestseller' ? 'selected' : '' }}>Bán chạy</option>
+                            <option value="price_low" {{ request('sort_by') == 'price_low' ? 'selected' : '' }}>Giá thấp nhất</option>
+                            <option value="price_high" {{ request('sort_by') == 'price_high' ? 'selected' : '' }}>Giá cao nhất</option>
+                            <option value="name" {{ request('sort_by') == 'name' ? 'selected' : '' }}>Tên sản phẩm</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Products Grid -->
             @if($products->count() > 0)
-            <div class="row g-4">
+            <div class="products-grid">
                 @foreach($products as $product)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm product-card">
-                        <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="position-relative">
+                <div class="product-item">
+                    <div class="product-card"
+                         data-product-id="{{ $product->id }}"
+                         data-product-name="{{ $product->name }}"
+                         data-product-model="{{ $product->sku ?? 'SW-' . $product->id }}"
+                         data-product-price="{{ $product->sale_price ?? $product->price }}"
+                         data-product-image="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}">
+                        <div class="product-image">
+                            <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
                             @if($product->baseImage)
-                                <img src="{{ $product->baseImage->url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
+                                <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
                             @else
-                                <img src="/image/sp1.png" class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
+                                <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
                             @endif
+                            </a>
 
                             @if($product->isOnSale)
-                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                            <span class="discount-badge">
                                     -{{ $product->discount_percentage }}%
                                 </span>
                             @endif
 
                             @if($product->is_featured)
-                                <span class="badge bg-warning position-absolute top-0 start-0 m-2">
-                                    <i class="fas fa-star"></i> Nổi bật
+                            <span class="featured-badge">
+                                <i class="fas fa-star"></i>
                                 </span>
                             @endif
-                        </a>
+                        </div>
 
-                        <div class="card-body d-flex flex-column">
-                            <h6 class="card-title">
-                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="text-decoration-none text-dark">
+                        <div class="product-content">
+                            <div class="product-brand">{{ $product->brand->name ?? 'SuperWin' }}</div>
+                            <h6 class="product-name">
+                                <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
                                     {{ $product->name }}
                                 </a>
                             </h6>
-                            <p class="card-text text-muted small">{{ Str::limit($product->short_description, 80) }}</p>
 
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="product-rating">
+                                @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star {{ $i <= ($product->average_rating ?? 4) ? 'text-warning' : 'text-muted' }}"></i>
+                                @endfor
+                                <span class="rating-count">({{ $product->reviews_count ?? rand(10, 500) }})</span>
+                            </div>
+
+                            <div class="product-price">
                                     @if($product->isOnSale)
-                                        <span class="text-danger fw-bold">{{ number_format($product->sale_price) }}đ</span>
-                                        <span class="text-muted text-decoration-line-through">{{ number_format($product->price) }}đ</span>
+                                <span class="sale-price">{{ number_format($product->sale_price) }}đ</span>
+                                <span class="original-price">{{ number_format($product->price) }}đ</span>
                                     @else
-                                        <span class="text-primary fw-bold">{{ number_format($product->price) }}đ</span>
+                                <span class="regular-price">{{ number_format($product->price) }}đ</span>
                                     @endif
                                 </div>
 
-                                <div class="d-grid">
-                                    <button onclick="addToCart('{{ $product->id }}')" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-shopping-cart me-1"></i>Thêm vào giỏ
-                                    </button>
-                                </div>
-                            </div>
+                            <!-- <button class="product-btn" onclick="addToCart('{{ $product->id }}')">
+                                Xem Ngay
+                                    </button> -->
                         </div>
                     </div>
                 </div>
@@ -91,14 +218,85 @@
             </div>
 
             <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-5">
-                {{ $products->links() }}
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    <p class="text-muted small mb-3">
+                        Hiển thị {{ $products->firstItem() }}-{{ $products->lastItem() }} trong {{ $products->total() }} sản phẩm
+                    </p>
+                </div>
+                @if($products->hasPages())
+                <nav class="custom-pagination">
+                    <ul class="pagination">
+                        {{-- Previous Page Link --}}
+                        @if ($products->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">‹</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->previousPageUrl() }}" rel="prev">‹</a>
+                            </li>
+                        @endif
+
+                        {{-- Pagination Elements --}}
+                        @php
+                            $start = max(1, $products->currentPage() - 2);
+                            $end = min($products->lastPage(), $products->currentPage() + 2);
+                        @endphp
+
+                        @if($start > 1)
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->url(1) }}">1</a>
+                            </li>
+                            @if($start > 2)
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            @endif
+                        @endif
+
+                        @for($page = $start; $page <= $end; $page++)
+                            @if ($page == $products->currentPage())
+                                <li class="page-item active">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $products->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endfor
+
+                        @if($end < $products->lastPage())
+                            @if($end < $products->lastPage() - 1)
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            @endif
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->url($products->lastPage()) }}">{{ $products->lastPage() }}</a>
+                            </li>
+                        @endif
+
+                        {{-- Next Page Link --}}
+                        @if ($products->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->nextPageUrl() }}" rel="next">›</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">›</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
+                @endif
             </div>
             @else
-            <div class="text-center py-5">
-                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
                 <h5>Không có sản phẩm nào</h5>
-                <p class="text-muted">Danh mục này chưa có sản phẩm</p>
+                <p>Danh mục này chưa có sản phẩm</p>
                 <a href="{{ route('products.index') }}" class="btn btn-primary">Xem tất cả sản phẩm</a>
             </div>
             @endif
@@ -106,64 +304,1278 @@
     </div>
 </div>
 
+<!-- Suggested Products Section (Reused from Home) -->
+@if(isset($suggestedProducts) && $suggestedProducts->count() > 0)
+<section class="py-5">
+    <div class="container">
+        <div class="suggested-section-wrapper">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-primary mb-2">Gợi Ý Cho Bạn</h3>
+                <p class="text-muted small mb-0">Sản phẩm được chọn lọc dành riêng cho bạn</p>
+            </div>
+
+            <div class="suggested-products-grid">
+                @foreach($suggestedProducts->take(10) as $product)
+                <div class="suggested-product-item">
+                    <div class="suggested-product-card"
+                         data-product-id="{{ $product->id }}"
+                         data-product-name="{{ $product->name }}"
+                         data-product-model="{{ $product->sku ?? 'SW-' . $product->id }}"
+                         data-product-price="{{ $product->sale_price ?? $product->price }}"
+                         data-product-image="{{ $product->baseImage ? $product->baseImage->url : '/image/sp1.png' }}">
+                        <div class="suggested-product-image">
+                            <a href="{{ route('products.show', $product->slug ?? $product->id) }}">
+                                @if($product->baseImage)
+                                <img src="{{ $product->baseImage->url }}" alt="{{ $product->name }}" class="img-fluid">
+                                @else
+                                <img src="/image/sp1.png" alt="{{ $product->name }}" class="img-fluid">
+                                @endif
+                            </a>
+
+                            @if($product->isOnSale)
+                            <span class="suggested-discount-badge">
+                                -{{ $product->discount_percentage }}%
+                            </span>
+                            @endif
+                        </div>
+
+                        <div class="suggested-product-content">
+                            <h6 class="suggested-product-name">{{ $product->name }}</h6>
+
+                            <div class="suggested-price-section">
+                                @if($product->isOnSale)
+                                <div class="suggested-sale-price">{{ number_format($product->sale_price) }}đ</div>
+                                <div class="suggested-original-price">{{ number_format($product->price) }}đ</div>
+                                @else
+                                <div class="suggested-regular-price">{{ number_format($product->price) }}đ</div>
+                                @endif
+                            </div>
+
+                            <div class="suggested-rating">
+                                @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star {{ $i <= ($product->average_rating ?? 4) ? 'text-warning' : 'text-muted' }}"></i>
+                                @endfor
+                                <span class="suggested-rating-count">({{ $product->reviews_count ?? rand(10, 100) }})</span>
+                            </div>
+
+                            <button class="suggested-buy-btn" onclick="addToCart('{{ $product->id }}')">
+                                Xem Ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ route('products.index') }}" class="suggested-view-more-btn">
+                    Xem thêm
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- Mobile Filter Offcanvas -->
+<div class="offcanvas offcanvas-start mobile-filter-offcanvas" tabindex="-1" id="categoryShowFilterOffcanvas" aria-labelledby="categoryShowFilterOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="categoryShowFilterOffcanvasLabel">
+            <i class="fas fa-filter me-2"></i>Bộ lọc sản phẩm
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Category Filter -->
+        @if($categories->count() > 0)
+        <div class="filter-section">
+            <h6 class="filter-subtitle">DANH MỤC</h6>
+            <div class="filter-content">
+                @foreach($categories as $cat)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $cat->id }}" id="mobile-cat{{ $cat->id }}" name="category_id" {{ request('category_id') == $cat->id ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-cat{{ $cat->id }}">
+                        {{ $cat->name }}
+                    </label>
+                </div>
+                @endforeach
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="mobile-catAll" name="category_id" {{ !request('category_id') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-catAll">Tất cả danh mục</label>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Brand Filter -->
+        @if($brands->count() > 0)
+        <div class="filter-section">
+            <h6 class="filter-subtitle">THƯƠNG HIỆU</h6>
+            <div class="filter-content">
+                @foreach($brands as $brand)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $brand->id }}" id="mobile-brand{{ $brand->id }}" name="brand_id" {{ request('brand_id') == $brand->id ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-brand{{ $brand->id }}">
+                        {{ $brand->name }}
+                    </label>
+                </div>
+                @endforeach
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="mobile-brandAll" name="brand_id" {{ !request('brand_id') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-brandAll">Tất cả thương hiệu</label>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Price Filter -->
+        <div class="filter-section">
+            <h6 class="filter-subtitle">KHOẢNG GIÁ</h6>
+            <div class="filter-content">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="0-1000000" id="mobile-price1" name="price_range" {{ request('price_range') == '0-1000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price1">Dưới 1.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="1000000-3000000" id="mobile-price2" name="price_range" {{ request('price_range') == '1000000-3000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price2">1.000.000đ - 3.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="3000000-5000000" id="mobile-price3" name="price_range" {{ request('price_range') == '3000000-5000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price3">3.000.000đ - 5.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="5000000-10000000" id="mobile-price4" name="price_range" {{ request('price_range') == '5000000-10000000' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price4">5.000.000đ - 10.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="10000000+" id="mobile-price5" name="price_range" {{ request('price_range') == '10000000+' ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-price5">Trên 10.000.000đ</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" value="" id="mobile-priceAll" name="price_range" {{ !request('price_range') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mobile-priceAll">Tất cả</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="filter-actions">
+            <button type="button" class="btn btn-primary btn-sm w-100 mb-2" onclick="applyMobileFilters()">
+                <i class="fas fa-filter me-2"></i>Áp dụng
+            </button>
+            <a href="{{ route('categories.show', $category) }}" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="fas fa-refresh me-2"></i>Xóa bộ lọc
+            </a>
+        </div>
+    </div>
+</div>
+@endsection
+
 @push('scripts')
 <script>
-function addToCart(productId) {
-    // Show loading state
-    showNotification('Đang thêm vào giỏ hàng...', 'info');
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Quick filter buttons
+    const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');
+    quickFilterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            quickFilterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
 
-    // Simulate API call
-    setTimeout(() => {
-        showNotification('Đã thêm vào giỏ hàng thành công!', 'success');
-    }, 1000);
+            const filter = this.getAttribute('data-filter');
+            filterProducts(filter);
+        });
+    });
+
+    // Sort functionality
+    const sortSelect = document.getElementById('sortBy');
+    sortSelect.addEventListener('change', function() {
+        const sortBy = this.value;
+        sortProducts(sortBy);
+    });
+
+    // Per page functionality
+    const perPageSelect = document.getElementById('perPage');
+    perPageSelect.addEventListener('change', function() {
+        const perPage = this.value;
+        changePerPage(perPage);
+    });
+
+    // Mobile sort functionality
+    const mobileSortSelect = document.getElementById('mobileSortBy');
+    if (mobileSortSelect) {
+        mobileSortSelect.addEventListener('change', function() {
+            const sortBy = this.value;
+            sortProducts(sortBy);
+        });
+    }
+
+    // Handle category checkboxes (only one can be selected)
+    const categoryCheckboxes = document.querySelectorAll('input[name="category_id"]');
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                categoryCheckboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            }
+        });
+    });
+
+    // Handle brand checkboxes (only one can be selected)
+    const brandCheckboxes = document.querySelectorAll('input[name="brand_id"]');
+    brandCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                brandCheckboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            }
+        });
+    });
+});
+
+function applyFilters() {
+    const url = new URL(window.location);
+
+    // Get selected category (checkbox)
+    const selectedCategory = document.querySelector('input[name="category_id"]:checked');
+    if (selectedCategory && selectedCategory.value) {
+        url.searchParams.set('category_id', selectedCategory.value);
+    } else {
+        url.searchParams.delete('category_id');
+    }
+
+    // Get selected brand (checkbox)
+    const selectedBrand = document.querySelector('input[name="brand_id"]:checked');
+    if (selectedBrand && selectedBrand.value) {
+        url.searchParams.set('brand_id', selectedBrand.value);
+    } else {
+        url.searchParams.delete('brand_id');
+    }
+
+    // Get selected price range (radio)
+    const selectedPrice = document.querySelector('input[name="price_range"]:checked');
+    if (selectedPrice && selectedPrice.value) {
+        url.searchParams.set('price_range', selectedPrice.value);
+    } else {
+        url.searchParams.delete('price_range');
+    }
+
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
 }
 
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} alert-dismissible fade show`;
-    notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+function filterProducts(filter) {
+    const url = new URL(window.location);
 
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
+    switch(filter) {
+        case 'sale':
+            url.searchParams.set('filter', 'sale');
+            break;
+        case 'featured':
+            url.searchParams.set('filter', 'featured');
+            break;
+        case 'bestseller':
+            url.searchParams.set('sort_by', 'bestseller');
+            url.searchParams.delete('filter');
+            break;
+        case 'all':
+        default:
+            url.searchParams.delete('filter');
+            break;
+    }
 
-    document.body.appendChild(notification);
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
 
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
+function sortProducts(sortBy) {
+    const url = new URL(window.location);
+    url.searchParams.set('sort_by', sortBy);
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+function applyMobileFilters() {
+    const url = new URL(window.location);
+
+    // Get selected category from mobile filter
+    const selectedCategory = document.querySelector('#categoryShowFilterOffcanvas input[name="category_id"]:checked');
+    if (selectedCategory && selectedCategory.value) {
+        url.searchParams.set('category_id', selectedCategory.value);
+    } else {
+        url.searchParams.delete('category_id');
+    }
+
+    // Get selected brand from mobile filter
+    const selectedBrand = document.querySelector('#categoryShowFilterOffcanvas input[name="brand_id"]:checked');
+    if (selectedBrand && selectedBrand.value) {
+        url.searchParams.set('brand_id', selectedBrand.value);
+    } else {
+        url.searchParams.delete('brand_id');
+    }
+
+    // Get selected price range from mobile filter
+    const selectedPrice = document.querySelector('#categoryShowFilterOffcanvas input[name="price_range"]:checked');
+    if (selectedPrice && selectedPrice.value) {
+        url.searchParams.set('price_range', selectedPrice.value);
+    } else {
+        url.searchParams.delete('price_range');
+    }
+
+    url.searchParams.delete('page'); // Reset to first page
+    window.location.href = url.toString();
+}
+
+// Add to cart function (placeholder)
+function addToCart(productId) {
+    console.log('Add to cart:', productId);
+    // Implement add to cart functionality
 }
 </script>
 @endpush
 
 @push('styles')
 <style>
-.product-card {
+/* Category Page Styles */
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .container-fluid {
+    width: 95%;
+    max-width: 1320px;
+    margin: 20px auto;
+  }
+}
+
+/* Desktop trung bình (1440px - 1679px) */
+@media screen and (min-width: 1440px) and (max-width: 1679px) {
+  .container-fluid {
+    width: 1320px;
+    margin: 20px auto;
+  }
+}
+
+/* Desktop lớn và màn hình wide (1680px - 1919px) */
+@media screen and (min-width: 1680px) and (max-width: 1919px) {
+  .container-fluid {
+    width: 1400px;
+    margin: 40px auto;
+  }
+}
+
+/* Màn hình 2K (1920px - 2559px) */
+@media screen and (min-width: 1920px) and (max-width: 2559px) {
+  .container-fluid {
+    width: 1600px;
+    margin: 50px auto;
+  }
+}
+
+/* Màn hình 4K và siêu lớn (2560px+) */
+@media screen and (min-width: 2560px) {
+  .container-fluid {
+    width: 2000px;
+    margin: 60px auto;
+  }
+}
+
+/* Tối ưu cho màn hình siêu rộng (Ultra-wide) */
+@media screen and (min-width: 3440px) {
+  .container-fluid {
+    width: 2400px;
+    margin: 80px auto;
+  }
+}
+.category-sidebar {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+}
+
+.filter-section {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.filter-title {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.filter-subtitle {
+    color: #7f8c8d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.filter-content .form-check {
+    margin-bottom: 8px;
+}
+
+.filter-content .form-check-label {
+    font-size: 0.9rem;
+    color: #34495e;
+    cursor: pointer;
+}
+
+.category-header {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.header-top {
+    text-align: center;
+}
+
+.header-controls {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    gap: 15px;
+}
+
+@media (max-width: 991px) {
+    .header-controls {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15px;
+    }
+    
+    .quick-filters {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .sort-options {
+        display: none !important;
+    }
+}
+
+.category-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.category-subtitle {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.sort-options .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    min-width: 140px;
+    background-color: white;
     transition: all 0.3s ease;
+    height: 38px;
+}
+
+.sort-options .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.sort-options .form-select:hover {
+    border-color: #3498db;
+}
+
+.quick-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.quick-filter-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 38px;
+}
+
+.quick-filter-btn:hover,
+.quick-filter-btn.active {
+    background: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid #f0f0f0;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.product-card .position-relative {
+.product-image {
+    position: relative;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.discount-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.featured-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #f39c12;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.product-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-brand {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.product-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    height: 2.34em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+}
+
+.product-name a {
+    color: #2c3e50;
     text-decoration: none;
-    color: inherit;
+}
+
+.product-name a:hover {
+    color: #3498db;
+}
+
+.product-rating {
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+}
+
+.rating-count {
+    color: #95a5a6;
+    margin-left: 4px;
+    font-size: 0.75rem;
+}
+
+.product-price {
+    margin-bottom: 12px;
+}
+
+.sale-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e74c3c;
+    margin-right: 8px;
+}
+
+.original-price {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    text-decoration: line-through;
+}
+
+.regular-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3498db;
+}
+
+.product-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.product-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #bdc3c7;
+}
+
+.pagination-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.pagination-info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Custom Pagination Styles */
+.custom-pagination .pagination {
+    gap: 8px;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.custom-pagination .page-item {
+    margin: 0;
+}
+
+.custom-pagination .page-link {
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: #666;
+    text-decoration: none;
+    margin: 0;
+    transition: all 0.2s ease;
+    font-weight: 400;
+    background: transparent;
+    min-width: 35px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.custom-pagination .page-link:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background-color: #ff6b35;
+    color: white;
+    font-weight: 500;
+}
+
+.custom-pagination .page-item.disabled .page-link {
+    background-color: transparent;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.custom-pagination .page-item.disabled .page-link:hover {
+    background-color: transparent;
+    color: #ccc;
+}
+
+/* Pagination dots */
+.custom-pagination .page-item.disabled .page-link:not(:hover) {
+    background-color: transparent;
+    color: #999;
+}
+
+/* Previous and Next buttons */
+.custom-pagination .page-item:first-child .page-link,
+.custom-pagination .page-item:last-child .page-link {
+    font-size: 16px;
+    padding: 8px 10px;
+}
+
+/* Reuse Suggested Products Styles from Home */
+.suggested-section-wrapper {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.suggested-section-wrapper:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.suggested-products-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.suggested-product-item {
+    position: relative;
+}
+
+.suggested-product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid #f0f0f0;
+}
+
+.suggested-product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.suggested-product-image {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suggested-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.suggested-product-card:hover .suggested-product-image img {
+    transform: scale(1.05);
+}
+
+.suggested-discount-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.suggested-product-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.suggested-product-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    color: #2c3e50;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    height: 2.34em;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+.suggested-price-section {
+    margin-bottom: 8px;
+}
+
+.suggested-sale-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #e74c3c;
+    margin-bottom: 2px;
+}
+
+.suggested-original-price {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    text-decoration: line-through;
+}
+
+.suggested-regular-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3498db;
+}
+
+.suggested-rating {
+    margin-bottom: 12px;
+    font-size: 0.8rem;
+}
+
+.suggested-rating-count {
+    color: #95a5a6;
+    margin-left: 4px;
+    font-size: 0.75rem;
+}
+
+.suggested-buy-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.suggested-buy-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.suggested-view-more-btn {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.suggested-view-more-btn:hover {
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .suggested-products-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+}
+
+@media (max-width: 992px) {
+    .suggested-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .category-sidebar {
+        position: static;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .suggested-products-grid,
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .suggested-section-wrapper {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .category-header {
+        padding: 15px;
+    }
+
+    .quick-filters {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .suggested-products-grid,
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .suggested-section-wrapper {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .category-header {
+        text-align: center;
+    }
+
+         .d-flex.justify-content-between {
+         flex-direction: row !important;
+         gap: 15px;
+     }
+
+    .custom-pagination .page-link {
+        padding: 6px 8px;
+        font-size: 13px;
+        min-width: 30px;
+    }
+
+    .custom-pagination .pagination {
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .custom-pagination .page-item:first-child .page-link,
+    .custom-pagination .page-item:last-child .page-link {
+        font-size: 14px;
+        padding: 6px 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .suggested-products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile Filter Section */
+.mobile-filter-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+    margin-top: 10px;
     display: block;
 }
 
-.product-card .position-relative:hover {
-    text-decoration: none;
+/* Hide on desktop */
+@media (min-width: 992px) {
+    .mobile-filter-section {
+        display: none !important;
+    }
 }
 
-.badge {
-    font-size: 0.75rem;
+.mobile-filter-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.mobile-filter-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    color: white;
+}
+
+.mobile-filter-btn i {
+    font-size: 1rem;
+}
+
+.mobile-sort-options {
+    min-width: 140px;
+}
+
+.mobile-sort-options .form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.mobile-sort-options .form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Offcanvas Customization */
+.mobile-filter-offcanvas {
+    width: 320px !important;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1055 !important;
+}
+
+.mobile-filter-offcanvas .offcanvas-header {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border-bottom: none;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-filter-offcanvas .offcanvas-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.mobile-filter-offcanvas .offcanvas-body {
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.mobile-filter-offcanvas .filter-section {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mobile-filter-offcanvas .filter-section:last-child {
+    margin-bottom: 0;
+}
+
+.mobile-filter-offcanvas .filter-subtitle {
+    color: #3498db;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-filter-offcanvas .form-check {
+    margin-bottom: 10px;
+    padding-left: 1.8em;
+}
+
+.mobile-filter-offcanvas .form-check-input {
+    margin-left: -1.8em;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.mobile-filter-offcanvas .form-check-input:checked {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.mobile-filter-offcanvas .form-check-label {
+    font-size: 0.9rem;
+    color: #495057;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.mobile-filter-offcanvas .form-check-label:hover {
+    color: #3498db;
+}
+
+.mobile-filter-offcanvas .filter-actions {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-primary:hover {
+    background: linear-gradient(135deg, #2980b9, #1f5f88);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+}
+
+.mobile-filter-offcanvas .filter-actions .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+/* Show mobile filter button on smaller screens */
+@media (max-width: 991px) {
+    .mobile-filter-section {
+        display: block !important;
+    }
+}
+
+/* Mobile responsive - header spacing to avoid fixed header overlap */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-top: 80px !important;
+    }
+
+    .mobile-filter-section {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .mobile-filter-section .d-flex {
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .mobile-filter-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .mobile-sort-options {
+        min-width: 120px;
+    }
+
+    .mobile-sort-options .form-select {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .mobile-filter-offcanvas {
+        width: 280px !important;
+    }
+
+    .mobile-filter-offcanvas .offcanvas-body {
+        padding: 15px;
+    }
+
+    .mobile-filter-offcanvas .filter-section {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+
+    .mobile-filter-offcanvas .filter-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-top: 5px !important;
+    }
 }
 </style>
 @endpush
-@endsection

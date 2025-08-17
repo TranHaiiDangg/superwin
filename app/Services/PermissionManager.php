@@ -85,6 +85,14 @@ class PermissionManager
             'revenue.export' => 'Xuất báo cáo doanh thu',
             'revenue.stats' => 'Xem thống kê chi tiết',
         ],
+        
+        // Hot Searches
+        'hot_searches' => [
+            'hot_searches.view' => 'Xem hot search',
+            'hot_searches.create' => 'Thêm hot search',
+            'hot_searches.edit' => 'Sửa hot search',
+            'hot_searches.delete' => 'Xóa hot search',
+        ],
     ];
 
     /**
@@ -101,7 +109,7 @@ class PermissionManager
             'description' => 'Quản trị viên có đầy đủ quyền',
             'permissions' => [
                 'dashboard.*', 'products.*', 'categories.*', 'brands.*',
-                'orders.*', 'users.*', 'customers.*', 'revenue.*'
+                'orders.*', 'users.*', 'customers.*', 'revenue.*', 'hot_searches.*'
             ]
         ],
         'manager' => [

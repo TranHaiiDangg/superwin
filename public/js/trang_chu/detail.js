@@ -221,16 +221,16 @@
     function setupImageGallery() {
         const mainImage = document.getElementById('mainImage');
         const thumbnails = document.querySelectorAll('.preview-thumb');
-        
+
         if (mainImage && thumbnails.length > 0) {
             // Initialize with first image
             mainImage.src = imageGallery.images[0].main;
             mainImage.alt = imageGallery.images[0].alt;
-            
+
             // Setup thumbnail clicks
             thumbnails.forEach((thumb, index) => {
                 thumb.addEventListener('click', () => changeImage(index));
-                
+
                 // Update thumbnail images
                 const img = thumb.querySelector('img');
                 if (img && imageGallery.images[index]) {
@@ -238,7 +238,7 @@
                     img.alt = imageGallery.images[index].alt;
                 }
             });
-            
+
             // Set first thumbnail as selected
             thumbnails[0].classList.add('selected');
         }
@@ -246,22 +246,22 @@
 
     function changeImage(imageIndex) {
         if (imageIndex < 0 || imageIndex >= imageGallery.images.length) return;
-        
+
         currentState.selectedImage = imageIndex;
-        
+
         const mainImage = document.getElementById('mainImage');
         const thumbnails = document.querySelectorAll('.preview-thumb');
-        
+
         if (mainImage) {
             mainImage.classList.add('transitioning');
             mainImage.src = imageGallery.images[imageIndex].main;
             mainImage.alt = imageGallery.images[imageIndex].alt;
-            
+
             setTimeout(() => {
                 mainImage.classList.remove('transitioning');
             }, 300);
         }
-        
+
         // Update thumbnail selection
         thumbnails.forEach((thumb, index) => {
             thumb.classList.toggle('selected', index === imageIndex);
@@ -272,35 +272,35 @@
     function setupProductOptions() {
         const modelButtons = document.querySelectorAll('[data-model]');
         const motorButtons = document.querySelectorAll('[data-motor]');
-        
+
         // Model selection
         modelButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const model = button.dataset.model;
                 if (model && productConfig.models[model]) {
                     currentState.selectedModel = model;
-                    
+
                     // Update button states
                     modelButtons.forEach(btn => btn.classList.remove('selected'));
                     button.classList.add('selected');
-                    
+
                     updatePricing();
                     updateProductTitle();
                 }
             });
         });
-        
+
         // Motor type selection
         motorButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const motor = button.dataset.motor;
                 if (motor && productConfig.motorTypes[motor]) {
                     currentState.selectedMotor = motor;
-                    
+
                     // Update button states
                     motorButtons.forEach(btn => btn.classList.remove('selected'));
                     button.classList.add('selected');
-                    
+
                     updatePricing();
                 }
             });
@@ -311,7 +311,7 @@
     function setupQuantityControls() {
         const quantityInput = document.getElementById('quantity');
         const quantityButtons = document.querySelectorAll('.quantity-button');
-        
+
         if (quantityInput) {
             quantityInput.addEventListener('change', (event) => {
                 const newQuantity = Math.max(1, parseInt(event.target.value) || 1);
@@ -319,7 +319,7 @@
                 event.target.value = newQuantity;
             });
         }
-        
+
         // Setup quantity buttons if they exist
         quantityButtons.forEach(button => {
             button.addEventListener('click', (event) => {
@@ -334,7 +334,7 @@
     function changeQuantity(delta) {
         const newQuantity = Math.max(1, currentState.quantity + delta);
         currentState.quantity = newQuantity;
-        
+
         const quantityInput = document.getElementById('quantity');
         if (quantityInput) {
             quantityInput.value = newQuantity;
@@ -345,11 +345,11 @@
     function setupActionButtons() {
         const cartButton = document.querySelector('.cart-button');
         const purchaseButton = document.querySelector('.purchase-button');
-        
+
         if (cartButton) {
             cartButton.addEventListener('click', addToCart);
         }
-        
+
         if (purchaseButton) {
             purchaseButton.addEventListener('click', buyNow);
         }
@@ -362,35 +362,73 @@
         const finalPrice = modelConfig.price + motorConfig.priceModifier;
 
         return {
+            id: productConfig.productId || window.productId, // Lấy ID từ global variable
             name: `Máy Bơm Super Win ${currentState.selectedModel} | ${motorConfig.label}`,
             model: currentState.selectedModel,
             motorType: currentState.selectedMotor,
             power: modelConfig.power,
             quantity: currentState.quantity,
-            price: finalPrice
+            price: finalPrice,
+            image: productConfig.productImage || '/image/sp1.png', // Lấy image từ global variable
+            attributes: {
+                model: currentState.selectedModel,
+                motorType: currentState.selectedMotor,
+                power: modelConfig.power
+            }
         };
     }
 
     function addToCart() {
         const product = getCurrentProductConfig();
-        showNotification(`Đã thêm ${product.name} vào giỏ hàng!`, 'success');
-        console.log('Added to cart:', product);
+
+        // Use the global cartManager if available
+        if (typeof cartManager !== 'undefined' && cartManager) {
+            cartManager.addItem(product);
+        } else {
+            // Fallback to local notification
+            showNotification(`Đã thêm ${product.name} vào giỏ hàng!`, 'success');
+            console.log('Added to cart:', product);
+        }
     }
 
     function buyNow() {
         const product = getCurrentProductConfig();
-        showNotification('Đang chuyển đến trang thanh toán...', 'info');
-        console.log('Buy now:', product);
+        const quantity = parseInt(document.getElementById('quantity')?.value || 1);
+
+        if (!product || !product.id) {
+            showNotification('Vui lòng chọn sản phẩm trước khi mua', 'error');
+            return;
+        }
+
+        // Tạo dữ liệu giỏ hàng tạm thời cho mua ngay
+        const buyNowData = {
+            items: [{
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+                image: product.image,
+                attributes: product.attributes || {}
+            }],
+            total: product.price * quantity,
+            itemCount: quantity
+        };
+
+        // Lưu vào sessionStorage để checkout page có thể đọc
+        sessionStorage.setItem('buyNowData', JSON.stringify(buyNowData));
+
+        // Chuyển đến trang checkout với tham số buy_now
+        window.location.href = `/checkout?buy_now=1&product_id=${product.id}&quantity=${quantity}`;
     }
 
     // Tab System
     function setupTabs() {
         const tabButtons = document.querySelectorAll('.tab-switch');
-        
+
         tabButtons.forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
-                
+
                 // Extract tab ID from onclick attribute or use a data attribute
                 const onclickAttr = button.getAttribute('onclick');
                 if (onclickAttr) {
@@ -401,7 +439,7 @@
                 }
             });
         });
-        
+
         // Initialize first tab as active
         switchTab('specs');
     }
@@ -410,14 +448,14 @@
     function switchTab(tabId) {
         const tabButtons = document.querySelectorAll('.tab-switch');
         const tabPanels = document.querySelectorAll('.tab-panel');
-        
+
         // Update button states
         tabButtons.forEach(button => {
             const onclickAttr = button.getAttribute('onclick');
             const isActive = onclickAttr && onclickAttr.includes(`'${tabId}'`);
             button.classList.toggle('active', isActive);
         });
-        
+
         // Update panel visibility
         tabPanels.forEach(panel => {
             panel.classList.toggle('active', panel.id === tabId);
@@ -428,25 +466,25 @@
     function updatePricing() {
         const modelConfig = productConfig.models[currentState.selectedModel];
         const motorConfig = productConfig.motorTypes[currentState.selectedMotor];
-        
+
         if (!modelConfig || !motorConfig) return;
-        
+
         const finalPrice = modelConfig.price + motorConfig.priceModifier;
         const originalPrice = modelConfig.originalPrice + motorConfig.priceModifier;
-        
+
         // Update price displays
         const priceDisplay = document.querySelector('.active-price');
         const originalPriceDisplay = document.querySelector('.crossed-price');
         const savingsTag = document.querySelector('.savings-tag');
-        
+
         if (priceDisplay) {
             priceDisplay.textContent = formatPrice(finalPrice);
         }
-        
+
         if (originalPriceDisplay) {
             originalPriceDisplay.textContent = formatPrice(originalPrice);
         }
-        
+
         // Update discount percentage
         if (savingsTag) {
             const discountPercent = Math.round((1 - finalPrice / originalPrice) * 100);
@@ -459,7 +497,7 @@
         if (titleElement) {
             titleElement.textContent = `Máy Bơm Super Win ${currentState.selectedModel}`;
         }
-        
+
         const statusLabel = document.querySelector('.status-label');
         if (statusLabel) {
             const modelConfig = productConfig.models[currentState.selectedModel];
@@ -480,7 +518,7 @@
                     <div class="rating-stars">${generateStars(reviewsData.summary.averageRating)}</div>
                     <div class="rating-count">${reviewsData.summary.totalReviews} đánh giá</div>
                 </div>
-                
+
                 <div class="rating-breakdown">
                     ${generateRatingBreakdown()}
                 </div>
@@ -522,12 +560,12 @@
         const fullStars = Math.floor(rating);
         const hasHalfStar = rating % 1 >= 0.5;
         const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-        
+
         let stars = '';
         for (let i = 0; i < fullStars; i++) stars += '★';
         if (hasHalfStar) stars += '☆';
         for (let i = 0; i < emptyStars; i++) stars += '☆';
-        
+
         return stars;
     }
 
@@ -550,7 +588,7 @@
 
     function generateReviewsList() {
         const filteredReviews = filterReviews();
-        
+
         if (filteredReviews.length === 0) {
             return '<div class="no-reviews">Không có đánh giá nào phù hợp với bộ lọc.</div>';
         }
@@ -567,21 +605,21 @@
                         <span class="review-date">${formatDate(review.date)}</span>
                     </div>
                 </div>
-                
+
                 <div class="review-product-info">
                     <span class="review-product">${review.productVariant}</span>
                 </div>
-                
+
                 ${review.title ? `<div class="review-title">${review.title}</div>` : ''}
-                
+
                 <div class="review-text">${review.content}</div>
-                
+
                 ${review.images.length > 0 ? `
                     <div class="review-images">
                         ${review.images.map(img => `<div class="review-image-placeholder">📷 Hình ảnh</div>`).join('')}
                     </div>
                 ` : ''}
-                
+
                 <div class="review-actions">
                     <button class="helpful-btn ${review.helpful > 0 ? 'has-votes' : ''}" onclick="markHelpful(${review.id})">
                         👍 Hữu ích (${review.helpful})
@@ -596,7 +634,7 @@
 
     function filterReviews() {
         let filtered = [...reviewsData.reviews];
-        
+
         // Filter by rating
         if (reviewsData.filters.rating !== 'all') {
             if (reviewsData.filters.rating === 'withImages') {
@@ -608,7 +646,7 @@
                 filtered = filtered.filter(review => review.rating === rating);
             }
         }
-        
+
         return filtered;
     }
 
@@ -619,11 +657,11 @@
             btn.addEventListener('click', function() {
                 // Update filter state
                 reviewsData.filters.rating = this.dataset.filter;
-                
+
                 // Update button states
                 filterButtons.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 // Refresh reviews list
                 updateReviewsList();
             });
@@ -639,10 +677,10 @@
 
     function formatDate(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
     }
 
@@ -746,4 +784,3 @@
     });
 
 })();
-    

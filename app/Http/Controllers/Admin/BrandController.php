@@ -44,11 +44,15 @@ class BrandController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-            $path = $image->storeAs('brands', $filename, 'public');
-            $validated['image'] = '/storage/' . $path;
             
-            // Debug log
-            Log::info('Brand image uploaded: ' . $validated['image']);
+            // Save directly to public/images/brands/
+            $destinationPath = public_path('images/brands');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $image->move($destinationPath, $filename);
+            $validated['image'] = '/images/brands/' . $filename;
         }
 
         Brand::create($validated);
@@ -93,8 +97,15 @@ class BrandController extends Controller
             
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-            $path = $image->storeAs('brands', $filename, 'public');
-            $validated['image'] = '/storage/' . $path;
+            
+            // Save directly to public/images/brands/
+            $destinationPath = public_path('images/brands');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $image->move($destinationPath, $filename);
+            $validated['image'] = '/images/brands/' . $filename;
         }
 
         $brand->update($validated);

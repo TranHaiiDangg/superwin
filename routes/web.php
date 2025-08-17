@@ -13,6 +13,9 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,23 +38,25 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // Đăng xuất
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Quên mật khẩu
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+
 // Routes cần customer authentication
 Route::middleware(['customer'])->group(function () {
     // Profile routes
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
-    // TODO: Uncomment khi có CartController và OrderController
-    // Cart routes
-    // Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    // Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-    // Route::put('/cart/update', [CartController::class, 'update'])->name('cart.update');
-    // Route::delete('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
-
     // Order routes
-    // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    // Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
 // ===== MAIN NAVIGATION ROUTES =====
@@ -62,10 +67,48 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Cart Routes
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add')->middleware('auth:customer');
-    Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update')->middleware('auth:customer');
-    Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth:customer');
-    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear')->middleware('auth:customer');
+    Route::get('/count', [CartController::class, 'count'])->name('cart.count');
+    Route::get('/data', [CartController::class, 'getCartData'])->name('cart.data');
+    Route::post('/add/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/update/{itemKey}', [CartController::class, 'update'])->name('cart.update');
+    Route::patch('/quantity/{itemKey}', [CartController::class, 'updateQuantity'])->name('cart.quantity');
+    Route::delete('/remove/{itemKey}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+});
+
+// API Routes for Cart
+Route::prefix('api')->group(function () {
+    Route::get('/products/{product}', [ProductController::class, 'apiShow'])->name('api.products.show');
+    Route::get('/cart/count', [CartController::class, 'apiCount'])->name('api.cart.count');
+    Route::post('/cart/add', [CartController::class, 'apiAdd'])->name('api.cart.add');
+    Route::put('/cart/update', [CartController::class, 'apiUpdate'])->name('api.cart.update');
+    Route::delete('/cart/remove', [CartController::class, 'apiRemove'])->name('api.cart.remove');
+
+    // Test route for debugging
+    Route::get('/test/product/{id}', function($id) {
+        $product = \App\Models\Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+        return response()->json([
+            'id' => $product->id,
+            'name' => $product->name,
+            'model' => $product->sku,
+            'price' => $product->price,
+            'sale_price' => $product->sale_price,
+            'image' => $product->baseImage ? $product->baseImage->url : '/image/sp1.png',
+            'slug' => $product->slug
+        ]);
+    });
+
+    // Test route để kiểm tra tất cả sản phẩm
+    Route::get('/test/products', function() {
+        $products = \App\Models\Product::take(5)->get(['id', 'name', 'sku']);
+        return response()->json([
+            'count' => $products->count(),
+            'products' => $products
+        ]);
+    });
 });
 
 // Sản phẩm
@@ -97,7 +140,7 @@ Route::prefix('categories')->name('categories.')->group(function () {
 });
 
 // Hoặc sử dụng dynamic route cho categories
-Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
 // ===== BRAND ROUTES =====
 
@@ -116,6 +159,7 @@ Route::prefix('brands')->name('products.brand.')->group(function () {
 
 // Hoặc sử dụng dynamic route cho brands
 Route::get('/brand/{slug}', [BrandController::class, 'show'])->name('products.brand');
+Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
 
 // ===== PRODUCT CATEGORY ROUTES =====
 
@@ -171,11 +215,24 @@ Route::get('/warranty', [WarrantyController::class, 'index'])->name('warranty');
 
 // ===== ADDITIONAL ROUTES =====
 
+// ===== REVIEW ROUTES =====
+
+// Review routes
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/products/{product}/reviews', [ReviewController::class, 'getProductReviews'])->name('reviews.product');
+
 // API routes cho search suggestions (nếu cần)
 Route::prefix('api')->group(function () {
-    Route::get('/search-suggestions', [SearchController::class, 'suggestions'])->name('api.search.suggestions');
+    Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('api.search.suggestions');
+    Route::get('/search-suggestions', [SearchController::class, 'suggestions'])->name('api.search.suggestions.old'); // Backward compatibility
     Route::get('/hot-keywords', [SearchController::class, 'hotKeywords'])->name('api.hot-keywords');
+    Route::get('/search/hot-suggestions', [SearchController::class, 'hotSuggestions'])->name('api.search.hot-suggestions');
     Route::get('/brands-list', [BrandController::class, 'apiList'])->name('api.brands');
+
+    // Address API Routes
+    Route::get('/provinces', [App\Http\Controllers\AddressController::class, 'getProvinces'])->name('api.provinces');
+    Route::get('/districts/{provinceCode}', [App\Http\Controllers\AddressController::class, 'getDistricts'])->name('api.districts');
+    Route::get('/wards/{districtCode}', [App\Http\Controllers\AddressController::class, 'getWards'])->name('api.wards');
 });
 
 // Sitemap (optional)

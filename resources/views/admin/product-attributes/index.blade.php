@@ -5,10 +5,11 @@
 @section('content')
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Danh sách Thuộc tính</h1>
-        <a href="{{ route('admin.product-attributes.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-            <i class="fas fa-plus mr-2"></i>Thêm thuộc tính
-        </a>
+        <h1 class="text-2xl font-bold text-gray-900">Quản lý Thuộc tính Sản phẩm</h1>
+        <div class="text-sm text-gray-600">
+            <i class="fas fa-info-circle mr-1"></i>
+            Để thêm thuộc tính mới, vui lòng sử dụng form Thêm/Sửa sản phẩm
+        </div>
     </div>
 
     <!-- Simple Search -->

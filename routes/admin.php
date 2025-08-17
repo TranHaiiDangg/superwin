@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProductAttributeController;
+use App\Http\Controllers\Admin\ProductVariantController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Auth routes (no middleware)
@@ -41,53 +42,60 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('products/{product}/delete-image', [ProductController::class, 'deleteImage'])->name('products.delete-image')->middleware('permission:products.edit');
     Route::post('products/generate-sku', [ProductController::class, 'generateSKU'])->name('products.generate-sku')->middleware('permission:products.create');
 
-    // Product Attributes
+    Route::get('products/{product}/variants', [ProductVariantController::class, 'index'])->name('products.variants.index')->middleware('permission:product_variants.view');
+    Route::post('products/{product}/variants/bulk-update', [ProductVariantController::class, 'bulkUpdate'])->name('products.variants.bulk-update')->middleware('permission:product_variants.edit');
+
+    // Product Attributes - Đặt routes cụ thể trước routes có parameter
+    Route::get('product-attributes/create', [ProductAttributeController::class, 'create'])->name('product-attributes.create')->middleware('permission:product_attributes.create');
+    Route::post('product-attributes', [ProductAttributeController::class, 'store'])->name('product-attributes.store')->middleware('permission:product_attributes.create');
+    
     Route::middleware('permission:product_attributes.view')->group(function () {
         Route::get('product-attributes', [ProductAttributeController::class, 'index'])->name('product-attributes.index');
         Route::get('product-attributes/{productAttribute}', [ProductAttributeController::class, 'show'])->name('product-attributes.show');
         Route::get('products/{product}/attributes', [ProductAttributeController::class, 'getByProduct'])->name('products.attributes.get');
     });
-    Route::get('product-attributes/create', [ProductAttributeController::class, 'create'])->name('product-attributes.create')->middleware('permission:product_attributes.create');
-    Route::post('product-attributes', [ProductAttributeController::class, 'store'])->name('product-attributes.store')->middleware('permission:product_attributes.create');
+    
     Route::get('product-attributes/{productAttribute}/edit', [ProductAttributeController::class, 'edit'])->name('product-attributes.edit')->middleware('permission:product_attributes.edit');
     Route::put('product-attributes/{productAttribute}', [ProductAttributeController::class, 'update'])->name('product-attributes.update')->middleware('permission:product_attributes.edit');
     Route::delete('product-attributes/{productAttribute}', [ProductAttributeController::class, 'destroy'])->name('product-attributes.destroy')->middleware('permission:product_attributes.delete');
     Route::post('product-attributes/{productAttribute}/restore', [ProductAttributeController::class, 'restore'])->name('product-attributes.restore')->middleware('permission:product_attributes.edit');
     Route::post('products/{product}/attributes', [ProductAttributeController::class, 'storeForProduct'])->name('products.attributes.store')->middleware('permission:product_attributes.create');
     
-    // Categories
+    // Categories - Đặt routes cụ thể trước routes có parameter
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:categories.create');
+    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:categories.create');
+    
     Route::middleware('permission:categories.view')->group(function () {
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
     });
-    Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:categories.create');
-    Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:categories.create');
+    
     Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('permission:categories.edit');
     Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update')->middleware('permission:categories.edit');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('permission:categories.delete');
     Route::post('categories/{category}/restore', [CategoryController::class, 'restore'])->name('categories.restore')->middleware('permission:categories.edit');
     
-    // Brands
-    Route::middleware('permission:brands.view')->group(function () {
-        Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
-        Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
-    });
+    // Brands  
     Route::get('brands/create', [BrandController::class, 'create'])->name('brands.create')->middleware('permission:brands.create');
     Route::post('brands', [BrandController::class, 'store'])->name('brands.store')->middleware('permission:brands.create');
+    Route::middleware('permission:brands.view')->group(function () {
+        Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+        Route::get('brands/{brand}', [BrandController::class, 'show'])->name('admin.brands.show');
+    });
     Route::get('brands/{brand}/edit', [BrandController::class, 'edit'])->name('brands.edit')->middleware('permission:brands.edit');
     Route::put('brands/{brand}', [BrandController::class, 'update'])->name('brands.update')->middleware('permission:brands.edit');
     Route::delete('brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy')->middleware('permission:brands.delete');
     Route::post('brands/{brand}/restore', [BrandController::class, 'restore'])->name('brands.restore')->middleware('permission:brands.edit');
     
-    // Orders
+    // Orders - Đặt routes cụ thể trước routes có parameter
+    Route::get('orders/export', [OrderController::class, 'exportOrders'])->name('orders.exportOrders')->middleware('permission:orders.view');
+    
     Route::middleware('permission:orders.view')->group(function () {
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::get('orders/{order}/invoice', [OrderController::class, 'printInvoice'])->name('orders.printInvoice');
-        Route::get('orders/export', [OrderController::class, 'exportOrders'])->name('orders.exportOrders');
     });
-    Route::get('orders/create', [OrderController::class, 'create'])->name('orders.create')->middleware('permission:orders.create');
-    Route::post('orders', [OrderController::class, 'store'])->name('orders.store')->middleware('permission:orders.create');
+    
     Route::get('orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit')->middleware('permission:orders.edit');
     Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update')->middleware('permission:orders.edit');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy')->middleware('permission:orders.delete');
@@ -115,6 +123,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('customers/{customer}', [CustomerController::class, 'update'])->name('customers.update')->middleware('permission:customers.edit');
     Route::post('customers/{customer}/ban', [CustomerController::class, 'ban'])->name('customers.ban')->middleware('permission:customers.edit');
     Route::post('customers/{customer}/unban', [CustomerController::class, 'unban'])->name('customers.unban')->middleware('permission:customers.edit');
+    Route::post('customers/{customer}/activate', [CustomerController::class, 'activate'])->name('customers.activate')->middleware('permission:customers.edit');
+    Route::post('customers/{customer}/deactivate', [CustomerController::class, 'deactivate'])->name('customers.deactivate')->middleware('permission:customers.edit');
     
         // Reports
         Route::get('reports/sales', [AdminController::class, 'salesReport'])->name('reports.sales')->middleware('permission:dashboard.reports');
@@ -133,5 +143,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('revenue/monthly-data', [\App\Http\Controllers\Admin\RevenueController::class, 'getMonthlyData'])->name('revenue.monthlyData')->middleware('permission:revenue.stats');
         Route::get('revenue/date-range-data', [\App\Http\Controllers\Admin\RevenueController::class, 'getDateRangeData'])->name('revenue.dateRangeData')->middleware('permission:revenue.stats');
         Route::get('revenue/export', [\App\Http\Controllers\Admin\RevenueController::class, 'exportExcel'])->name('revenue.export')->middleware('permission:revenue.export');
+        
+        // Hot Search Management
+        Route::get('hot-searches', [\App\Http\Controllers\Admin\HotSearchController::class, 'index'])->name('hot-searches.index')->middleware('permission:hot_searches.view');
+        Route::get('hot-searches/create', [\App\Http\Controllers\Admin\HotSearchController::class, 'create'])->name('hot-searches.create')->middleware('permission:hot_searches.create');
+        Route::get('hot-searches/api/reference-options', [\App\Http\Controllers\Admin\HotSearchController::class, 'getReferenceOptions'])->name('hot-searches.reference-options')->middleware('permission:hot_searches.view');
+        Route::post('hot-searches', [\App\Http\Controllers\Admin\HotSearchController::class, 'store'])->name('hot-searches.store')->middleware('permission:hot_searches.create');
+        Route::get('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'show'])->name('hot-searches.show')->middleware('permission:hot_searches.view');
+        Route::get('hot-searches/{hotSearch}/edit', [\App\Http\Controllers\Admin\HotSearchController::class, 'edit'])->name('hot-searches.edit')->middleware('permission:hot_searches.edit');
+        Route::put('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'update'])->name('hot-searches.update')->middleware('permission:hot_searches.edit');
+        Route::delete('hot-searches/{hotSearch}', [\App\Http\Controllers\Admin\HotSearchController::class, 'destroy'])->name('hot-searches.destroy')->middleware('permission:hot_searches.delete');
+        Route::patch('hot-searches/{hotSearch}/toggle-status', [\App\Http\Controllers\Admin\HotSearchController::class, 'toggleStatus'])->name('hot-searches.toggle-status')->middleware('permission:hot_searches.edit');
     });
 }); 

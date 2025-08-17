@@ -12,7 +12,7 @@
     </div>
 
     <div class="bg-white rounded-lg shadow-md p-6">
-        <form action="{{ route('admin.categories.store') }}" method="POST">
+        <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -30,21 +30,7 @@
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="product_type" class="block text-sm font-medium text-gray-700 mb-2">Loại sản phẩm *</label>
-                        <select id="product_type" name="product_type" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="">Chọn loại sản phẩm</option>
-                            <option value="bom" {{ old('product_type') == 'bom' ? 'selected' : '' }}>Bơm</option>
-                            <option value="quat" {{ old('product_type') == 'quat' ? 'selected' : '' }}>Quạt</option>
-                            <option value="motor" {{ old('product_type') == 'motor' ? 'selected' : '' }}>Motor</option>
-                            <option value="bom_chim" {{ old('product_type') == 'bom_chim' ? 'selected' : '' }}>Bơm chìm</option>
-                            <option value="quat_tron" {{ old('product_type') == 'quat_tron' ? 'selected' : '' }}>Quạt tròn</option>
-                        </select>
-                        @error('product_type')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+
 
                     <div>
                         <label for="parent_id" class="block text-sm font-medium text-gray-700 mb-2">Danh mục cha</label>

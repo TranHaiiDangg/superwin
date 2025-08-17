@@ -40,9 +40,15 @@ class Review extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'user_id');
+    }
+    
+    // Alias for backward compatibility
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->customer();
     }
 
     public function order(): BelongsTo
@@ -58,5 +64,23 @@ class Review extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(Review::class, 'parent_id');
+    }
+
+    // Accessor for customer name
+    public function getCustomerNameAttribute()
+    {
+        return $this->customer ? $this->customer->name : 'Khách hàng';
+    }
+
+    // Scope for approved reviews
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    // Scope for recent reviews
+    public function scopeRecent($query)
+    {
+        return $query->orderBy('created_at', 'desc');
     }
 } 

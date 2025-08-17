@@ -45,7 +45,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Hình ảnh</label>
                         <div class="mt-1">
-                            <img src="{{ $category->image }}" alt="{{ $category->name }}" 
+                            <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" 
                                  class="h-24 w-auto object-contain rounded-lg border">
                         </div>
                     </div>
@@ -58,14 +58,7 @@
                     </div>
                     @endif
                     
-                    <div>
-                        <label class="block text-sm font-medium text-gray-500">Loại sản phẩm</label>
-                        <div class="mt-1">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                {{ $category->product_type }}
-                            </span>
-                        </div>
-                    </div>
+
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Trạng thái</label>
@@ -126,9 +119,7 @@
                                         <span class="text-xs text-gray-500">
                                             <i class="fas fa-box mr-1"></i>{{ $child->products->count() }} sản phẩm
                                         </span>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $child->product_type }}
-                                        </span>
+
                                     </div>
                                 </div>
                                 <div class="flex space-x-1 ml-4">
@@ -187,7 +178,6 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
-                                    <div class="text-sm text-gray-500">{{ $product->product_type }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $product->sku }}

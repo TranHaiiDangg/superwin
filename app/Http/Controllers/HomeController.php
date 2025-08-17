@@ -34,12 +34,13 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        // Lấy sản phẩm khuyến mãi cho Flash Deals
+        // Lấy sản phẩm khuyến mãi cho Flash Deals - chỉ lấy sản phẩm có is_sale = true
         $saleProducts = Product::with(['category', 'brand', 'baseImage'])
             ->where('status', true)
-            ->whereNotNull('sale_price')
-            ->where('sale_price', '>', 0)
-            ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
+            ->where('is_sale', true) // Chỉ lấy sản phẩm có is_sale = true
+            // ->whereNotNull('sale_price')
+            // ->where('sale_price', '>', 0)
+            // ->where('sale_price', '<', DB::raw('price')) // Đảm bảo sale_price < price
             ->orderByRaw('((price - sale_price) / price * 100) DESC') // Sắp xếp theo % giảm giá cao nhất
             ->take(10)
             ->get();
@@ -50,14 +51,46 @@ class HomeController extends Controller
             ->with(['children' => function($query) {
                 $query->where('is_active', true)->take(5);
             }])
-            ->take(6)
+            ->take(8) // 8 categories for 2 rows layout
             ->get();
 
         // Lấy thương hiệu
-        $brands = Brand::where('is_active', true)
-            ->withCount('products')
+        $brands = Brand::withCount('products')
             ->orderBy('products_count', 'desc')
             ->take(8)
+            ->get();
+
+        // Lấy sản phẩm theo từng category chính (limit 10 sản phẩm mỗi category)
+        $categoryProducts = [];
+        foreach($mainCategories as $category) {
+            $products = Product::with(['category', 'brand', 'baseImage'])
+                ->where('status', true)
+                ->where(function($query) use ($category) {
+                    $query->where('category_id', $category->id)
+                          ->orWhereIn('category_id', $category->children->pluck('id'));
+                })
+                ->latest()
+                ->take(10)
+                ->get();
+
+            if($products->count() > 0) {
+                $categoryProducts[$category->id] = [
+                    'category' => $category,
+                    'products' => $products
+                ];
+            }
+        }
+
+        // Lấy sản phẩm gợi ý (mix của featured và best sellers) - loại trừ sản phẩm flash sale
+        $suggestedProducts = Product::with(['category', 'brand', 'baseImage'])
+            ->where('status', true)
+            ->where('is_sale', false) // Loại trừ sản phẩm flash sale
+            ->where(function($query) {
+                $query->where('is_featured', true)
+                      ->orWhere('sold_count', '>', 0);
+            })
+            ->orderByRaw('RAND()')
+            ->take(10)
             ->get();
 
         return view('home', compact(
@@ -66,7 +99,9 @@ class HomeController extends Controller
             'newProducts',
             'saleProducts',
             'mainCategories',
-            'brands'
+            'brands',
+            'categoryProducts',
+            'suggestedProducts'
         ));
     }
 }

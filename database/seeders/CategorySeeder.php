@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'may-bom-nuoc',
                 'description' => '💧 Các loại máy bơm nước chất lượng cao từ các thương hiệu uy tín',
                 'image' => '/image/bom.png',
-                'product_type' => 'may-bom-nuoc',
+
                 'sort_order' => 1,
                 'children' => [
                     [
@@ -27,7 +27,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'may-bom-nuoc-super-win',
                         'description' => 'Máy bơm nước thương hiệu Super Win',
                         'image' => '/image/bom.png',
-                        'product_type' => 'may-bom-nuoc-super-win',
+
                         'sort_order' => 1,
                     ],
                     [
@@ -35,7 +35,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'may-bom-nuoc-vina-pump',
                         'description' => 'Máy bơm nước thương hiệu Vina Pump',
                         'image' => '/image/bom.png',
-                        'product_type' => 'may-bom-nuoc-vina-pump',
+
                         'sort_order' => 2,
                     ],
                     [
@@ -43,7 +43,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'may-bom-nuoc-abc',
                         'description' => 'Máy bơm nước thương hiệu ABC',
                         'image' => '/image/bom.png',
-                        'product_type' => 'may-bom-nuoc-abc',
+
                         'sort_order' => 3,
                     ],
                     [
@@ -51,7 +51,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'may-bom-nuoc-bien',
                         'description' => 'Máy bơm nước biển chuyên dụng',
                         'image' => '/image/bom.png',
-                        'product_type' => 'may-bom-nuoc-bien',
+
                         'sort_order' => 4,
                     ],
                     [
@@ -59,7 +59,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'may-bom-ho-boi',
                         'description' => 'Máy bơm hồ bơi chuyên nghiệp',
                         'image' => '/image/bom.png',
-                        'product_type' => 'may-bom-ho-boi',
+
                         'sort_order' => 5,
                     ],
                 ]
@@ -69,7 +69,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'quat-cong-nghiep',
                 'description' => '🌪️ Quạt công nghiệp chất lượng cao cho nhà máy, xưởng sản xuất',
                 'image' => '/image/quat.png',
-                'product_type' => 'quat-cong-nghiep',
+
                 'sort_order' => 2,
                 'children' => [
                     [
@@ -77,7 +77,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-super-win',
                         'description' => 'Quạt công nghiệp thương hiệu Super Win',
                         'image' => '/image/quat.png',
-                        'product_type' => 'quat-super-win',
+
                         'sort_order' => 1,
                     ],
                     [
@@ -85,7 +85,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-deton',
                         'description' => 'Quạt công nghiệp thương hiệu Deton',
                         'image' => '/image/quat.png',
-                        'product_type' => 'quat-deton',
+
                         'sort_order' => 2,
                     ],
                     [
@@ -93,7 +93,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-sthc',
                         'description' => 'Quạt công nghiệp thương hiệu STHC',
                         'image' => '/image/quat.png',
-                        'product_type' => 'quat-sthc',
+
                         'sort_order' => 3,
                     ],
                     [
@@ -101,7 +101,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-inverter',
                         'description' => 'Quạt công nghiệp Inverter tiết kiệm điện',
                         'image' => '/image/quat.png',
-                        'product_type' => 'quat-inverter',
+
                         'sort_order' => 4,
                     ],
                 ]
@@ -111,7 +111,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'quat-thong-gio',
                 'description' => '💨 Quạt thông gió cho nhà ở, văn phòng, công nghiệp',
                 'image' => '/image/quat_tran.png',
-                'product_type' => 'quat-thong-gio',
+
                 'sort_order' => 3,
                 'children' => [
                     [
@@ -119,7 +119,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-thong-gio-vuong-super-win',
                         'description' => 'Quạt thông gió vuông thương hiệu Super Win',
                         'image' => '/image/quat_vuong.png',
-                        'product_type' => 'quat-thong-gio-vuong-super-win',
+
                         'sort_order' => 1,
                     ],
                     [
@@ -127,7 +127,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-thong-gio-vuong-deton',
                         'description' => 'Quạt thông gió vuông thương hiệu Deton',
                         'image' => '/image/quat_vuong.png',
-                        'product_type' => 'quat-thong-gio-vuong-deton',
+
                         'sort_order' => 2,
                     ],
                     [
@@ -135,7 +135,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-thong-gio-tron',
                         'description' => 'Quạt thông gió tròn đa dạng kích thước',
                         'image' => '/image/quat_tron.png',
-                        'product_type' => 'quat-thong-gio-tron',
+
                         'sort_order' => 3,
                     ],
                 ]
@@ -145,7 +145,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'quat-dac-biet',
                 'description' => '⚡ Các loại quạt đặc biệt cho mục đích chuyên dụng',
                 'image' => '/image/quat_tran.png',
-                'product_type' => 'quat-dac-biet',
+
                 'sort_order' => 4,
                 'children' => [
                     [
@@ -153,7 +153,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-huong-truc-noi-ong',
                         'description' => 'Quạt hướng trục nổi ống công nghiệp',
                         'image' => '/image/quat_tran.png',
-                        'product_type' => 'quat-huong-truc-noi-ong',
+
                         'sort_order' => 1,
                     ],
                     [
@@ -161,7 +161,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-san-cong-nghiep',
                         'description' => 'Quạt sàn công nghiệp chuyên dụng',
                         'image' => '/image/quat_tran.png',
-                        'product_type' => 'quat-san-cong-nghiep',
+
                         'sort_order' => 2,
                     ],
                     [
@@ -169,7 +169,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-tran-cong-nghiep',
                         'description' => 'Quạt trần công nghiệp chất lượng cao',
                         'image' => '/image/quat_tran.png',
-                        'product_type' => 'quat-tran-cong-nghiep',
+
                         'sort_order' => 3,
                     ],
                     [
@@ -177,7 +177,7 @@ class CategorySeeder extends Seeder
                         'slug' => 'quat-chong-chay-no',
                         'description' => 'Quạt chống cháy nổ an toàn',
                         'image' => '/image/quat_tran.png',
-                        'product_type' => 'quat-chong-chay-no',
+
                         'sort_order' => 4,
                     ],
                     [

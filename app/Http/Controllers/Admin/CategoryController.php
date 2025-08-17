@@ -42,7 +42,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
@@ -55,8 +54,15 @@ class CategoryController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-            $path = $image->storeAs('categories', $filename, 'public');
-            $validated['image'] = '/storage/' . $path;
+            
+            // Save directly to public/images/categories/
+            $destinationPath = public_path('images/categories');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $image->move($destinationPath, $filename);
+            $validated['image'] = '/images/categories/' . $filename;
         }
 
         Category::create($validated);
@@ -76,7 +82,6 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
-            'product_type' => 'required|in:bom,quat,motor,bom_chim,quat_tron',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'sort_order' => 'nullable|integer|min:0',
@@ -103,8 +108,15 @@ class CategoryController extends Controller
             
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-            $path = $image->storeAs('categories', $filename, 'public');
-            $validated['image'] = '/storage/' . $path;
+            
+            // Save directly to public/images/categories/
+            $destinationPath = public_path('images/categories');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $image->move($destinationPath, $filename);
+            $validated['image'] = '/images/categories/' . $filename;
         }
 
         $category->update($validated);

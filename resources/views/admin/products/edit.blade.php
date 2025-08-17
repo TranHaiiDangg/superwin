@@ -34,6 +34,10 @@
                             class="tab-button whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                         <i class="fas fa-cogs mr-2"></i>Thuộc tính
                     </button>
+                    <button type="button" onclick="switchTab('variants')" id="tab-variants" 
+                            class="tab-button whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        <i class="fas fa-layer-group mr-2"></i>Phân loại
+                    </button>
                 </nav>
             </div>
             
@@ -104,23 +108,7 @@
                                 @enderror
                             </div>
                             
-                            <div>
-                                <label for="product_type" class="block text-sm font-medium text-gray-700 mb-1">
-                                    Loại sản phẩm <span class="text-red-500">*</span>
-                                </label>
-                                <select id="product_type" name="product_type" required
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="">Chọn loại sản phẩm</option>
-                                    <option value="bom" {{ old('product_type', $product->product_type) == 'bom' ? 'selected' : '' }}>Máy bơm</option>
-                                    <option value="quat" {{ old('product_type', $product->product_type) == 'quat' ? 'selected' : '' }}>Quạt</option>
-                                    <option value="motor" {{ old('product_type', $product->product_type) == 'motor' ? 'selected' : '' }}>Motor</option>
-                                    <option value="bom_chim" {{ old('product_type', $product->product_type) == 'bom_chim' ? 'selected' : '' }}>Bơm chìm</option>
-                                    <option value="quat_tron" {{ old('product_type', $product->product_type) == 'quat_tron' ? 'selected' : '' }}>Quạt tròn</option>
-                                </select>
-                                @error('product_type')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
+
                         </div>
                         
                         <!-- Pricing & Inventory -->
@@ -234,7 +222,7 @@
                             <div id="existing-images-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 @foreach($product->images as $image)
                                 <div class="relative group" data-image-id="{{ $image->id }}">
-                                    <img src="{{ $image->url }}" 
+                                    <img src="{{ asset($image->url) }}" 
                                          alt="{{ $image->alt_text }}" 
                                          class="w-full h-24 object-cover rounded-lg border border-gray-200 {{ $image->is_base ? 'ring-2 ring-blue-500' : '' }}">
                                     
@@ -421,14 +409,46 @@
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h4 class="text-md font-medium text-gray-900 border-b pb-2 flex-1">Thông số kỹ thuật</h4>
-                            <button type="button" onclick="addAttribute()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg ml-4">
-                                <i class="fas fa-plus mr-2"></i>Thêm thuộc tính
-                            </button>
+                            <div class="ml-4 space-x-2">
+                                <button type="button" onclick="addAttribute()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-plus mr-2"></i>Thêm thuộc tính
+                                </button>
+                                <button type="button" onclick="saveAttributes()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-save mr-2"></i>Cập nhật thuộc tính
+                                </button>
+                            </div>
                         </div>
                         
                         <div id="product-attributes">
                             <div id="attributes-container" class="space-y-4">
                                 <!-- Existing attributes will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab 4: Product Variants -->
+                <div id="content-variants" class="tab-content hidden space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-md font-medium text-gray-900 border-b pb-2 flex-1">Phân loại sản phẩm</h4>
+                            <div class="ml-4 space-x-2">
+                                <button type="button" onclick="addVariant()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-plus mr-2"></i>Thêm phân loại
+                                </button>
+                                <button type="button" onclick="saveVariants()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                                    <i class="fas fa-save mr-2"></i>Lưu phân loại
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="product-variants">
+                            <div id="variants-container" class="space-y-4">
+                                <!-- Dynamic variants will be loaded here -->
+                                <div class="text-center py-8 text-gray-500" id="no-variants-message">
+                                    <i class="fas fa-layer-group text-4xl mb-4"></i>
+                                    <p>Đang tải phân loại...</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -605,12 +625,9 @@ function addExistingAttribute(attribute) {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tag mr-1 text-blue-500"></i>Thuộc tính
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_key]" class="attribute-key-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn thuộc tính</option>
-                    ${Object.entries(commonKeys).map(([key, label]) => 
-                        `<option value="${key}" ${key === attribute.attribute_key ? 'selected' : ''}>${label}</option>`
-                    ).join('')}
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_key]" value="${attribute.attribute_key || ''}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Nhập tên thuộc tính (VD: Công suất, Điện áp, Lưu lượng...)">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -624,9 +641,9 @@ function addExistingAttribute(attribute) {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-ruler mr-1 text-purple-500"></i>Đơn vị
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_unit]" class="attribute-unit-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn đơn vị</option>
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_unit]" value="${attribute.attribute_unit || ''}"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="VD: HP, V, L/phút, m, %...">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -656,24 +673,10 @@ function addExistingAttribute(attribute) {
     
     // Add event listeners after adding to DOM
     const removeBtn = attributeRow.querySelector('.remove-attribute-btn');
-    const keySelect = attributeRow.querySelector('.attribute-key-select');
     
     removeBtn.addEventListener('click', function() {
         removeAttribute(this);
     });
-    
-    keySelect.addEventListener('change', function() {
-        updateAttributeUnits(this);
-    });
-    
-    // Update units for this attribute
-    updateAttributeUnits(keySelect);
-    
-    // Set the selected unit
-    const unitSelect = attributeRow.querySelector('.attribute-unit-select');
-    if (attribute.attribute_unit) {
-        unitSelect.value = attribute.attribute_unit;
-    }
     
     attributeIndex++;
 }
@@ -697,10 +700,9 @@ function addAttribute() {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tag mr-1 text-blue-500"></i>Thuộc tính
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_key]" class="attribute-key-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn thuộc tính</option>
-                    ${Object.entries(commonKeys).map(([key, label]) => `<option value="${key}">${label}</option>`).join('')}
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_key]"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Nhập tên thuộc tính (VD: Công suất, Điện áp, Lưu lượng...)">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -714,9 +716,9 @@ function addAttribute() {
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-ruler mr-1 text-purple-500"></i>Đơn vị
                 </label>
-                <select name="attributes[${attributeIndex}][attribute_unit]" class="attribute-unit-select w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Chọn đơn vị</option>
-                </select>
+                <input type="text" name="attributes[${attributeIndex}][attribute_unit]"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="VD: HP, V, L/phút, m, %...">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -746,14 +748,9 @@ function addAttribute() {
     
     // Add event listeners after adding to DOM
     const removeBtn = attributeRow.querySelector('.remove-attribute-btn');
-    const keySelect = attributeRow.querySelector('.attribute-key-select');
     
     removeBtn.addEventListener('click', function() {
         removeAttribute(this);
-    });
-    
-    keySelect.addEventListener('change', function() {
-        updateAttributeUnits(this);
     });
     
     attributeIndex++;
@@ -779,24 +776,65 @@ function removeAttribute(button) {
     }
 }
 
-function updateAttributeUnits(selectElement) {
-    const attributeKey = selectElement.value;
-    const row = selectElement.closest('.attribute-row');
-    const unitSelect = row.querySelector('.attribute-unit-select');
+function saveAttributes() {
+    const saveBtn = event.target;
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang lưu...';
+    saveBtn.disabled = true;
+
+    // Collect all attribute data
+    const attributes = [];
+    const attributeRows = document.querySelectorAll('.attribute-row');
     
-    // Clear current options
-    unitSelect.innerHTML = '<option value="">Chọn đơn vị</option>';
-    
-    // Add units for selected attribute
-    if (commonUnits[attributeKey]) {
-        commonUnits[attributeKey].forEach(unit => {
-            const option = document.createElement('option');
-            option.value = unit;
-            option.textContent = unit;
-            unitSelect.appendChild(option);
-        });
-    }
+    attributeRows.forEach(row => {
+        const attributeKey = row.querySelector('[name*="[attribute_key]"]').value;
+        const attributeValue = row.querySelector('[name*="[attribute_value]"]').value;
+        const attributeUnit = row.querySelector('[name*="[attribute_unit]"]').value;
+        const attributeDescription = row.querySelector('[name*="[attribute_description]"]').value;
+        const sortOrder = row.querySelector('[name*="[sort_order]"]').value;
+        const isVisible = row.querySelector('[name*="[is_visible]"]').value;
+        
+        if (attributeKey.trim()) {
+            attributes.push({
+                attribute_key: attributeKey,
+                attribute_value: attributeValue,
+                attribute_unit: attributeUnit,
+                attribute_description: attributeDescription,
+                sort_order: parseInt(sortOrder) || 0,
+                is_visible: isVisible === '1'
+            });
+        }
+    });
+
+    // Send AJAX request
+    fetch(`/admin/products/${productId}/attributes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ attributes: attributes })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Cập nhật thuộc tính thành công!');
+            window.location.reload(); // Reload toàn trang
+        } else {
+            alert('Lỗi: ' + (data.message || 'Unknown error'));
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error saving attributes:', error);
+        alert('Có lỗi xảy ra khi lưu thuộc tính');
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    });
 }
+
+// Function removed - no longer using dropdown for units
 
 // Image Management Functions
 function previewNewImages(input) {
@@ -928,7 +966,7 @@ function deleteExistingImage(imageId) {
 function generateSKUPreview() {
     const categorySelect = document.getElementById('category_id');
     const brandSelect = document.getElementById('brand_id');
-    const productTypeSelect = document.getElementById('product_type');
+    
     const skuInput = document.getElementById('sku');
     
     let prefix = 'SP';
@@ -946,16 +984,16 @@ function generateSKUPreview() {
     }
     
     // Add product type prefix
-    if (productTypeSelect.value) {
-        const typeMap = {
-            'bom': 'BM',
-            'quat': 'QT',
-            'motor': 'MT',
-            'bom_chim': 'BC',
-            'quat_tron': 'QR'
-        };
-        prefix += typeMap[productTypeSelect.value] || 'SP';
-    }
+    // if (productTypeSelect.value) {
+    //     const typeMap = {
+    //         'bom': 'BM',
+    //         'quat': 'QT',
+    //         'motor': 'MT',
+    //         'bom_chim': 'BC',
+    //         'quat_tron': 'QR'
+    //     };
+    //     prefix += typeMap[productTypeSelect.value] || 'SP';
+    // }
     
     // Generate preview with random number
     const randomNum = Math.floor(Math.random() * 9999) + 1;
@@ -964,5 +1002,345 @@ function generateSKUPreview() {
     skuInput.value = sku;
     skuInput.focus();
 }
+
+// Product Variants Management for Edit
+let variantIndex = 0;
+
+function loadExistingVariants() {
+    const container = document.getElementById('variants-container');
+    const noMessage = document.getElementById('no-variants-message');
+    
+    if (!container || !noMessage) {
+        return; // Silently fail if elements not found
+    }
+    
+    // Show loading message
+    noMessage.innerHTML = '<i class="fas fa-spinner fa-spin text-4xl mb-4"></i><p>Đang tải phân loại...</p>';
+    noMessage.style.display = 'block';
+    
+    fetch(`/admin/products/${productId}/variants`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                container.innerHTML = '';
+                
+                if (data.variants.length === 0) {
+                    noMessage.innerHTML = '<i class="fas fa-layer-group text-4xl mb-4"></i><p>Chưa có phân loại nào. Nhấn "Thêm phân loại" để bắt đầu.</p>';
+                    noMessage.style.display = 'block';
+                } else {
+                    noMessage.style.display = 'none';
+                    data.variants.forEach(variant => {
+                        addExistingVariant(variant);
+                    });
+                }
+            } else {
+                noMessage.innerHTML = '<i class="fas fa-layer-group text-4xl mb-4"></i><p>Chưa có phân loại nào. Nhấn "Thêm phân loại" để bắt đầu.</p>';
+                noMessage.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading variants:', error);
+            noMessage.innerHTML = '<i class="fas fa-layer-group text-4xl mb-4"></i><p>Chưa có phân loại nào. Nhấn "Thêm phân loại" để bắt đầu.</p>';
+            noMessage.style.display = 'block';
+        });
+}
+
+function addExistingVariant(variant) {
+    const container = document.getElementById('variants-container');
+    const variantRow = document.createElement('div');
+    variantRow.className = 'variant-row border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow';
+    variantRow.setAttribute('data-index', variantIndex);
+    variantRow.setAttribute('data-id', variant.id);
+    
+    variantRow.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tag mr-1 text-blue-500"></i>Tên phân loại <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                       name="variants[${variantIndex}][name]" 
+                       value="${variant.name || ''}"
+                       placeholder="VD: Máy bơm nhật"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-code mr-1 text-green-500"></i>Mã phân loại <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                       name="variants[${variantIndex}][code]" 
+                       value="${variant.code || ''}"
+                       placeholder="VD: MBN1"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-dollar-sign mr-1 text-yellow-500"></i>Giá <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][price]" 
+                       value="${variant.price || 0}"
+                       placeholder="0"
+                       min="0"
+                       step="0.01"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-percentage mr-1 text-red-500"></i>Giá khuyến mãi
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][price_sale]" 
+                       value="${variant.price_sale || ''}"
+                       placeholder="0"
+                       min="0"
+                       step="0.01"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-boxes mr-1 text-purple-500"></i>Số lượng <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][quantity]" 
+                       value="${variant.quantity || 0}"
+                       placeholder="0"
+                       min="0"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div class="flex space-x-2">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" 
+                           name="variants[${variantIndex}][is_active]" 
+                           value="1" 
+                           ${variant.is_active ? 'checked' : ''}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Hoạt động</span>
+                </label>
+                <button type="button" 
+                        onclick="removeVariant(this)" 
+                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            
+            <input type="hidden" name="variants[${variantIndex}][id]" value="${variant.id || ''}">
+            <input type="hidden" name="variants[${variantIndex}][sort_order]" value="${variant.sort_order || variantIndex}">
+        </div>
+    `;
+    
+    container.appendChild(variantRow);
+    variantIndex++;
+}
+
+function addVariant() {
+    const container = document.getElementById('variants-container');
+    const noMessage = document.getElementById('no-variants-message');
+    
+    // Hide no variants message
+    if (noMessage) {
+        noMessage.style.display = 'none';
+    }
+    
+    const variantRow = document.createElement('div');
+    variantRow.className = 'variant-row border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow';
+    variantRow.setAttribute('data-index', variantIndex);
+    
+    variantRow.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tag mr-1 text-blue-500"></i>Tên phân loại <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                       name="variants[${variantIndex}][name]" 
+                       placeholder="VD: Máy bơm nhật"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-code mr-1 text-green-500"></i>Mã phân loại <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                       name="variants[${variantIndex}][code]" 
+                       placeholder="VD: MBN1"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-dollar-sign mr-1 text-yellow-500"></i>Giá <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][price]" 
+                       placeholder="0"
+                       min="0"
+                       step="0.01"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-percentage mr-1 text-red-500"></i>Giá khuyến mãi
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][price_sale]" 
+                       placeholder="0"
+                       min="0"
+                       step="0.01"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-boxes mr-1 text-purple-500"></i>Số lượng <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                       name="variants[${variantIndex}][quantity]" 
+                       placeholder="0"
+                       min="0"
+                       value="0"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       required>
+            </div>
+            
+            <div class="flex space-x-2">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" 
+                           name="variants[${variantIndex}][is_active]" 
+                           value="1" 
+                           checked
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <span class="ml-2 text-sm text-gray-600">Hoạt động</span>
+                </label>
+                <button type="button" 
+                        onclick="removeVariant(this)" 
+                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            
+            <input type="hidden" name="variants[${variantIndex}][sort_order]" value="${variantIndex}">
+        </div>
+    `;
+    
+    container.appendChild(variantRow);
+    variantIndex++;
+}
+
+function removeVariant(button) {
+    const variantRow = button.closest('.variant-row');
+    const container = document.getElementById('variants-container');
+    const noMessage = document.getElementById('no-variants-message');
+    
+    variantRow.remove();
+    
+    // Show no variants message if no variants left
+    const remainingVariants = container.querySelectorAll('.variant-row');
+    if (remainingVariants.length === 0 && noMessage) {
+        noMessage.innerHTML = '<i class="fas fa-layer-group text-4xl mb-4"></i><p>Chưa có phân loại nào. Nhấn "Thêm phân loại" để bắt đầu.</p>';
+        noMessage.style.display = 'block';
+    }
+}
+
+function saveVariants() {
+    const container = document.getElementById('variants-container');
+    
+    if (!container) {
+        alert('Lỗi: Không tìm thấy container. Vui lòng chuyển sang tab Phân loại trước.');
+        return;
+    }
+    
+    const variantRows = container.querySelectorAll('.variant-row');
+    const variants = [];
+    
+    variantRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const variant = {};
+        
+        inputs.forEach(input => {
+            const name = input.name;
+            if (name && name.includes('variants[')) {
+                const field = name.match(/variants\[\d+\]\[(\w+)\]/)[1];
+                if (input.type === 'checkbox') {
+                    variant[field] = input.checked ? 1 : 0;
+                } else {
+                    variant[field] = input.value;
+                }
+            }
+        });
+        
+        if (variant.name && variant.code) {
+            variants.push(variant);
+        }
+    });
+    
+    if (variants.length === 0) {
+        alert('Vui lòng thêm ít nhất một phân loại!');
+        return;
+    }
+    
+    // Show loading
+    const saveBtn = document.querySelector('button[onclick="saveVariants()"]');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang lưu...';
+    saveBtn.disabled = true;
+    
+    fetch(`/admin/products/${productId}/variants/bulk-update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ variants: variants })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Lưu phân loại thành công!');
+            window.location.reload(); // Reload toàn page
+        } else {
+            alert('Lỗi: ' + (data.message || 'Unknown error'));
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error saving variants:', error);
+        alert('Có lỗi xảy ra khi lưu phân loại');
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    });
+}
+
+// Load existing variants when variants tab is activated
+let variantsLoaded = false;
+
+// Override switchTab function to load variants when needed
+const originalSwitchTab = window.switchTab;
+window.switchTab = function(tabName) {
+    originalSwitchTab(tabName);
+    
+    if (tabName === 'variants' && !variantsLoaded) {
+        setTimeout(() => {
+            loadExistingVariants();
+            variantsLoaded = true;
+        }, 200);
+    }
+};
 </script>
 @endsection 

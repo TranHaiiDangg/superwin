@@ -24,7 +24,7 @@ class RevenueService
     public function getMonthlyRevenue(int $year = null): array
     {
         $year = $year ?? Carbon::now()->year;
-        
+
         $monthlyData = Order::selectRaw('
                 MONTH(created_at) as month,
                 COUNT(*) as total_orders,
@@ -61,7 +61,7 @@ class RevenueService
     public function getQuarterlyRevenue(int $year = null): array
     {
         $year = $year ?? Carbon::now()->year;
-        
+
         $quarterlyData = Order::selectRaw('
                 QUARTER(created_at) as quarter,
                 COUNT(*) as total_orders,
@@ -96,7 +96,7 @@ class RevenueService
     public function getTopProducts(int $year = null, int $limit = 10): array
     {
         $year = $year ?? Carbon::now()->year;
-        
+
         $topProducts = DB::table('order_details')
             ->join('orders', 'order_details.order_id', '=', 'orders.id')
             ->join('products', 'order_details.product_id', '=', 'products.id')
@@ -121,11 +121,11 @@ class RevenueService
             ->whereIn('id', $productIds)
             ->get()
             ->keyBy('id');
-        
+
         $result = [];
         foreach ($topProducts as $product) {
             $productModel = $productsWithImages->get($product->id);
-            
+
             // Lấy hình ảnh theo thứ tự ưu tiên: primaryImage -> baseImage -> first image -> null
             $image = null;
             if ($productModel) {
@@ -137,7 +137,7 @@ class RevenueService
                     $image = $productModel->images->first()->url;
                 }
             }
-            
+
             $result[] = (object)[
                 'id' => $product->id,
                 'name' => $product->name,
@@ -192,7 +192,7 @@ class RevenueService
             ->first();
 
         // Tính tỷ lệ tăng trưởng
-        $revenueGrowth = $previousYearStats && $previousYearStats->total_revenue > 0 
+        $revenueGrowth = $previousYearStats && $previousYearStats->total_revenue > 0
             ? (($currentYearStats->total_revenue - $previousYearStats->total_revenue) / $previousYearStats->total_revenue) * 100
             : 0;
 
@@ -270,13 +270,13 @@ class RevenueService
             ->toArray();
     }
 
-    /**
-     * Export data cho Excel
+        /**
+     * Export data cho Excel theo năm
      */
     public function getExportData(int $year = null): array
     {
         $year = $year ?? Carbon::now()->year;
-        
+
         return [
             'overview' => $this->getOverviewStats($year),
             'monthly' => $this->getMonthlyRevenue($year),
@@ -288,5 +288,73 @@ class RevenueService
                 'exported_by' => auth()->user()->name ?? 'System',
             ]
         ];
+    }
+
+    /**
+     * Export data cho Excel theo khoảng thời gian
+     */
+    public function getExportDataByDateRange(string $startDate, string $endDate): array
+    {
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+
+        // Lấy dữ liệu theo ngày
+        $dailyData = $this->getRevenueByDateRange($startDate, $endDate);
+
+        // Lấy top sản phẩm trong khoảng thời gian
+        $topProducts = $this->getTopProductsByDateRange($startDate, $endDate, 20);
+
+        // Thống kê tổng quan
+        $overviewStats = Order::selectRaw('
+                COUNT(*) as total_orders,
+                SUM(total_amount) as total_revenue,
+                AVG(total_amount) as avg_order_value,
+                MIN(total_amount) as min_order_value,
+                MAX(total_amount) as max_order_value
+            ')
+            ->whereBetween('created_at', [$start, $end])
+            ->whereIn('status', self::SUCCESS_STATUSES)
+            ->first();
+
+        return [
+            'daily_data' => $dailyData['data'],
+            'summary' => $dailyData['summary'],
+            'overview' => $overviewStats,
+            'top_products' => $topProducts,
+            'export_info' => [
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d'),
+                'period_text' => $start->format('d/m/Y') . ' - ' . $end->format('d/m/Y'),
+                'exported_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'exported_by' => auth()->user()->name ?? 'System',
+            ]
+        ];
+    }
+
+    /**
+     * Lấy top sản phẩm theo khoảng thời gian
+     */
+    private function getTopProductsByDateRange(string $startDate, string $endDate, int $limit = 10): array
+    {
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+
+        return DB::table('order_details')
+            ->join('orders', 'order_details.order_id', '=', 'orders.id')
+            ->join('products', 'order_details.product_id', '=', 'products.id')
+            ->select(
+                'products.name',
+                'products.sku',
+                DB::raw('SUM(order_details.quantity) as total_quantity'),
+                DB::raw('SUM(order_details.total_price) as total_revenue'),
+                DB::raw('AVG(order_details.unit_price) as avg_price')
+            )
+            ->whereBetween('orders.created_at', [$start, $end])
+            ->whereIn('orders.status', self::SUCCESS_STATUSES)
+            ->groupBy('products.id', 'products.name', 'products.sku')
+            ->orderByDesc('total_revenue')
+            ->limit($limit)
+            ->get()
+            ->toArray();
     }
 }
